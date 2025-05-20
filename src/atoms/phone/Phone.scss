@@ -1,0 +1,27 @@
+// .react-tel-input {
+//     input{
+//         outline-width: 0px;
+//         &:focus{
+//             border: none;
+//             outline-width: 0px;
+//         }
+//     }
+// }
+
+// .react-tel-input {
+//     background-color: red !important;
+// }
+
+.react-tel-input:focus,  .special-label:focus ,input:focus {
+    
+    outline: none !important;
+    outline-width: 0px !important;
+}
+
+// input{
+//     // background-color: red;
+
+//     &-focus{
+//         background: blue !important;
+//     }
+// }

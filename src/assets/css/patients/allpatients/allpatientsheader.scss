@@ -1,0 +1,70 @@
+@import "../../../../App.scss";
+
+.allpatient-tab {
+  .allpatient-heading { 
+    font-family: $Montserrat-Medium;
+    font-size: $font-size16;
+    line-height: 20px;
+    color: #202020;
+  }
+  .allpatient-breadcrumb {
+    font-family: Montserrat;
+    padding-top: 1rem;
+    font-size: $font-size14;
+    line-height: 17px;
+
+    img {
+      padding: 0 22px;
+    }
+    .current-tab {
+      color: #4fa6d1;
+    }
+  }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    flex-direction: row-reverse; /* Added to reverse the direction of flex items */
+    font-family: $Poppins-Regular;
+    font-size: $font-size12;
+
+    input {
+      width: 397px;
+      height: 40px;
+      color: #8c8c8c;
+      background: #ffffff;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding-right: 40px; /* Changed to padding-right to move the text to the left */
+      padding: 10px;
+    }
+
+    &:before {
+      content: "\f002";
+      font-family: FontAwesome;
+      font-size: 18px;
+      position: absolute;
+      margin-right: 12px; /* Changed to margin-right to move the icon to the right */
+      color: #e9ecef;
+    }
+  }
+
+  .search-field input:focus {
+    outline: none;
+  }
+
+  @media only screen and (max-width: 767px) {
+    /* Added media query to target smaller screen sizes */
+    .search-field input {
+      width: 256px; /* Set the width of input field to 256px */
+    }
+  }
+
+  @media only screen and (max-width: 489px) {
+    .allpatient-breadcrumb {
+      text-align: left;
+      font-size: 12px;
+    }
+  }
+}

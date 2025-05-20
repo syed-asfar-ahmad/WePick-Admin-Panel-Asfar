@@ -1,0 +1,668 @@
+@import "../../../App.scss";
+
+// add laboratory modal
+
+.add-lab-modal {
+  background: #ffffff;
+  border-radius: 6px;
+  padding-bottom: 0;
+
+  .ant-modal-content {
+    height: 100%;
+    padding: 0px;
+    border-radius: 6px;
+  }
+
+  .modal-content-wrapper {
+    .title-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 26px 44px;
+
+      img {
+        cursor: pointer;
+      }
+
+      .title {
+        color: #202020;
+        font-family: $Montserrat-Medium;
+        font-size: 16px;
+      }
+    }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 14px 48px 39px 44px;
+      font-family: $Poppins-Regular;
+
+      .full-width {
+        margin-bottom: 1rem;
+      }
+
+      .three-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .form-group {
+          width: 100%;
+        }
+
+        .ant-picker {
+          border-radius: 5px;
+          border-color: #e4e3e4;
+          height: 36.6px;
+
+          .ant-picker-focused {
+            border: none;
+            box-shadow: none;
+          }
+
+          .ant-picker-input {
+            border: none;
+          }
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #8c8c8c;
+        padding-bottom: 10px;
+        font-family: $Poppins-Regular;
+
+        &.required::after {
+          content: "*";
+          color: red;
+          margin-left: 0.2rem;
+        }
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="number"] {
+        display: block;
+        font-size: $font-size14;
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e4e3e4;
+        border-radius: 5px;
+        font-size: $font-size14;
+        line-height: 1.5;
+        color: #535353;
+        height: 36.6px;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+        background: linear-gradient(323.79deg, #125a77 35.68%, #397d99);
+        color: #ffffff;
+        border-radius: 6px;
+        border: none;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      @media (max-width: 767px) {
+        /* Adjust layout for small screens */
+
+        .form-wrapper {
+          padding: 18px;
+        }
+
+        .three-group {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
+
+//  Add role modal
+
+.add-role-modal {
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .ant-modal-content {
+    height: 100%;
+    padding: 0px;
+    border-radius: 10px;
+  }
+
+  .modal-content-wrapper {
+    .title-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 26px 44px;
+
+      img {
+        cursor: pointer;
+      }
+
+      .title {
+        color: #202020;
+        font-family: $Montserrat-Medium;
+        font-size: 16px;
+      }
+    }
+
+    hr {
+      border: 1px solid #e4e3e4;
+    }
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 14px 48px 39px 44px;
+      font-family: $Poppins-Regular;
+
+      .full-width {
+        margin-bottom: 1rem;
+      }
+
+      .two-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+
+        .form-group {
+          width: 100%;
+        }
+
+        .ant-picker {
+          border-radius: 5px;
+          border-color: #e4e3e4;
+
+          .ant-picker-focused {
+            border: none;
+            box-shadow: none;
+          }
+
+          .ant-picker-input {
+            border: none;
+          }
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #8c8c8c;
+        padding-bottom: 10px;
+        font-family: $Poppins-Regular;
+
+        &.required::after {
+          content: "*";
+          color: red;
+          margin-left: 0.2rem;
+        }
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="number"] {
+        display: block;
+        font-size: $font-size14;
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e4e3e4;
+        border-radius: 5px;
+        font-size: $font-size14;
+        line-height: 1.5;
+        color: #535353;
+        height: 36.6px;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+        background: linear-gradient(323.79deg, #125a77 35.68%, #397d99);
+        color: #ffffff;
+        border-radius: 6px;
+        border: none;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      @media (max-width: 767px) {
+        /* Adjust layout for small screens */
+
+        .form-wrapper {
+          padding: 18px;
+        }
+
+        .two-group {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
+
+// edit role modal
+
+.edit-role-modal {
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .ant-modal-content {
+    height: 100%;
+    padding: 0px;
+    border-radius: 10px;
+  }
+
+  .modal-content-wrapper {
+    .title-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 26px 44px;
+
+      img {
+        cursor: pointer;
+      }
+
+      .title {
+        color: #202020;
+        font-family: $Montserrat-Medium;
+        font-size: 16px;
+      }
+    }
+
+    hr {
+      border: 1px solid #e4e3e4;
+    }
+  }
+
+  .form-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 14px 48px 39px 44px;
+    font-family: $Poppins-Regular;
+
+    .add-profile {
+      margin: 20px 0;
+      .image-uploader {
+        display: flex;
+        justify-content: space-between;
+
+        .left {
+          display: flex;
+          align-items: center;
+          font-family: $Montserrat-Medium;
+          gap: 20px;
+          color: #535353;
+          .image-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 1px solid #e4e3e4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+          }
+        }
+
+        .right {
+          display: flex;
+          align-items: center;
+          font-family: $Montserrat-SemiBold;
+          color: #193f52;
+          line-height: 17px;
+          font-size: 14px;
+          display: none;
+        }
+      }
+    }
+
+    .full-width {
+      margin-bottom: 1rem;
+    }
+
+    .three-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .form-group {
+        width: 100%;
+      }
+
+      .ant-picker {
+        border-radius: 5px;
+        border-color: #e4e3e4;
+        height: 36.6px;
+
+        .ant-picker-focused {
+          border: none;
+          box-shadow: none;
+        }
+
+        .ant-picker-input {
+          border: none;
+        }
+      }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #8c8c8c;
+      padding-bottom: 10px;
+      font-family: $Poppins-Regular;
+
+      &.required::after {
+        content: "*";
+        color: red;
+        margin-left: 0.2rem;
+      }
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+      display: block;
+      font-size: $font-size14;
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #e4e3e4;
+      border-radius: 5px;
+      font-size: $font-size14;
+      line-height: 1.5;
+      color: #535353;
+      height: 36.6px;
+      &:focus {
+        outline: none;
+      }
+    }
+
+    button[type="submit"] {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      background: linear-gradient(323.79deg, #125a77 35.68%, #397d99);
+      color: #ffffff;
+      border-radius: 6px;
+      border: none;
+      &:focus {
+        outline: none;
+      }
+    }
+
+    @media (max-width: 767px) {
+      /* Adjust layout for small screens */
+
+      .form-wrapper {
+        padding: 18px;
+      }
+
+      .three-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}
+
+// edit test modal
+
+.add-test-modal {
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .ant-modal-content {
+    height: 100%;
+    padding: 0px;
+    border-radius: 10px;
+  }
+
+  .modal-content-wrapper {
+    .title-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 26px 44px;
+
+      img {
+        cursor: pointer;
+      }
+
+      .title {
+        color: #202020;
+        font-family: $Montserrat-Medium;
+        font-size: 16px;
+      }
+    }
+
+    hr {
+      border: 1px solid #e4e3e4;
+    }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 14px 48px 39px 44px;
+      font-family: $Poppins-Regular;
+
+      .switch-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        position: relative;
+
+        .switch {
+          position: absolute;
+          top: -1px;
+
+          .ant-switch-inner {
+            width: 78px !important;
+            height: 22px !important;
+          }
+        }
+      }
+
+      .full-width {
+        margin-bottom: 1rem;
+        textarea {
+          border: 1px solid #e4e3e4;
+          border-radius: 5px;
+          height: 104px;
+          resize: none; /* removes the ability to resize the textarea */
+          width: 100%; /* optional: sets the textarea width to fill the parent container */
+          padding: 10px;
+          font-size: $font-size14;
+          line-height: 1.5;
+          color: #535353;
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      .three-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .form-group {
+          width: 100%;
+        }
+
+        .ant-picker {
+          border-radius: 5px;
+          border-color: #e4e3e4;
+          height: 36.6px;
+
+          .ant-picker-focused {
+            border: none;
+            box-shadow: none;
+          }
+
+          .ant-picker-input {
+            border: none;
+          }
+        }
+      }
+
+      .two-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .form-group {
+          width: 100%;
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #8c8c8c;
+        padding-bottom: 10px;
+        font-family: $Poppins-Regular;
+
+        &.required::after {
+          content: "*";
+          color: red;
+          margin-left: 0.2rem;
+        }
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="number"] {
+        display: block;
+        font-size: $font-size14;
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e4e3e4;
+        border-radius: 5px;
+        font-size: $font-size14;
+        line-height: 1.5;
+        color: #535353;
+        height: 36.6px;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .add-test-button {
+        display: flex;
+        justify-content: flex-end;
+
+        button {
+          display: block;
+          width: 156px;
+          height: 48px;
+          padding: 0.5rem;
+          font-family: $Montserrat-Medium;
+          font-size: $font-size12;
+          background: linear-gradient(323.79deg, #125a77 35.68%, #397d99);
+          color: #ffffff;
+          border-radius: 6px;
+          border: none;
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      // Input field discount
+
+      .form-group {
+        .input-number {
+          .ant-input-number-wrapper {
+            width: 100%;
+            border-radius: 5px;
+            font-size: $font-size14;
+            line-height: 1.5;
+            color: #535353;
+            height: 36.6px;
+            font-family: $Poppins-Regular;
+
+            .ant-input-number:hover {
+              border-color: #e4e3e4 !important ;
+              outline: none !important;
+              box-shadow: none !important;
+            }
+
+            .ant-input-number-focused {
+              border-color: #e4e3e4 !important ;
+              outline: none !important;
+              box-shadow: none !important;
+            }
+
+            .ant-input-number-group-addon {
+              background: none;
+
+              font-size: $font-size14;
+              line-height: 21px;
+              /* identical to box height */
+              color: #8c8c8c;
+            }
+
+            .input-number {
+              .ant-input-number-handler-wrap {
+                display: none;
+              }
+              .ant-input-number-input-wrap input {
+                font-family: $Poppins-Regular;
+                font-size: 14px;
+                line-height: 21px;
+                /* identical to box height */
+                color: #535353;
+                height: 100%;
+              }
+            }
+          }
+        }
+      }
+
+      @media (max-width: 767px) {
+        /* Adjust layout for small screens */
+
+        .form-wrapper {
+          padding: 18px;
+        }
+
+        .three-group {
+          grid-template-columns: 1fr;
+        }
+        .two-group {
+          grid-template-columns: 1fr;
+        }
+
+        .add-test-button {
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+

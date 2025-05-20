@@ -1,0 +1,97 @@
+@import "../../../App.scss";
+
+.appointment-tab {
+  .appointment-heading {
+    font-family: $Montserrat-Medium;
+    font-size: 16px;
+    line-height: 20px;
+    color: #202020;
+  }
+  .appointment-breadcrumb {
+    display: flex; /* Add this line */
+    align-items: center; /* Add this line */
+    font-family: Montserrat;
+    padding-top: 1rem;
+    font-size: 14px;
+
+    img {
+      margin: 0 22px; /* Change padding to margin */
+    }
+
+    .current-tab {
+      color: #4fa6d1;
+    }
+  }
+
+  .add-appointment {
+    width: 156px;
+    height: 48px;
+    background: #000;
+    border-radius: 6px;
+    color: #ffffff;
+    font-family: $Montserrat-SemiBold;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 15px;
+    color: #ffffff;
+    border: none;
+
+    &:focus,
+    &:active {
+      outline: none; // Add this to remove the border on click
+      /* any other existing styles for :focus or :active */
+    }
+    &:hover {
+      background: #125a77;
+    }
+  }
+
+  select {
+    border: 1px solid #193f52;
+    border-radius: 5px;
+    width: 97px;
+    height: 48px;
+    text-align: center;
+    font-family: $Montserrat-SemiBold;
+    font-style: normal;
+    font-size: 12px;
+    color: #193f52;
+
+    &:focus-visible{
+        outline: none;
+    }
+
+    option {
+      color: #535353;
+      padding: 4px;
+      border: none !important;
+      outline: none;
+    }
+
+    option:not(:checked) {
+      background-color: #ffffff !important;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background-color: rgba(79, 166, 209, 0.1) !important;
+        outline: none;
+      }
+    }
+
+    option:checked {
+      background-color: rgba(79, 166, 209, 0.1) !important;
+    }
+  }
+
+  @media only screen and (max-width: 489px) {
+    select,
+    button.add-appointment {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+    .appointment-breadcrumb {
+      text-align: center;
+      font-size: 12px;
+    }
+  }
+}

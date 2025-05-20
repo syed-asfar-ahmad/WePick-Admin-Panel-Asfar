@@ -1,0 +1,1146 @@
+@import "../../App.scss";
+
+.doctor-header-top-text {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #202020;
+}
+
+.btn-add-new-doc {
+  font-family: $Montserrat-Medium;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #ffffff;
+  // width: 156px;
+  width: 31%;
+  height: 48px;
+  background: #000;
+  border-radius: 6px;
+  border: none;
+}
+
+.main-certificate {
+  transition: 0.2s all;
+
+  &-certificate-img {
+    width: 110px;
+    height: 110px;
+
+    img {
+      object-fit: cover;
+    }
+  }
+
+  &:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+}
+
+.btn-add-new-doc:focus {
+  outline: none;
+}
+
+.btn-add-doc-filter {
+  width: 156px;
+  height: 48px;
+  //   width: 31%;
+  border: 1px solid #193f52;
+  border-radius: 5px;
+
+  background-color: transparent;
+
+  &-text {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    color: #193f52;
+  }
+}
+
+.btn-add-doc-filter:focus {
+  outline: none;
+}
+
+.doc-card {
+  width: 100%;
+  //   height: 323px;
+  height: 100%;
+
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+
+  &-img {
+    width: 100%;
+    height: 270px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      /* This line sets the top of the image as the focal point */
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.2);
+    }
+  }
+
+  &-text1 {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 17px;
+
+    text-align: center;
+
+    color: #535353;
+  }
+
+  &-text2 {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+
+    text-align: center;
+
+    color: #8c8c8c;
+  }
+
+  &-text3 {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 10px;
+
+    color: #000000;
+  }
+
+  &-text4 {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 9px;
+    line-height: 9px;
+
+    text-align: center;
+
+    color: #535353;
+  }
+
+  &-btn {
+    // width: 142px;
+    width: 53%;
+    height: 32px;
+    background: #000;
+    border-radius: 6px;
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+
+    text-align: center;
+    border: none;
+    color: #ffffff;
+  }
+
+  &-btn:focus {
+    outline: none;
+  }
+}
+
+.doc-add-filter {
+  font-family: $Poppins-Regular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #535353;
+}
+
+.doc-add-filter-text {
+  font-family: $Poppins-Regular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #8c8c8c;
+}
+
+.doc-timing {
+  width: 100px;
+  height: 32px;
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+  color: #8c8c8c;
+}
+
+.doc-text {
+  font-family: $Poppins-Regular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 15px;
+
+  color: #8c8c8c;
+}
+
+.ant-slider-handle {
+  border-color: brown !important;
+  background-color: rgb(15, 15, 15) !important;
+
+  --antd-wave-shadow-color: red !important;
+}
+
+.ant-slider-handle:focus {
+  border-color: brown !important;
+  background-color: rgb(15, 15, 15) !important;
+
+  --antd-wave-shadow-color: red !important;
+}
+
+.ant-slider-handle::after {
+  box-shadow: 0 0 0 2px #4fa6d1 !important;
+  background-color: #4fa6d1 !important;
+}
+
+.apply-filter {
+  width: 156px;
+  height: 56.02px;
+
+  /* wepick Brand */
+
+  background: #000;
+  border-radius: 5px;
+
+  font-family: $Montserrat-Medium;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  border: none;
+  color: #ffffff;
+
+  &.disabled {
+    opacity: 0.5;
+    /* reduce opacity for a lighter color effect */
+    cursor: not-allowed;
+    /* change cursor to indicate it's disabled */
+  }
+}
+
+.apply-filter:focus {
+  outline: none;
+}
+
+.save-changes {
+  height: 48px;
+}
+
+.dlt-doc-setting-btn {
+  background: #f57a63 !important;
+  font-family: "Montserrat" !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  line-height: 17px !important;
+
+  color: #ffffff !important;
+}
+
+.doctor-filter-modal {
+  .ant-modal-content {
+    padding: 20px 15px !important;
+  }
+}
+
+.doctor-filter-modal input,
+.doctor-filter-modal select {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: #535353;
+}
+
+// add doctor scss
+
+.doc-cam {
+  &-circle {
+    width: 75px;
+    height: 75px;
+  }
+
+  &-text {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #535353;
+  }
+}
+
+.add-doc-left-col {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+}
+
+.add-doc-right-col {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+  margin-left: -4%;
+}
+
+.doc-upload-pic {
+  font-family: $Montserrat-Medium;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  // line-height: 17px;
+  color: #193f52;
+  // margin-top: 11%;
+}
+
+.view-doctor-profile-border {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+}
+
+.view-doctor-profile-img {
+  // background: url(.png);
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.1));
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  top: 25%;
+}
+
+.view-doctor-profile-div1 {
+  height: 84px;
+  background-color: #193f52;
+}
+
+.view-doctor-profile-div2 {
+  // padding-left: 13.2%;
+  padding-left: 140px;
+}
+
+.view-doctor-profile-div2-text1 {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+.view-doctor-profile-div2-text2 {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #8c8c8c;
+}
+
+.view-doctor-btn {
+  background: #000;
+  // border-radius: 6px 0px 0px 6px;
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  border: none;
+  height: 47px;
+  width: 100%;
+}
+
+.view-doctor-btn-noactive {
+  background: #f5f5f5;
+  // border-radius: 6px 0px 0px 6px;
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #535353;
+  border: none;
+  height: 47px;
+  width: 100%;
+}
+
+.view-doctor-btn:focus {
+  outline: none;
+  border: none;
+}
+
+.doc-overview-detail {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #8c8c8c;
+}
+
+.view-doc-special {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #202020;
+}
+
+.view-doc-sub-special {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #535353;
+}
+
+.doc-review-detail {
+  font-family: "Poppins Regular";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+  color: #8c8c8c;
+}
+
+.doc-review-name {
+  font-family: "Poppins Regular";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  text-align: center;
+  color: #212224;
+}
+
+.doc-review-date {
+  font-family: "Poppins Regular";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  text-align: center;
+  color: #8c8c8c;
+}
+
+.time-table-text {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #535353;
+}
+
+.time-table-day {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #8c8c8c;
+}
+
+.time-table-time-text {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+.time-table-time-dynamic {
+  color: #4fa6d1;
+}
+
+.time-table-border {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+}
+
+.time-table-phone-text {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+.time-table-phone-text1 {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+
+  color: #8c8c8c;
+}
+
+.time-table-phone-text2 {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  text-decoration: none;
+  color: #4fa6d1;
+}
+
+.time-table-phone-text2-link,
+.time-table-phone-text2-link:hover {
+  text-decoration: none;
+  color: #4fa6d1;
+}
+
+.time-edit-text1 {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+.ant-switch-checked {
+  background-color: #094963 !important;
+}
+
+.ant-switch-checked:focus,
+.ant-switch,
+.css-dev-only-do-not-override-10ed4xt {
+  outline: none !important;
+}
+
+.ant-switch-inner {
+  width: 52px !important;
+  height: 22px !important;
+}
+
+.time-edit-days-name {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 25px;
+
+  color: #535353;
+}
+
+// Time picker scss
+
+.time-picker {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+}
+
+.time-picker-hospital input {
+  border: none !important;
+}
+
+.time-picker input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.time-picker input {
+  border: none;
+  background-color: transparent;
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #000000;
+}
+
+.time-picker input:focus {
+  outline: none;
+}
+
+.time-picker-hospital {
+  border: none;
+}
+
+.time-picker-hospital input {
+  border: none;
+  height: 15px !important;
+  width: 100px;
+  margin-bottom: -10px !important;
+  display: flex;
+  align-items: end;
+  font-size: 14px !important;
+}
+
+.time-selector-to {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+// setting scss
+
+.doc-setting-text {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #202020;
+}
+
+.doc-setting-col-left {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+}
+
+.doc-setting-col-left-text {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #202020;
+}
+
+.doc-setting-input .ant-select-selector .ant-select-selection-item {
+  // color: #8c8c8c;
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  // line-height: 18px;
+  /* identical to box height */
+
+  // color: #535353;
+}
+
+.doc-setting-input-black .ant-select-selector .ant-select-selection-item {
+  color: #202020 !important;
+}
+
+.ant-select .ant-select-selector .ant-select-selection-item {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  // line-height: 18px;
+  /* identical to box height */
+
+  // color: #535353;
+}
+
+.doc-setting-input p {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+.doc-setting-input input {
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+  width: 100%;
+  height: 36.6px;
+  font-family: $Poppins-Regular;
+  font-size: $font-size12;
+  padding-left: 8px;
+}
+
+.doc-setting-input textarea {
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+  width: 100%;
+  font-family: $Poppins-Regular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: #535353;
+}
+
+.doc-setting-input input[type="text"],
+.doc-setting-input textarea {
+  padding-left: 10px;
+  font-family: $Poppins-Regular !important;
+  font-size: 12px;
+  /* adjust the value to your preference */
+}
+
+.doc-setting-input ::placeholder,
+.doc-setting-input textarea::placeholder {
+  // padding-left: 10px; /* adjust the value to your preference */
+  font-family: $Poppins-Regular !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #8c8c8c;
+}
+
+.doc-setting-input input:focus,
+.doc-setting-input textarea:focus {
+  outline: none;
+}
+
+.doc-setting-incre-decre-btn {
+  font-size: 24px;
+  background-color: transparent;
+  border: none;
+}
+
+.doc-setting-incre-decre-btn:focus {
+  outline: none;
+}
+
+.doc-setting-input-count {
+  // border-radius: 0px !important;
+  border: none !important;
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  text-align: center;
+
+  color: #000000;
+}
+
+.doc-setting-input-counter {
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+}
+
+.doc-setting-input-text-bottom {
+  font-family: "Poppins Regular" !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 9px !important;
+  line-height: 10px !important;
+  color: #8c8c8c !important;
+}
+
+.doc-setting-input-check input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 2px solid #ccc;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  /* Add background image for unchecked checkbox */
+  // background-image: url('../images/doctor/TickDocSetting.svg');
+  background-size: 100% 100%;
+}
+
+.doc-setting-input-check input[type="checkbox"]:checked {
+  background-color: #4fa6d1;
+  background-image: url("../images/doctor/TickDocSetting.svg");
+  background-size: 60% 60%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+}
+
+.doc-setting-check-text {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #535353;
+}
+
+.border-bottom-check {
+  border-bottom: 5px solid red;
+}
+
+.seleted-menu {
+  color: #4fa6d1 !important;
+}
+
+.add-doc-camera-upload {
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  // background: #ffffff;
+  border: 1px solid #e4e3e4;
+}
+
+.add-doc-camera-upload-1st {
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  object-fit: cover;
+}
+
+.add-doc-social-input {
+  border-left: none !important;
+  border-radius: 0px 5px 5px 0px !important;
+}
+
+.doc-setting-input-certificates {
+  height: 36.6px;
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+}
+
+// add doctor scss
+
+.doc-setting-input .ant-picker-suffix {
+  display: none;
+}
+
+.doc-setting-input .ant-picker {
+  width: 107px;
+  height: 34.6px;
+}
+
+.doc-setting-input .ant-picker-input input {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  // line-height: 21px;
+
+  color: #8c8c8c;
+}
+
+.doc-setting-input .ant-picker-input input::placeholder {
+  text-align: center;
+}
+
+.doc-setting-input .css-dev-only-do-not-override-10ed4xt.ant-picker-focused {
+  border-color: #e4e3e4 !important;
+  box-shadow: 0 0 0 0px rgba(5, 145, 255, 0.1);
+}
+
+.doc-setting-input .css-dev-only-do-not-override-10ed4xt.ant-picker {
+  border: none;
+}
+
+.ant-picker-footer-extra {
+  display: none !important;
+}
+
+.doc-setting-input .ant-picker-clear {
+  display: none;
+}
+
+.doc-setting-input .ant-select-selection-item {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  /* identical to box height */
+
+  color: #202020;
+}
+
+.datapicker-to {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+
+  text-align: center;
+
+  color: #000000;
+}
+
+.datapicker-border {
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+  height: 36.6px;
+}
+
+.add-patient-date .ant-picker {
+  border: none;
+  width: 100%;
+}
+
+.add-doc-changes {
+  height: 56.02px;
+}
+
+.add-doctor-detail-img {
+  width: 74px;
+  height: 74px;
+  border-radius: 10px;
+}
+
+.add-doc-detail-text-1,
+.add-doc-detail-text-2 {
+  font-family: $Montserrat-Medium;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.add-doc-detail-text-1 {
+  color: #535353;
+}
+
+.add-doc-detail-text-2 {
+  color: #8c8c8c;
+}
+
+.add-doc-role {
+  font-family: $Poppins-Medium;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #193f52;
+}
+
+.add-doc-role-text {
+  font-family: $Poppins-Medium;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  color: #202020;
+}
+
+.add-doc-role-type {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  /* identical to box height */
+
+  color: #535353;
+}
+
+.add-doc-role-type-detail {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  /* identical to box height */
+
+  color: #8c8c8c !important;
+}
+
+// .role-input-placeholder input::placeholder {
+//   color: #202020;
+// }
+
+.remove-x-overflow-doc-list .infinite-scroll-component {
+  overflow-x: hidden !important;
+}
+
+.doc-link,
+.doc-link:hover {
+  color: #202020 !important;
+  text-decoration: none;
+}
+
+.add-doc-link-color,
+.add-doc-link-color:hover {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.all-doc-filter-multi-select {
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+}
+
+.ant-select-selection-item .ant-checkbox {
+  display: none;
+}
+
+.ant-select-dropdown .ant-select-item-option-state {
+  display: none;
+}
+
+.all-doc-filter-multi-select .ant-select-selection-item {
+  display: none !important;
+}
+
+.all-doc-filter-multi-select .ant-select-selector {
+  border: none !important;
+}
+
+@media (min-width: 992px) and (max-width: 1413px) {
+  .doctor-detail-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 50px;
+  }
+
+  .doctor-detail-text-1 {
+    font-size: 1vw;
+    line-height: 14px;
+  }
+
+  .doctor-detail-text-2 {
+    font-size: 0.8vw;
+    line-height: 10px;
+  }
+
+  .doctor-detail-text-2 .ant-rate-star {
+    font-size: 11px;
+  }
+
+  .appoinment-detail-text-5 {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .appoinment-detail-text-3 {
+    font-size: 0.6vw;
+  }
+
+  .appoinment-correction-correct {
+    width: 18px;
+    height: 18px;
+  }
+
+  .appoinment-correction-incorrect {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1413px) {
+  .time-table-day,
+  .time-table-time-text,
+  .time-table-phone-text,
+  .time-table-phone-text1,
+  .time-table-phone-text2-link {
+    font-size: 1vw;
+  }
+
+  .time-table-text {
+    font-size: 1.2vw;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1183px) {
+  .add-doc-detail-text-2 {
+    font-size: 9px;
+  }
+
+  .add-doctor-detail-img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .appoinment-text {
+    font-size: 13px;
+  }
+
+  .appoinment-count-text {
+    font-size: 12px;
+  }
+}
+
+.ant-picker-input > input {
+  display: none;
+}
+
+.certificates-field {
+  position: relative;
+  margin-right: 0px;
+}
+
+.certificates-field .d-flex {
+  flex-direction: column;
+}
+
+.certificates-field .d-flex .upload-file-container {
+  margin-top: 10px;
+}
+
+.input-field {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 102.3%;
+  height: 36.6px;
+}
+
+.input-field-label {
+  flex-grow: 1;
+}
+
+.input-field-icon {
+  width: 15px;
+  height: 20px;
+  margin-left: 0.5rem;
+}
+
+.doc-pagination {
+  margin-left: 46rem;
+}

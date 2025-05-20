@@ -1,0 +1,121 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  padding-bottom: 16px;
+  position: relative;
+  bottom: 16px;
+}
+.col-0 {
+  display: none;
+  transition: display 0.5s ease-in-out;
+}
+.MuiDataGrid-columnHeaderTitle {
+  font-family: Montserrat !important;
+font-size: 14px !important;
+font-weight: 600 !important;
+line-height: 14.63px !important;
+text-align: left !important;
+color: #0D0D0D !important;
+
+
+}
+
+.MuiTableCell-root {
+  font-family: Montserrat !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 14.63px !important;
+    text-align: left !important;
+    color: #0D0D0D !important;
+}
+
+.MuiDataGrid-cell:focus {
+  outline: none !important;
+}
+.MuiDataGrid-cell:focus-within {
+  outline: none !important;
+}
+
+
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.nearby .loader-container {
+  position: absolute;
+  top: 10rem;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid black;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.crop-container {
+  position: relative;
+  height: 400px;
+  background: #333;
+}
+
+/* Make sure the cropper container is visible */
+.reactEasyCrop__Container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

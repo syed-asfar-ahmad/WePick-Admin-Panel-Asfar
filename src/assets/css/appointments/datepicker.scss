@@ -1,0 +1,55 @@
+.date-picker {
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      
+      select {
+        padding: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+      }
+    }
+    
+    .days-of-week {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      
+      .day {
+        flex-basis: calc(100% / 7);
+        font-weight: bold;
+      }
+    }
+    
+    .days {
+      display: flex;
+      flex-wrap: wrap;
+      
+      .day {
+        flex-basis: calc(100% / 7);
+        padding: 5px;
+        cursor: pointer;
+        
+        &.empty {
+          color: #ccc;
+        }
+        
+        &.active {
+          background-color: #007bff;
+          color: #fff;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+  

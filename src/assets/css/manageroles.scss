@@ -1,0 +1,89 @@
+@import "../../App.scss";
+
+.role-card {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+
+    &-text-1 {
+        font-family: 'Montserrat Medium';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        color: #202020;
+    }
+
+    &-text-2 {
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        color: #202020;
+    }
+}
+
+.permission-role {
+    background: #FFFFFF;
+    border-radius: 6px;
+
+    &-text1, &-text2 {
+        font-family: 'Montserrat Medium';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        color: #202020;
+    }
+
+    &-text2 {
+font-size: 12px;
+    }
+    .ant-switch{
+height: 28px;
+.ant-switch-handle::before{
+    width: 25px;
+    height: 25px;
+    border-radius: 50px;
+    // padding-bottom: 10px;
+}
+    }
+    
+}
+
+.permission-col-width{
+    width: 150px;
+}
+
+@media (min-width: 0px) and (max-width: 500px){
+    .permission-col-width{
+        width: 120px;
+        // background-color: red;
+    }
+    .permission-role-text1{
+font-size: 12px;
+    }
+    .permission-role-text2{
+        font-size: 9px;
+    }
+    .permission-role{
+        .ant-switch{
+            height: 24px;
+            width: 49px;
+            .ant-switch-handle::before{
+                width: 20px;
+                height: 20px;
+                border-radius: 50px;
+                // padding-bottom: 10px;
+            }
+                }
+    }
+    
+}
+
+@media (min-width: 0px) and (max-width: 330px){
+    .permission-role-text1 {
+        font-size: 9px;
+    }
+}

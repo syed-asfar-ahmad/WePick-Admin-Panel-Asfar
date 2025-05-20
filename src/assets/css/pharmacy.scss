@@ -1,0 +1,524 @@
+@import "../../App.scss";
+
+.submit-pharmacy-role {
+  height: 54px;
+  width: 83%;
+}
+
+.submit-pharmacy-add-product {
+  height: 54px;
+  width: 17%;
+}
+
+.submit-pharmacy-add {
+  width: 100%;
+  height: 37px;
+}
+
+.submit-pharmacy-edit {
+  width: 70%;
+  height: 37px;
+}
+
+.pharmacy-delete p {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+
+  color: #8c8c8c;
+}
+
+.delete-role-manage {
+  font-family: "Montserrat Medium" !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  font-size: 20px !important;
+  line-height: 24px !important;
+  color: #202020 !important;
+}
+
+.pharmacy-delete button {
+  height: 48px;
+  width: 35%;
+  background: #ec826e;
+  border-radius: 5px;
+  font-family: "Montserrat Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  border: none;
+
+  text-align: center;
+
+  color: #ffffff;
+  transition: 1s all ease-in-out;
+}
+
+.pharmacy-delete button:focus {
+  outline: none;
+}
+
+.pharmacy-delete button:hover {
+  background: #f9dad3;
+  color: #ec826e;
+}
+
+.pharmacy-product-card-new {
+  width: 20%;
+}
+
+.pharmacy-view-product {
+  font-family: "Montserrat Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+
+  color: #202020;
+}
+
+.pharmacy-product-card {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+
+  &-img {
+    width: 100%;
+    height: 190.942px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.pharmacy-counter-btn {
+  width: 17px;
+  height: 17px;
+  background: #4fa6d1;
+  border-radius: 50%;
+
+  span {
+    padding-bottom: 24%;
+    color: #f8f9fa;
+  }
+
+  &-add {
+    padding-left: 4%;
+    padding-bottom: 8%;
+  }
+}
+
+.pharmacy-counter-text {
+  width: 34.31px;
+  height: 17px;
+  background: #4fa6d1;
+  border-radius: 20px;
+
+  span {
+    color: #f8f9fa;
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    color: #ffffff;
+  }
+}
+
+.pharmacy-product-name {
+  font-family: "Montserrat Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+
+  color: #000000;
+}
+
+.pharmacy-product-price {
+  color: #767676;
+}
+
+.pharmacy-product-rate .ant-rate-star-second {
+  // background-color: red;
+  width: 5px;
+  font-size: 10px;
+  margin: 0;
+}
+
+.pharmacy-product-edit {
+  top: 6%;
+  left: 8%;
+}
+
+.pharmacy-product-delete {
+  top: 16%;
+  left: 8%;
+}
+
+.pharmacy-product-cate {
+  top: 10%;
+  left: 9%;
+  font-family: "Montserrat SemiBold";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  /* identical to box height */
+
+  color: #000000;
+}
+
+.pharmacy-modal-header {
+  font-family: "Poppins Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  color: #202020;
+}
+
+// loader css
+
+.loader-bar-null {
+  width: 100%;
+  height: 9px;
+  position: relative;
+  overflow: hidden;
+  background: #e4e3e4;
+  border-radius: 8px;
+}
+
+.loader-bar-null-for-add-product {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #e4e3e4;
+  border-radius: 8px;
+}
+
+// loader anmated css
+.loader-bar {
+  width: 100%;
+  height: 9px;
+  position: relative;
+  overflow: hidden;
+  background: #e4e3e4;
+  border-radius: 8px;
+}
+
+.loader-bar:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 10px;
+  background-color: #0074d9;
+  animation: loading 5s linear infinite;
+}
+
+@keyframes loading {
+  0% {
+    width: 0%;
+  }
+
+  20% {
+    width: 30%;
+  }
+
+  60% {
+    width: 70%;
+  }
+
+  80% {
+    left: 50%;
+  }
+
+  95% {
+    left: 120%;
+  }
+
+  100% {
+    left: 100%;
+    width: 0%;
+  }
+}
+
+// loader
+
+.pharmacy-add-text {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #8c8c8c;
+}
+
+.pharmacy-add-upload-img {
+  width: 100%;
+  height: 48px;
+  left: 301px;
+  top: 693px;
+  background: #000;
+  border-radius: 5px;
+  font-family: "Montserrat Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  border: none;
+  color: #ffffff;
+}
+
+.pharmacy-add-upload-img:focus {
+  outline: none;
+}
+
+.doc-setting-input-inner {
+  border: none !important;
+  height: 30px !important;
+}
+
+.doc-setting-input-border-pharmacy {
+  height: 36.6px;
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+}
+
+.doc-setting-input-border-pharmacy span {
+  height: 100%;
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  padding-top: 2.7%;
+
+  color: #8c8c8c;
+}
+
+.pharmacy-view-detail {
+  width: 88px;
+  height: 27px;
+}
+
+.pharmacy-order-status,
+.pharmacy-order-status:focus {
+  border: none;
+  outline: none;
+  text-decoration: none;
+  width: 97px;
+  height: 23px;
+  background: rgba(80, 205, 137, 0.1);
+  border-radius: 5px;
+  font-family: $Poppins-Regular;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: #50cd89;
+}
+
+.pharmacy-product-view-prodeuct-cell {
+  img {
+    width: 58.65px;
+    height: 70px;
+  }
+
+  &-text1 {
+    font-family: "Montserrat Medium";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    // line-height: 15px;
+    color: #202020;
+  }
+
+  &-text2 {
+    font-family: "Montserrat Medium";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    // line-height: 17px;
+    color: #202020;
+  }
+}
+
+.pharmacy-product-view-text {
+  font-size: 14px;
+}
+
+.inputFieldPharmacyProduct {
+  width: 63px;
+  height: 28px;
+  text-align: center;
+  border: 1px solid #4fa6d1;
+  border-radius: 6px;
+  font-family: "Montserrat Medium";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  margin: 0px 4px;
+}
+
+.increBtnPharmacyProduct,
+.increBtnPharmacyProduct:focus,
+.decreBtnPharmacyProduct,
+.decreBtnPharmacyProduct:focus {
+  width: 28px;
+  height: 28px;
+  background: #4fa6d1;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+.increBtnPharmacyProduct img {
+  width: 13px;
+  padding-bottom: 17%;
+}
+
+.pharmacy-product-approve {
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 6px;
+
+  &-text1 {
+    font-family: "Montserrat Medium";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #000000;
+  }
+
+  &-text2 {
+    font-family: "Montserrat Medium";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #767676;
+  }
+
+  &-text3 {
+    font-family: "Montserrat Medium";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    color: #535353;
+  }
+
+  &-text4 {
+    font-family: "Montserrat SemiBold";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 15px;
+    color: #094963;
+  }
+
+  &-btn1,
+  &-btn1:focus,
+  &-btn2,
+  &-btn2:focus {
+    width: 97px;
+    height: 46px;
+    background: rgba(80, 205, 137, 0.1);
+    border-radius: 6px 0px 0px 6px;
+    border: none;
+    outline: none;
+    color: #50cd89;
+    // transform: matrix(-1, 0, 0, 1, 0, 0);
+  }
+
+  &-btn2,
+  &-btn2:focus {
+    border-radius: 0px 6px 6px 0px;
+    background: rgba(236, 130, 110, 0.3);
+    color: #ec826e;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .pharmacy-product-card-new {
+    width: 25%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 786px) {
+  .pharmacy-product-card-new {
+    width: 50%;
+  }
+}
+
+@media (min-width: 280px) and (max-width: 576px) {
+  .pharmacy-product-card-new {
+    width: 50%;
+  }
+}
+
+@media (min-width: 0px) and (max-width: 280px) {
+  .pharmacy-product-card-new {
+    width: 100%;
+  }
+}
+.pharmacy-timings {
+  font-family: "Poppins Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #535353;
+  transition: 0.5s all;
+  // padding: 0 !important;
+}
+
+.pharmacy-timings:hover {
+  background: #000;
+color:white;
+}
+.pharmacy-time-cell{
+  transition: 0.5s all;
+}
+.pharmacy-time-cell :hover{
+  background: linear-gradient(323.79deg, #25aade 35.68%, #2088b4fd 92.17%);
+  color:white !important;
+  
+}
+
+.pharmacy-schedule{
+  border-radius: 5px 5px 0 0;
+  transition: 0.5 all;
+}
+
+.pharmacy-schedule-shadow{
+  transition: 1 all;
+}
+
+.pharmacy-schedule-shadow:hover{
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+// .border {
+//   border-radius: 5px;
+//   overflow: hidden;
+//   height: 37px;
+// }
+.input-field-timings {
+  margin-top: 7px;
+}

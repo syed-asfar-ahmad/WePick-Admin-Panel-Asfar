@@ -1,0 +1,194 @@
+@import "../../../../App.scss";
+
+.testcartdetails-tab {
+  .testcartdetails-heading {
+    font-family: $Montserrat-Medium;
+    font-size: $font-size16;
+    line-height: 20px;
+    color: #202020;
+  }
+  .testcartdetails-breadcrumb {
+    font-family: $Montserrat-Medium;
+    padding-top: 1rem;
+    font-size: $font-size14;
+    line-height: 17px;
+
+    img {
+      padding: 0 22px;
+    }
+    .current-tab {
+      color: #4fa6d1;
+    }
+  }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    flex-direction: row-reverse; /* Added to reverse the direction of flex items */
+    font-family: $Poppins-Regular;
+    font-size: $font-size12;
+
+    input {
+      width: 397px;
+      height: 40px;
+      color: #8c8c8c;
+      background: #ffffff;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding-right: 40px; /* Changed to padding-right to move the text to the left */
+      padding: 10px;
+    }
+
+    &:before {
+      content: "\f002";
+      font-family: FontAwesome;
+      font-size: 18px;
+      position: absolute;
+      margin-right: 12px; /* Changed to margin-right to move the icon to the right */
+      color: #e9ecef;
+    }
+  }
+
+  .search-field input:focus {
+    outline: none;
+  }
+
+  @media only screen and (max-width: 767px) {
+    /* Added media query to target smaller screen sizes */
+    .search-field input {
+      width: 256px; /* Set the width of input field to 256px */
+    }
+  }
+
+  @media only screen and (max-width: 489px) {
+    .testcartdetails-breadcrumb {
+      text-align: left;
+      font-size: 12px;
+    }
+  }
+
+  .test-cart-container {
+    width: 375px;
+    height: 489px;
+    margin-top: 2rem;
+    background: #ffffff;
+    border: 1px solid #e4e3e4;
+    border-radius: 6px;
+
+    .sub-total,
+    .taxes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #e4e3e4;
+
+      div:first-child {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size14;
+        line-height: 17px;
+        /* identical to box height */
+        color: #000000;
+      }
+
+      div:last-child {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size14;
+        line-height: 17px;
+        /* identical to box height */
+        color: #767676;
+      }
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+
+      div:first-child {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size14;
+        line-height: 17px;
+        /* identical to box height */
+        color: #000000;
+      }
+
+      div:last-child {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size14;
+        line-height: 17px;
+        /* identical to box height */
+        color: #767676;
+      }
+    }
+
+    .credit-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+
+      .left {
+        div:first-child {
+          font-family: $Montserrat-Medium;
+          font-size: $font-size14;
+          line-height: 17px;
+          /* identical to box height */
+          color: #202020;
+          margin-bottom: 5px;
+        }
+        div:last-child {
+          font-family: $Montserrat-Medium;
+          font-size: $font-size12;
+          line-height: 15px;
+          /* identical to box height */
+          color: #535353;
+        }
+      }
+
+      .right {
+        font-family: $Montserrat-SemiBold;
+        font-size: $font-size12;
+        line-height: 15px;
+        /* identical to box height */
+        color: #094963;
+      }
+    }
+
+    .accept-cancel-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 2rem;
+      margin-top: 180px;
+      padding: 1rem;
+
+      button {
+        width: 97px;
+        height: 46px;
+        border: none;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        outline: none;
+
+        &:first-child {
+          background: rgba(80, 205, 137, 0.1);
+          border-radius: 6px 0px 0px 6px;
+          color: #50cd89;
+          font-family: $Montserrat-Medium;
+        }
+
+        &:last-child {
+          background: rgba(236, 130, 110, 0.3);
+          border-radius: 0px 6px 6px 0px;
+          font-family: $Montserrat-Medium;
+          color: #ec826e;
+        }
+      }
+    }
+  }
+}

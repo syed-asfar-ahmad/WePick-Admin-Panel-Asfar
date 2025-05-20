@@ -1,0 +1,59 @@
+.modal-content {
+    position: relative;
+    .cross-image {
+        position: absolute;
+        right: -14px;
+        top: -9px;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+    }
+}
+.modal-heading {
+font-family: Montserrat;
+font-size: 30px;
+font-weight: 600;
+line-height: 36.57px;
+color: #000000;
+}
+.modal-sub {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    .modal-data {
+        width: 72%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .table-heading {
+        font-family: Montserrat;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 19.5px;
+        text-align: left;
+        color: #000000;
+    }
+}
+.modal-data1 {
+    width: 80%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px solid #EFEFEF;
+    border-radius: 8px;
+    background-color: #FCFCFC;
+    align-items: center;
+    padding-left: 1rem;
+    padding-top: 14px;
+}
+.table-cells{
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    
+}

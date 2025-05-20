@@ -1,0 +1,144 @@
+$primary-color: #ff0000;
+
+.custom-datepicker {
+    visibility: hidden;
+    // margin: 0;
+    // padding: 0;
+
+    // width: 0 !important;
+    // height: 0 !important;
+
+}
+
+.react-datepicker {
+    border: 0px !important;
+}
+
+.react-datepicker__header {
+    background-color: #f8f9fa !important;
+    border-bottom: 0px !important;
+}
+
+.react-datepicker__triangle {
+    display: none;
+}
+
+.react-datepicker__month {
+    background-color: #f8f9fa !important;
+    margin: 0px !important;
+}
+
+.react-datepicker__day-name {
+    font-weight: bolder;
+}
+
+.react-datepicker__day {
+    font-weight: bold;
+
+
+
+
+}
+
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+    background-color: #1d5d90 !important;
+    color: white !important;
+    border-radius: 0px !important;
+}
+
+.not-availale-dates {
+    background-color: #fef1f4;
+    color: red !important;
+}
+
+.availale-dates {
+    background-color: #e4f3e5;
+
+    color: #3d8e44 !important;
+}
+
+
+.top-p {
+    color: green;
+    font-weight: 600;
+}
+
+.hr-width {
+    width: 100%;
+
+}
+
+.Availbility-container {
+
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.date-h3 {
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+.times-selector {
+
+    margin-bottom: 3px;
+    display: flex;
+    // flex-direction: column;
+
+}
+
+.Availbility-container {
+    .react-datepicker-popper {
+        transform: translate3d(29%, 197.8px, 0px) !important;
+        margin-top: -19px !important;
+    }
+
+    .date-picker-availability{
+        height: 400px ;
+
+        // @media (min-width: 0px) and (max-width: 990px) {
+        // margin-right: 90px;
+        // }
+    }
+
+}
+
+.date-picker-appointment {
+    .anticon-calendar {
+        display: none !important;
+    }
+}
+
+.highlighted-dates,
+.full-month-dates {
+    background-color: rgba(0, 128, 0, 0.338);
+    /* Replace 'blue' with the desired color */
+    color: white !important;
+    border: 1px soild red;
+    border-radius: 0;
+    transition: 0.5s all;
+}
+
+.highlighted-dates:hover {
+    background-color: rgba(0, 128, 0, 0.943) !important;
+    /* Replace 'blue' with the desired color */
+    // color: white !important;
+    border-radius: 0 !important;
+}
+
+.special-date {
+    background-color: rgba(255, 0, 0, 0.45) !important;
+    border-radius: 0 !important;
+    color: white !important;
+}
+
+.special-date:hover{
+    background-color: red !important;
+    cursor: not-allowed;
+
+ 
+
+}

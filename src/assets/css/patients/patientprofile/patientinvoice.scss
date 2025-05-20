@@ -1,0 +1,259 @@
+@import "../../../../App.scss";
+
+.invoice-modal {
+  height: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .ant-modal-content {
+    height: 100%;
+    padding: 0px;
+    border-radius: 8px;
+  }
+
+  .modal-content-wrapper {
+    .title-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 35px;
+
+      img {
+        cursor: pointer;
+      }
+
+      .title {
+        color: #202020;
+        font-family: $Montserrat-Medium;
+        font-size: 16px;
+      }
+    }
+
+    .invoice-recipient {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 38px;
+
+      @media (max-width: 767px) {
+        flex-direction: column;
+        align-items: flex-start;
+        /* align items to the left */
+      }
+
+      .invoice-recipient-info {
+        @media (max-width: 767px) {
+          margin-top: 1rem;
+        }
+      }
+
+      img {
+        max-width: 100%;
+        margin-right: 1rem;
+      }
+
+      .title {
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-size: $font-size12;
+        line-height: 18px;
+        color: #535353;
+      }
+
+      .detail {
+        margin-left: 0.5rem;
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+        color: #8c8c8c;
+      }
+    }
+
+    .department-timestamp {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 38px;
+    }
+
+    .left {
+      .department {
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-size: $font-size14;
+        line-height: 21px;
+        /* identical to box height */
+        color: #8c8c8c;
+      }
+
+      .operate {
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-size: $font-size12;
+        line-height: 18px;
+        color: #535353;
+      }
+    }
+
+    .right {
+      .title {
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-size: $font-size12;
+        line-height: 18px;
+        /* identical to box height */
+        color: #535353;
+      }
+
+      .detail {
+        margin-left: 0.5rem;
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-weight: 400;
+        font-size: $font-size12;
+        line-height: 18px;
+        /* identical to box height */
+        color: #8c8c8c;
+        margin-top: 1rem;
+      }
+    }
+
+    @media (max-width: 757px) {
+      .department-timestamp {
+        flex-direction: column;
+      }
+
+      .left,
+      .right {
+        width: 100%;
+      }
+
+      .right {
+        .detail {
+          margin-left: 0.5rem;
+        }
+      }
+    }
+
+    // table
+    .table-parent {
+      margin: 10px;
+
+      .invoice-table-scroll {
+        &::-webkit-scrollbar {
+          width: 9px;
+          height: 9px;
+          background: #ffffff;
+          border-radius: 30px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #d9d9d9;
+          border-radius: 30px;
+        }
+
+        &::-webkit-scrollbar-track {
+          padding-bottom: 16px;
+          position: relative;
+          bottom: 16px;
+        }
+
+        .MuiTableRow-root {
+          .css-1ygcj2i-MuiTableCell-root {
+            font-family: $Poppins-Medium;
+            font-style: normal;
+            font-weight: 600;
+            font-size: $font-size14;
+            line-height: 21px;
+            color: #535353;
+          }
+        }
+
+        .MuiTableBody-root {
+          .css-1ex1afd-MuiTableCell-root {
+            font-family: $Poppins-Regular;
+            font-style: normal;
+            font-weight: 400;
+            font-size: $font-size12;
+            line-height: 18px;
+            color: #535353;
+          }
+        }
+      }
+    }
+
+    .table-border-remove-patient .css-11xur9t-MuiPaper-root-MuiTableContainer-root {
+      box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 3%), 0px 1px 1px 0px rgb(0 0 0 / 0%), 0px 1px 3px 0px rgb(0 0 0 / 8%) !important;
+    }
+
+    .table-border-remove-patient-text-header {
+      font-family: 'Poppins Bold';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+
+      color: #535353;
+    }
+
+.patient-modal-text-align{
+  font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 21px;
+/* identical to box height */
+
+
+color: #8C8C8C;
+}
+
+.patient-modal-text-align-bold{
+  font-family: 'Poppins Bold';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 21px;
+  /* identical to box height */
+  
+  
+  color: #535353;
+}
+
+    // invoice calculation
+
+    .invoice-calculations {
+      padding: 20px;
+      display: flex;
+      justify-content: flex-end;
+      /* align items to the right by default */
+
+      .right {
+
+        .total {
+          font-family: $Poppins-Medium;
+          font-style: normal;
+          font-size: $font-size14;
+          line-height: 21px;
+          color: #535353;
+
+        }
+
+        .price {
+          font-family: $Poppins-Medium;
+          font-style: normal;
+          font-size: $font-size14;
+          line-height: 21px;
+          color: #535353;
+          margin-left: 0.5rem;
+          text-align: right;
+        }
+      }
+    }
+  }
+}

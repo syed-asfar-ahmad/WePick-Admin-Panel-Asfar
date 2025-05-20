@@ -1,0 +1,460 @@
+abody {
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  width: calc(100% - 0px) !important;
+}
+
+.css-rtrcn9-MuiTablePagination-root .MuiTablePagination-selectLabel {
+  margin-top: 1rem !important;
+}
+
+.css-levciy-MuiTablePagination-displayedRows {
+  margin-top: 1rem !important;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("./assets/fonts/Montserrat/Montserrat-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Montserrat Medium";
+  src: url("./assets/fonts/Montserrat/Montserrat-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Montserrat SemiBold";
+  src: url("./assets/fonts/Montserrat/Montserrat-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Montserrat Bold";
+  src: url("./assets/fonts/Montserrat/Montserrat-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Montserrat ExtraBold";
+  src: url("./assets/fonts/Montserrat/Montserrat-ExtraBold.ttf");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("./assets/fonts/Roboto/Roboto-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Roboto Medium";
+  src: url("./assets/fonts/Roboto/Roboto-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("./assets/fonts/Roboto/Roboto-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Open Sans Bold";
+  src: url("./assets/fonts/OpenSans/OpenSans-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Open Sans SemiBold";
+  src: url("./assets/fonts/OpenSans/OpenSans-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Open Sans Regular";
+  src: url("./assets/fonts/OpenSans/OpenSans-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Roboto ExtraBold";
+  src: url("./assets/fonts/Roboto/Roboto-BoldCondensed.ttf");
+}
+
+@font-face {
+  font-family: "Poppins Regular";
+  src: url("./assets/fonts/Poppins/Poppins-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Poppins Medium";
+  src: url("./assets/fonts/Poppins/Poppins-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Poppins Bold";
+  src: url("./assets/fonts/Poppins/Poppins-Bold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "EncodeSans SemiBold";
+  src: url("./assets/fonts/EncodeSans/EncodeSans-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "EncodeSans Regular";
+  src: url("./assets/fonts/EncodeSans/EncodeSans-Regular.ttf");
+  font-weight: 600;
+}
+
+$Roboto-Bold: "Roboto Bold";
+$Roboto-ExtraBold: "Roboto ExtraBold";
+$Roboto-Medium: "Roboto Medium";
+$Montserrat-Regular: "Montserrat";
+$Montserrat-Medium: "Montserrat Medium";
+$Montserrat-Bold: "Montserrat Bold";
+$Montserrat-ExtraBold: "Montserrat ExtraBold";
+$Montserrat-SemiBold: "Montserrat SemiBold";
+$Roboto-Regular: "Roboto Regular";
+$OpenSans-Bold: "Open Sans Bold";
+$OpenSans-SemiBold: "Open Sans SemiBold";
+$OpenSans-Regular: "Open Sans Regular";
+$Poppins-Regular: "Poppins Regular";
+$Poppins-Medium: "Poppins Medium";
+$Poppins-Bold: "Poppins Bold";
+$primary-color: #0d0d0d;
+
+$font-size6: 6px;
+$font-size7: 7px;
+$font-size8: 8px;
+$font-size10: 10px;
+$font-size11: 11px;
+$font-size12: 12px;
+$font-size13: 13px;
+$font-size14: 14px;
+$font-size15: 15px;
+$font-size16: 16px;
+$font-size17: 17px;
+$font-size18: 18px;
+$font-size19: 19px;
+$font-size20: 20px;
+$font-size21: 21px;
+$font-size22: 22px;
+$font-size23: 23px;
+$font-size24: 24px;
+$font-size25: 25px;
+$font-size26: 26px;
+$font-size27: 27px;
+$font-size28: 28px;
+$font-size29: 29px;
+$font-size30: 30px;
+$font-size31: 31px;
+$font-size32: 32px;
+$font-size40: 40px;
+$font-size48: 48px;
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+@mixin flex-justify-align {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-justify {
+  display: flex;
+  justify-content: center;
+}
+
+.error-message {
+  font-size: 11.5px !important;
+  color: red !important;
+  font-family: Poppins Regular;
+}
+
+.info-message {
+  font-size: 11.5px;
+  color: #535353;
+  font-family: Poppins Regular;
+}
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-picker {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.form-control:focus {
+  border-color: $primary-color;
+  box-shadow: none !important;
+}
+
+.form-control {
+  border-color: $primary-color !important;
+}
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+input {
+  width: 100%;
+  height: 36.6px;
+  border-radius: 0.3125rem;
+  border: 1px solid #e4e3e4;
+}
+
+.common-btn,
+.common-btn:hover {
+  width: 100%;
+  height: 3rem;
+  text-decoration: none;
+  color: #ffffff;
+  border-radius: 0.3125rem;
+  background: #000;
+}
+
+.common-btn:hover {
+  opacity: 0.8;
+}
+
+.appointment-tab {
+  input {
+    padding-left: 10px;
+  }
+}
+
+.three-side-shadow-hover,
+.react-datepicker {
+  transition: 0.5s all;
+}
+
+.three-side-shadow-hover:hover {
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.ant-picker.ant-picker-disabled {
+  background-color: white !important;
+}
+
+input[disabled],
+button[disabled] {
+  cursor: not-allowed;
+}
+
+.ant-select-selector:hover {
+  background-color: white !important;
+}
+
+.Availbility-container {
+  .react-datepicker {
+    box-shadow: 0 0 0 1px #e4e3e4;
+  }
+
+  .react-datepicker:hover {
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.sign-page,
+.add-role-default-password {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #000000;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px #ffffff29;
+  }
+}
+
+.add-role-default-email {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #000000;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px rgba(46, 46, 46, 0.4);
+  }
+}
+
+// .pharmacy-schedule{
+//   .ant-picker{
+//     border: none !important;
+//   }
+// }
+
+button:focus {
+  outline: none;
+}
+
+.export-me {
+  width: 100px;
+  height: 36px;
+  background-color: white;
+  border: 1px solid grey;
+  border-radius: 3px;
+  color: rgba(0, 0, 0, 0.74);
+  font-family: $Montserrat-Regular;
+}
+
+.box-shadow-hover,
+.box-shadow-hover1,
+.box-shadow-hover2 {
+  transition: 0.5s all;
+}
+
+.box-shadow-hover:hover {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.box-shadow-hover1:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.box-shadow-hover2:hover {
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+}
+
+.border-radius-five {
+  border-radius: 5px;
+}
+
+.list-header {
+  font-size: 14px;
+
+  .search-input-field {
+    width: 430px;
+    height: 44px;
+    border: 1px solid #e4e3e4;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #0d0d0d;
+
+    input {
+      color: black;
+      background-color: transparent;
+      border: none;
+      outline: none;
+    }
+  }
+
+  &-btn1 {
+    height: 36px;
+    min-width: 92px;
+    border: 1px solid #e4e3e4;
+    border-radius: 5px;
+    background-color: white;
+    font-family: $Montserrat-Medium;
+    color: #4b5563;
+  }
+
+  &-btn2 {
+    height: 46px;
+    min-width: 150px;
+    border: 1px solid #e4e3e4;
+    border-radius: 40px;
+    background: #000;
+    font-family: $Montserrat-Medium;
+    color: white;
+    padding: 0px 24px;
+    text-wrap: nowrap;
+  }
+}
+
+// .list-header-btn{
+//   height: 36px;
+// }
+
+::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: #b0b0b1;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tool-tip .tooltiptext {
+  visibility: hidden;
+  min-width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  transform: translate(-50%, -80%);
+  position: absolute;
+  z-index: 1;
+}
+
+.tool-tip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.ant-picker-focused.ant-picker {
+  box-shadow: none;
+}
+
+.time-picker-hospital-modify,
+.time-picker-modify {
+  input {
+    text-align: center !important;
+  }
+}
+
+.time-picker-modify .ant-picker {
+  background-color: transparent;
+}
+
+.Google-Map-modify .gm-style:hover {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.Google-Map-modify {
+  a {
+    img {
+      display: none !important;
+    }
+  }
+}
+
+.location-modal .ant-modal-content {
+  min-height: 485px;
+
+  // background-color: transparent;
+  // box-shadow: none;
+  .anticon {
+    svg {
+      display: none !important;
+    }
+  }
+}
+p {
+  margin-bottom: 0px !important;
+}

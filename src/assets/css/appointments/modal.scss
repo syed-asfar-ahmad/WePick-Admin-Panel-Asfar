@@ -1,0 +1,440 @@
+@import "../../../App.scss";
+
+.form-group .PhoneInputInput{
+  height: 34px;
+  border: none;
+}
+
+.form-group .PhoneInputInput:focus{
+  outline: none;
+}
+
+.accept-modal {
+  width: 514px;
+  height: 390px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .modal-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 46px 0;
+    gap: 25px;
+
+    .tick-logo {
+      width: 100px;
+      height: 100px;
+      background: #dcf5e7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .tick-circle {
+        width: 35px;
+        height: 35px;
+        background: #dcf5e7;
+        border: 1.5px solid #50cd89;
+        box-shadow: 0px 2px 2px rgba(80, 205, 137, 0.16);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .heading {
+      color: #202020;
+      font-size: 20px;
+      font-family: $Montserrat-Medium;
+      font-style: normal;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .description {
+      font-family: $Montserrat-Regular;
+      font-style: normal;
+
+      line-height: 17px;
+      text-align: center;
+
+      color: #8c8c8c;
+    }
+
+    button {
+      width: 156px;
+      height: 48px;
+      background: #dcf5e7;
+      border-radius: 5px;
+      font-family: $Montserrat-Medium;
+      font-size: 16px;
+      line-height: 20px;
+      text-align: center;
+      color: #50cd89;
+      border: none;
+      /* added to remove default border */
+      outline: none;
+
+      &:checked,
+      :hover {
+        outline: none;
+      }
+    }
+
+    button:hover {
+      background-color: #50cd89;
+      color: #ffffff;
+    }
+  }
+}
+
+.cross-modal {
+  width: 514px;
+  height: 390px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .modal-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 46px 0;
+    gap: 25px;
+
+    .cross-logo {
+      width: 100px;
+      height: 100px;
+      background: rgba(236, 130, 110, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .cross-circle {
+        width: 35px;
+        height: 35px;
+        background: #f9dad3;
+        border: 1.5px solid #ec826e;
+        box-shadow: 0px 2px 2px rgba(80, 205, 137, 0.16);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .heading {
+      color: #202020;
+      font-size: 20px;
+      font-family: $Montserrat-Medium;
+      font-style: normal;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .description {
+      font-family: $Montserrat-Regular;
+      font-style: normal;
+      line-height: 17px;
+      text-align: center;
+
+      color: #8c8c8c;
+    }
+
+    button {
+      width: 156px;
+      height: 48px;
+      background: #f9dad3;
+      border-radius: 5px;
+      font-family: $Montserrat-Medium;
+      font-size: 16px;
+      line-height: 20px;
+      text-align: center;
+      color: #ec826e;
+      border: none;
+      /* added to remove default border */
+      outline: none;
+
+      &:checked,
+      :hover {
+        outline: none;
+      }
+    }
+
+    button:hover {
+      background: #ec826e;
+      color: #ffffff;
+    }
+  }
+}
+
+.add-modal {
+  background: #ffffff;
+  border-radius: 10px;
+  padding-bottom: 0;
+
+  .ant-modal-content {
+    height: 100%;
+    padding: 0px;
+    border-radius: 0px;
+  }
+
+  .modal-content-wrapper {
+    .title-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 26px 44px;
+
+      img {
+        cursor: pointer;
+      }
+
+      .title {
+        color: #202020;
+        font-family: $Montserrat-Medium;
+        font-size: 16px;
+      }
+    }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 14px 48px 39px 44px;
+      font-family: $Poppins-Regular;
+
+      .full-width {
+        margin-bottom: 1rem;
+      }
+
+      .two-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+
+        .form-group {
+          width: 100%;
+
+          
+
+        }
+
+        .ant-picker {
+          border-radius: 5px;
+          border-color: #e4e3e4;
+
+          .ant-picker-focused {
+            border: none;
+            box-shadow: none;
+          }
+
+          .ant-picker-input {
+            border: none;
+          }
+        }
+      }
+
+      .three-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .form-group {
+          width: 100%;
+        }
+
+        .ant-picker {
+          border-radius: 5px;
+          border-color: #e4e3e4;
+          height: 36.6px;
+
+          .ant-picker-focused {
+            border: none;
+            box-shadow: none;
+          }
+
+          .ant-picker-input {
+            border: none;
+          }
+        }
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #8c8c8c;
+        padding-bottom: 10px;
+        font-family: $Poppins-Regular;
+
+        &.required::after {
+          content: "*";
+          color: red;
+          margin-left: 0.2rem;
+        }
+      }
+
+      input[type="text"],
+      input[type="email"] {
+        display: block;
+        font-size: $font-size14;
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e4e3e4;
+        border-radius: 5px;
+        font-size: $font-size14;
+        line-height: 1.5;
+        color: #535353;
+        height: 36.6px;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+        background: linear-gradient(323.79deg, #125a77 35.68%, #397d99);
+        color: #ffffff;
+        border-radius: 6px;
+        border: none;
+
+        &:focus {
+          outline: none;
+        }
+
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .appointment-time2 {
+        border: 1px solid #E4E3E4;
+        border-radius: 5px;
+      }
+
+      .appointment-time2 .ant-select-arrow {
+        display: none !important;
+      }
+
+      .appointment-time2 .ant-select-selector {
+        border: none !important;
+      }
+
+      @media (max-width: 767px) {
+        /* Adjust layout for small screens */
+
+        .form-wrapper {
+          padding: 18px;
+        }
+
+        .two-group {
+          grid-template-columns: 1fr;
+        }
+
+        .three-group {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      //  If the patient is registered
+
+      .patient-details {
+        display: flex;
+        flex-direction: column;
+
+        div {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+
+          span:first-child {
+            color: #535353;
+            width: 110px;
+            display: inline-block;
+          }
+
+          span:last-child {
+            color: #8c8c8c;
+          }
+        }
+
+        @media (min-width: 768px) {
+          flex-direction: column;
+          justify-content: space-between;
+
+          div {
+            flex-direction: row;
+            margin-bottom: 5px;
+            width: auto;
+          }
+        }
+      }
+
+      form {
+        .registered-title {
+          color: #535353;
+          font-weight: 600;
+          padding-bottom: 10px;
+        }
+
+        .two-group {
+          display: flex;
+          justify-content: space-between;
+
+          .form-group {
+            width: 49%;
+          }
+
+          .email-group {
+            width: 49%;
+          }
+
+          .ant-picker {
+            border-radius: 5px;
+            border-color: #e4e3e4;
+
+            .ant-picker-focused {
+              border: none;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+
+      @media (max-width: 767px) {
+        .two-group {
+          flex-wrap: wrap;
+          margin-bottom: 1rem;
+
+          .form-group,
+          .email-group {
+            width: 100% !important;
+          }
+
+          .form-group:last-child,
+          .email-group {
+            margin-bottom: 0;
+          }
+        }
+
+        .form-group,
+        .email-group {
+          width: 100% !important;
+        }
+      }
+    }
+  }
+}

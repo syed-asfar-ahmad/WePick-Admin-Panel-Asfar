@@ -1,0 +1,119 @@
+@import "../../../../App.scss";
+
+.profile-overview {
+  .header {
+    height: 228px;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    position: relative;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 50%;
+      width: 100%;
+      background-color: #193f52;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+
+    .patient-personal-detail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 59%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+
+      img {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.1));
+      }
+
+      .name {
+        font-family: $Montserrat-Medium;
+        font-style: normal;
+        font-size: $font-size14;
+        line-height: 17px;
+        /* identical to box height */
+        color: #000000;
+        margin-top: 9px;
+        text-align: center;
+      }
+
+      .age {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size12;
+        line-height: 17px;
+        color: #8c8c8c;
+        margin-top: 7px;
+      }
+    }
+  }
+
+  hr {
+    border: 1px solid #e4e3e4;
+  }
+
+  .patient-details-wrapper {
+    padding: 19px;
+    .progress-info-wrapper > div {
+      display: flex;
+      justify-content: space-between;
+
+      .complete {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size12;
+        line-height: 15px;
+        color: #535353;
+      }
+
+      .percent {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size12;
+        line-height: 15px;
+        color: #8c8c8c;
+      }
+    }
+
+    .details {
+      margin-top: 33px;
+      .single-detail {
+        display: flex;
+        align-items: center;
+        margin-top: 15px;
+
+        img {
+          margin-right: 10px; // you can adjust the value to your preference
+          width: 14px;
+        }
+
+        span {
+          font-family: $Montserrat-Medium;
+          font-size: $font-size12;
+          line-height: 15px;
+          margin-left: 10px;
+        }
+
+        .title {
+          color: #535353;
+        }
+
+        /* style the third span */
+        .info {
+          color: #8c8c8c;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,182 @@
+@import "../../../App.scss";
+
+.custom-scroll {
+  &::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+    background: #ffffff;
+    border-radius: 30px;
+  }
+
+  .patient-name-hover:hover{
+    color: black !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d9d9d9;
+    border-radius: 30px;
+  }
+
+  &::-webkit-scrollbar-track {
+    padding-bottom: 16px;
+    position: relative;
+    bottom: 16px;
+  }
+
+  .css-1tt48so-MuiTableHead-root {
+    .number {
+      font-size: $font-size14 !important;
+    }
+    .css-1ygcj2i-MuiTableCell-root,
+    .css-1ndpvdd-MuiTableCell-root {
+      font-family: $Montserrat-SemiBold;
+      font-style: normal;
+      font-size: $font-size12;
+      line-height: 15px;
+      height: 54px;
+    }
+  }
+
+  .css-34nofg-MuiTableRow-root {
+    height: 70px;
+
+    .number {
+      font-family: $Montserrat-SemiBold !important ;
+      color: #000000;
+    }
+
+    .css-1ex1afd-MuiTableCell-root,
+    .MuiTableCell-alignCenter {
+      font-family: $Poppins-Regular;
+      font-style: normal;
+      font-size: $font-size12;
+      line-height: 18px;
+      letter-spacing: 0;
+
+      .MuiCardHeader-title {
+        font-family: $Poppins-Regular;
+        font-style: normal;
+        font-size: $font-size12;
+        line-height: 18px;
+        letter-spacing: 0;
+      }
+    }
+
+  
+      .approved-btn {
+        border-radius: 5px;
+        background: rgba(80, 205, 137, 0.1);
+        border: none;
+        outline-width: 0px;
+        line-height: 18px !important;
+        color: #50cd89 !important;
+        padding: 2px;
+        text-align: center;
+        height: 23px;
+        font-size: 12px;
+        font-family: $Poppins-Regular !important;
+        width: 97px;
+      }
+
+      .reject-btn {
+        border-radius: 5px;
+        background: rgba(80, 205, 137, 0.1);
+        border: none;
+        outline-width: 0px;
+        line-height: 18px !important;
+        padding: 2px;
+        text-align: center;
+        height: 23px;
+        font-size: 12px;
+        font-family: $Poppins-Regular !important;
+        width: 97px;
+        color: #EC826E;
+        background: rgba(236, 130, 110, 0.3);
+      }
+    }
+  
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+
+  .pagination-detail {
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-weight: 500;
+    font-size: $font-size14;
+    line-height: 17px;
+    /* identical to box height */
+    color: #767676;
+    @media (max-width: 600px) {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.custom-pagination {
+  font-family: $Montserrat-Medium;
+  font-size: $font-size14;
+  font-weight: 500;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto; /* set width to 252px */
+  height: auto;
+  flex-wrap: wrap;
+  background: #ffffff;
+  border: 1px solid #e4e3e4;
+  border-radius: 5px;
+
+  button {
+    width: 42px;
+    height: 100%;
+    outline: none;
+    background-color: #ffffff;
+    border: none;
+    border-right: 1px solid #e4e3e4;
+    color: #767676;
+
+    &.active {
+      width: 42px;
+      height: 41px;
+      background: #193f52;
+      border: none;
+      color: #ffffff;
+      outline: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .prev-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* set width to 60px */
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  .next-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* set width to 60px */
+    border: none;
+    padding: 10px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}

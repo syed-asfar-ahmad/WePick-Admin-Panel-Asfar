@@ -1,0 +1,53 @@
+@import "../../App.scss";
+
+.privacy1 {
+    background: #000;
+    height: 60px;
+
+    i {
+        color: white;
+    }
+
+    span {
+        font-family: 'EncodeSans SemiBold';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 25px;
+        /* identical to box height */
+
+        letter-spacing: -0.01px;
+
+        color: #FFFFFF;
+    }
+}
+
+.privacy2{
+    span{
+        font-family: 'EncodeSans SemiBold';
+font-style: normal;
+font-weight: 600;
+font-size: 20px;
+line-height: 28px;
+/* identical to box height, or 140% */
+
+letter-spacing: -0.02px;
+    }
+}
+
+.privacy3{
+    span{
+        font-family: 'EncodeSans Regular';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 24px;
+        /* or 171% */
+        
+        letter-spacing: -0.01px;
+        
+        /* Gray/400 */
+        
+        color: #9CA3AF;
+    }
+}

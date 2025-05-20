@@ -1,0 +1,135 @@
+/* Modal Container Styling */
+.modal-container {
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: yellow;
+  }
+  
+  /* Main Div Styling */
+  .main_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 40px 60px 60px 60px;
+    position: relative; /* Make this the containing block for absolute positioning */
+  }
+  
+  .main_div .no-media {
+    justify-content: flex-start; /* Align items at the top */
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+  }
+  .img_profile.no-media  {
+    color:black;
+  }
+  
+  /* Media Div Styling for Both Image and Video */
+  .media_div {
+    height: 70vh;
+    width: 90%;
+    border-radius: 16px;
+    object-fit: cover;
+  }
+  
+  /* Image Profile Styling */
+  .img_profile {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    left: 30px; /* Fixed at the right top corner */
+    color: white;
+    z-index: 1; /* Ensure it is above the media div */
+  }
+  
+  .user_profile_img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  .user_name {
+    margin: 0 5px 0 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .story_time {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  /* Description Div Styling */
+  .description_container {
+    margin-top: 60px; /* Ensure it is below the profile */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .description_div {
+    color: black;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center; /* Center align text */
+  }
+  
+  .main_div.no-media .description_div {
+    margin: 0; /* Reset margin when no media is present */
+  }
+  
+  /* Responsive Styling */
+  @media (max-width: 1200px) {
+    .media_div {
+      width: 90%;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .media_div {
+      width: 90%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .media_div {
+      width: 90%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .media_div {
+      width: 90%;
+      background-color: black;
+    }
+  
+    .img_profile {
+      right: 10px; /* Adjust position for smaller screens */
+      left: 60px;
+    }
+  
+    .main_div {
+      margin: 10px;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .media_div {
+      width: 100%;
+    }
+  
+    .img_profile {
+      right: 5px; /* Adjust position for smaller screens */
+      left: 50px;
+    }
+  
+    .main_div {
+      margin: 0px;
+    }
+  }
+  

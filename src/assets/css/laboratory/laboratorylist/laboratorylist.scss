@@ -1,0 +1,60 @@
+@import "../../../../App.scss";
+
+.laboratorylist-tab {
+  .laboratorylist-heading {
+    font-family: $Montserrat-Medium;
+    font-size: $font-size16;
+    line-height: 20px;
+    color: #202020;
+  }
+  .laboratorylist-breadcrumb {
+    font-family: $Montserrat-Medium;
+    padding-top: 1rem;
+    font-size: $font-size14;
+    line-height: 17px;
+
+    img {
+      padding: 0 22px;
+    }
+    .current-tab {
+      color: #4fa6d1;
+    }
+  }
+
+  .add-role,
+  .add-laboratory {
+    width: 156px;
+    height: 48px;
+    background: #000;
+    border-radius: 6px;
+    color: #ffffff;
+    font-family: $Montserrat-Medium;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 15px;
+    color: #ffffff;
+    border: none;
+
+    &:focus,
+    &:active {
+      outline: none; // Add this to remove the border on click
+      /* any other existing styles for :focus or :active */
+    }
+    &:hover {
+      background: #125a77;
+    }
+  }
+
+  @media only screen and (max-width: 489px) {
+    .laboratorylist-breadcrumb {
+      text-align: left;
+      font-size: 12px;
+    }
+
+    button.add-role,
+    button.add-laboratory {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+  }
+}

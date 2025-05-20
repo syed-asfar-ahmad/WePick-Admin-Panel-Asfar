@@ -1,0 +1,113 @@
+@import "../../../../App.scss";
+
+.add-appointment-card-wrapper {
+  hr {
+    margin: 0px;
+    border: 1px solid #e4e3e4;
+  }
+  .title-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 26px 44px;
+
+    img {
+      cursor: pointer;
+    }
+
+    .title {
+      color: #202020;
+      font-family: $Montserrat-Medium;
+      font-size: 16px;
+    }
+  }
+
+  .form-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 14px 22px 39px 22px;
+    font-family: $Poppins-Regular;
+
+    form {
+      padding-top: 30px;
+
+      label {
+        color: #8c8c8c;
+        margin-bottom: 19px;
+        font-size: $font-size14;
+      }
+      input[type="text"],
+      input[type="email"],
+      [type="number"] {
+        display: block;
+        font-size: $font-size14;
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e4e3e4;
+        border-radius: 5px;
+        font-size: $font-size14;
+        line-height: 1.5;
+        color: #535353;
+        height: 36.6px;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .two-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+
+      .three-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+
+.remove-border-time-patient{
+  border: 1px solid #E4E3E4;
+border-radius: 5px;
+}
+
+      .remove-border-time-patient .ant-picker  {
+      border: none !important;
+      width: 100%;
+    }
+    .remove-border-time-patient  .ant-picker-focused{
+      box-shadow: none;
+    }
+
+      .add-button {
+        font-family: $Montserrat-Medium;
+        font-size: $font-size12;
+        background: #000;
+        border-radius: 5px;
+        color: white;
+        padding: 10px 20px;
+        margin-top: 30px;
+        border: none;
+        cursor: pointer;
+        width: 156px;
+        height: 48px;
+        line-height: 15px;
+        &:hover {
+          background: #125a77;
+        }
+        &:focus {
+          outline: none;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .two-group {
+          grid-template-columns: 1fr;
+        }
+        .three-group {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
