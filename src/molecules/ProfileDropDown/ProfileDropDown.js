@@ -5,7 +5,9 @@ import React from "react";
 // import SampleImg from "../../assets/images/profile.png";
 import { DummyUserProfile, Logout } from "../../assets/icons";
 // svg
+// eslint-disable-next-line no-unused-vars
 import ClockIcon from "../../assets/images/dashboard/ClockIcon.svg";
+// eslint-disable-next-line no-unused-vars
 import LogoutIcon from "../../assets/images/dashboard/LogoutIcon.svg";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 const ProfileDropDown = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   return (
@@ -43,7 +46,7 @@ const ProfileDropDown = () => {
         aria-labelledby="dropdownMenuButton"
         style={{ boxShadow: "0px 1px 14px 0px rgba(0, 0, 0, 0.08)" }}
       >
-        {/* <div className="row py-2 px-3 ">
+        <div className="row py-2 px-3 ">
           <div className="col-4">
             <DummyUserProfile size={"31px"} />
           </div>
@@ -53,7 +56,7 @@ const ProfileDropDown = () => {
 
             <p className="mb-0 profile-drop-down-text2">Super Admin</p>
           </div>
-        </div> */}
+        </div>
 
         <div
           className="row pb-0 pt-2 px-3"

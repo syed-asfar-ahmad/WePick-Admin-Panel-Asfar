@@ -4,7 +4,7 @@ import "../assets/css/Signin.scss";
 // import wepick_logo from '../assets/images/common/wepick_logo.svg'
 
 // Image
-import wepick_logo from "../assets/images/wepick/logo-black.svg";
+// import wepick_logo from "../assets/images/wepick/logo-no-background.png";
 import CustomCheckbox from "../components/common/CustomCheckbox";
 
 const Signup = () => {
@@ -45,7 +45,6 @@ const Signup = () => {
       } else {
         setEmailError(0);
       }
-      // setEmailError(1)
     } else {
       setEmailError(0);
     }
@@ -53,14 +52,13 @@ const Signup = () => {
     if (empty.password) {
       if (
         !empty.password.match(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+|\\=\-{}\[\]:";'<>?,./])[A-Za-z\d!@#$%^&*()_+|\\=\-{}\[\]:";'<>?,./]{8,}$/
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+|=\-{}[\]:";'<>?,./])[A-Za-z\d!@#$%^&*()_+|=\-{}[\]:";'<>?,./]{8,}$/
         )
       ) {
         setPasswordError(1);
       } else {
         setPasswordError(0);
       }
-      // setEmailError(1)
     } else {
       setPasswordError(0);
     }
@@ -82,7 +80,7 @@ const Signup = () => {
     } else {
       setLastName(0);
     }
-  });
+  }, [empty.email, empty.password, empty.firstname, empty.lastname]);
 
   const handleInput = (event) => {
     setEmpty((empty) => ({
@@ -120,7 +118,7 @@ const Signup = () => {
       passwordReference.current.focus();
     } else if (
       !empty.password.match(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+|\\=\-{}\[\]:";'<>?,./])[A-Za-z\d!@#$%^&*()_+|\\=\-{}\[\]:";'<>?,./]{8,}$/
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+|=\-{}[\]:";'<>?,./])[A-Za-z\d!@#$%^&*()_+|=\-{}[\]:";'<>?,./]{8,}$/
       )
     ) {
       // alert("please enter password")
@@ -150,15 +148,13 @@ const Signup = () => {
                 style={{ height: "100%" }}
                 className="col-10 col-lg-6  px-lg-5 wepick-logo d-flex justify-content-center flex-column"
               >
-                <img className="mb-3" src={wepick_logo} alt="WePick Logo" />
-
                 <div style={{ height: "100%" }} className="  ">
                   <div
                     style={{ height: "100%" }}
                     className="row  mx-lg-5 px-lg-4 pt-3 pb-2 siginup-inner"
                   >
                     <div className="col-12 d-flex justify-content-center signup-text1">
-                      <p className="mb-1">ADMIN</p>
+                      <p className="mb-1" style={{ color: "#1BC949" }}>ADMIN</p>
                     </div>
 
                     <div className="col-12 mb-4 d-flex justify-content-center signup-text2">
@@ -251,47 +247,50 @@ const Signup = () => {
                         Password<span className="signup-staric-color">*</span>
                       </p>
                       <div
-                        className="d-flex border "
-                        style={{ height: "36px", borderRadius: "5px" }}
+                        className="d-flex position-relative"
+                        style={{ 
+                          height: "54px", 
+                          borderRadius: "8px",
+                          border: "1px solid #0d0d0d",
+                          backgroundColor: "#FFFFFF"
+                        }}
                       >
                         <input
                           style={{
                             border: "none",
                             backgroundColor: "transparent",
-                            paddingBottom: "5px",
+                            padding: "0 15px",
+                            width: "100%",
+                            paddingRight: "40px",
+                            height: "100%",
+                            borderRadius: "8px",
+                            fontSize: "14px"
                           }}
                           type={passwordType}
                           onChange={handleInput}
                           name="password"
                           value={empty.password}
                           ref={passwordReference}
+                          placeholder="Enter your password"
                         />
-                        <div className=" loginPasswordPositionBottom input-group-btn ">
-                          <h1
-                            className="eyeBtn btn "
-                            onMouseUp={togglePassword}
-                            onMouseDown={togglePassword}
-                            onTouchStart={togglePassword}
-                            ontouchend={togglePassword}
+                        <div className="position-absolute" style={{ right: "15px", top: "50%", transform: "translateY(-50%)" }}>
+                          <button
+                            type="button"
+                            className="btn p-0"
+                            onClick={togglePassword}
+                            style={{ 
+                              border: "none", 
+                              background: "none",
+                              color: "black",
+                              fontSize: "16px"
+                            }}
                           >
-                            <p
-                              style={{
-                                width: "10px",
-                                height: "5px",
-                                color: "Black",
-                                border: "none",
-                              }}
-                            >
-                              {passwordType === "password" ? (
-                                <i
-                                  class="fa fa-eye-slash"
-                                  aria-hidden="true"
-                                ></i>
-                              ) : (
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                              )}
-                            </p>
-                          </h1>
+                            {passwordType === "password" ? (
+                              <i className="fa fa-eye-slash" aria-hidden="true"></i>
+                            ) : (
+                              <i className="fa fa-eye" aria-hidden="true"></i>
+                            )}
+                          </button>
                         </div>
                       </div>
 
@@ -342,14 +341,14 @@ const Signup = () => {
                     </div>
 
                     <div className="col-12 mt-2 resgister-button">
-                      <button onClick={handleSubmit}>Register</button>
+                      <button onClick={handleSubmit} style={{ backgroundColor: "#1BC949" }}>Register</button>
                     </div>
 
                     <div className="col-12 mt-4 mb-4 signup-lower-text">
-                      <p className="mb-0">
+                      <p className="mb-0" style={{ fontSize: "13px" }}>
                         Already have an account?{" "}
                         <span>
-                          <Link className="wepick-link sign-text" to="/signin">
+                          <Link className="wepick-link sign-text" to="/signin" style={{ color: "#1BC949", fontSize: "13px" }}>
                             {" "}
                             Sign In{" "}
                           </Link>

@@ -1,7 +1,8 @@
 import React from "react";
 
-import logo from "../../assets/images/wepick/logo-black.svg";
+import logo from "../../assets/images/wepick/logo-no-background.png";
 import ProfileDropDown from "../../molecules/ProfileDropDown/ProfileDropDown";
+import NotificationDropDown from "../../molecules/NotificationDropDown/NotificationDropDown";
 import MenuBtnMobile from "../../atoms/MenuBtnMobile/MenuBtnMobile";
 import { Link } from "react-router-dom";
 
@@ -16,7 +17,7 @@ const Header = ({ isLargeScreen, setMobileMenu1, MobileMenu1 }) => {
               className={`col-2 d-flex align-items-center  dashboard-logo py-3`}
             >
               <img src={logo} alt="WePick Logo" />
-              <h2 style={{ color: "black" }}>WePick</h2>
+              <h2 style={{ color: "#1BC949" }}>WePick</h2>
             </div>
           </Link>
 
@@ -25,6 +26,7 @@ const Header = ({ isLargeScreen, setMobileMenu1, MobileMenu1 }) => {
               "d-flex flex-grow-1 px-4 align-items-center justify-content-end"
             }
           >
+            <NotificationDropDown />
             <ProfileDropDown />
           </div>
           {/* fullscreen header  */}
@@ -46,10 +48,11 @@ const Header = ({ isLargeScreen, setMobileMenu1, MobileMenu1 }) => {
           >
             <div className="d-flex">
               <img src={logo} alt="WePick Logo" />
-              <h2>WePick</h2>
+              <h2 style={{ color: "#1BC949" }}>WePick</h2>
             </div>
           </div>
           <div className="col-2 d-flex justify-content-end align-items-center pr-4">
+            <NotificationDropDown />
             <ProfileDropDown />
           </div>
         </div>

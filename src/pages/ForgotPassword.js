@@ -4,23 +4,19 @@ import { Link } from "react-router-dom";
 import "../assets/css/Signin.scss";
 // import wepick_logo from '../assets/images/common/wepick_logo.svg'
 
-// Image
-import logo from "../assets/images/wepick/logo-black.svg";
-
 const ForgotPassword = () => {
   const emailReference = useRef(null);
-  const passwordReference = useRef(null);
 
   const [empty, setEmpty] = useState(0);
   const [email, setEmail] = useState(0);
 
   useEffect(() => {
     if (!empty.email) {
-      // setEmail(1)
-    } else {
       setEmail(0);
+    } else {
+      setEmail(1);
     }
-  });
+  }, [empty.email]);
 
   const handleInput = (event) => {
     setEmpty((empty) => ({
@@ -53,8 +49,6 @@ const ForgotPassword = () => {
               <div className="col-1 col-lg-3  "></div>
 
               <div className="col-10 col-lg-6 px-lg-5 wepick-logo d-flex justify-content-center flex-column">
-                <img className="mb-3" src={logo} alt="WePick Logo" />
-
                 <div className="  ">
                   <div className="row  mx-lg-5 px-lg-4 pt-3 pb-2 siginup-inner">
                     <div className="col-12 my-4 d-flex justify-content-center forgot-text1">
@@ -91,14 +85,14 @@ const ForgotPassword = () => {
                     </div>
 
                     <div className="col-12 mt-4 resgister-button">
-                      <button onClick={handleSubmit}>Send</button>
+                      <button onClick={handleSubmit} style={{ backgroundColor: "#1BC949" }}>Send</button>
                     </div>
 
                     <div className="col-12 mt-4 mb-4 signup-lower-text">
-                      <p className="mb-0">
+                      <p className="mb-0"  style={{ fontSize: "13px" }}>
                         Remember your password?{" "}
                         <span>
-                          <Link className="wepick-link sign-text" to="/signin">
+                          <Link className="wepick-link sign-text" to="/signin" style={{ color: "#1BC949", fontSize: "13px" }}>
                             {" "}
                             Sign In{" "}
                           </Link>

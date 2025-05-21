@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import logo from "../assets/images/wepick/logo-black.svg";
+import logo from "../assets/images/wepick/logo-no-background.png";
 import "../assets/css/Signin.scss";
 import { loginUser } from "../redux/feature/AuthSlice";
 import ButtonLoader from "../atoms/buttonLoader";
@@ -49,7 +49,7 @@ const Signin = () => {
               <div style={{ height: "100%", width: "100%" }}>
                 <div className="row mx-lg-5 px-lg-5 pt-3 pb-2 siginup-inner py-5">
                   <div className="col-12 d-flex justify-content-center ">
-                    <img className="mb-3" src={logo} alt="WePick Logo" />
+                    <img className="mb-3" src={logo} alt="WePick Logo" style={{ width: '180px', height: 'auto' }} />
                   </div>
                   <div className="col-12 mb-3 d-flex justify-content-center signup-text2 mt-4">
                     <p className="mb-0">Log in</p>
@@ -83,7 +83,7 @@ const Signin = () => {
                             <Field
                               type={passwordType}
                               name="password"
-                              placeholder="password"
+                              placeholder="Password"
                               className="form-control pl-3"
                               style={{
                                 border: "none",
@@ -93,7 +93,7 @@ const Signin = () => {
                             />
                             <div className="loginPasswordPositionBottom input-group-btn">
                               <h1
-                                className="eyeBtn pr-3"
+                                className="eyeBtn pr-4"
                                 onMouseUp={togglePassword}
                                 onMouseDown={togglePassword}
                                 onTouchStart={togglePassword}
@@ -150,6 +150,19 @@ const Signin = () => {
                               "Log in"
                             )}
                           </button>
+                        </div>
+                        <div className="col-12 mt-3 mb-2 text-center">
+                          <Link to="/forgotpassword" className="wepick-link sign-text"  style={{ color: "#1BC949", fontSize: "14px" }}>
+                            Forgot Password?
+                          </Link>
+                        </div>
+                        <div className="col-12 mt-2 mb-4 text-center">
+                          <p className="mb-0">
+                            Don't have an account?{" "}
+                            <Link to="/signup" className="wepick-link sign-text" style={{ color: "#1BC949", fontSize: "14px" }}>
+                              Sign Up
+                            </Link>
+                          </p>
                         </div>
                       </Form>
                     )}

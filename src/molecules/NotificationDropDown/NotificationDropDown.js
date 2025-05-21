@@ -41,8 +41,8 @@ const NotificationDropDown = () => {
                         </div>
 
                         <div className="col-10 py-4 border-bottom px-0 d-flex  justify-content-center align-items-start  flex-column">
-                            <p className="mb-0 pr-4 noti-drop-down-text1">
-                                An appointment is received by Calvin
+                            <p className="mb-1 pr-4 noti-drop-down-text1">
+                                A package is received by Calvin
                             </p>
 
                             <p className="mb-0 noti-drop-down-text2">
@@ -62,7 +62,7 @@ const NotificationDropDown = () => {
 
                         <div className="col-10 py-4 border-bottom px-0 d-flex  justify-content-center align-items-start  flex-column">
                             <p className="mb-0 pr-4 noti-drop-down-text1">
-                                Panadol is booked by Sufian
+                               Your Parcel is Delivered
                             </p>
 
                             <p className="mb-0 noti-drop-down-text2">
@@ -82,11 +82,11 @@ const NotificationDropDown = () => {
 
                         <div className="col-10 py-4 border-bottom px-0 d-flex  justify-content-center align-items-start  flex-column">
                             <p className="mb-0 pr-4 noti-drop-down-text1">
-                                Haematology test is booked by Sufian
+                                A new package is booked by Sufian
                             </p>
 
                             <p className="mb-0 noti-drop-down-text2">
-                                1 hour ago
+                              2 hour ago
                             </p>
                         </div>
                     </div>
@@ -106,7 +106,7 @@ const NotificationDropDown = () => {
                             </p>
 
                             <p className="mb-0 noti-drop-down-text2">
-                                1 hour ago
+                                2 hour ago
                             </p>
                         </div>
                     </div>
@@ -126,7 +126,7 @@ const NotificationDropDown = () => {
                             </p>
 
                             <p className="mb-0 noti-drop-down-text2">
-                                1 hour ago
+                                3 hour ago
                             </p>
                         </div>
                     </div>

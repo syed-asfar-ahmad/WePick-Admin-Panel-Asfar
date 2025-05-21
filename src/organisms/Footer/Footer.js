@@ -11,12 +11,11 @@ const Footer = () => {
     >
       <span>
         <img
-          style={{ fill: "#FF0000" }}
           className="pb-1"
           src={CopyRightIcon}
           alt=""
         />{" "}
-        WePick {currentYear}. ALL RIGHTS RESERVED
+        <span style={{ color: "#1BC949" }}>WePick</span> {currentYear}. ALL RIGHTS RESERVED
       </span>
     </div>
   );

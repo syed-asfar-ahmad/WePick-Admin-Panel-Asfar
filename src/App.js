@@ -1,8 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import Signin from "./pages/Signin";
-// import Signup from "./pages/Signup";
+import Signup from "./pages/Signup";
 import Privacy from "./pages/Privacy/Privacy";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -47,7 +46,7 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 
 function App() {
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
 
   useEffect(() => {
@@ -102,22 +101,27 @@ function App() {
             <Route path="/signin" element={!isLoggedIn ? <Signin /> : <Navigate to="/" />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/privacy" element={<Privacy />} />
-            {/* <Route path="/signup" element={<Signup />} /> */}
+            <Route path="/signup" element={<Signup />} />
             
             {isLoggedIn ? (
-              adminRoutes.map(({ path, Comp, name }) => (
-                <Route
-                  key={path}
-                  path={path}
-                  element={
-                    <AdminArea>
-                      <Comp name={name} />
-                    </AdminArea>
-                  }
-                />
-              ))
+              <>
+                {adminRoutes.map(({ path, Comp, name }) => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      <AdminArea>
+                        <Comp name={name} />
+                      </AdminArea>
+                    }
+                  />
+                ))}
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+              </>
             ) : (
-              <Route path="*" element={<Navigate to="/signin" />} />
+              <>
+                <Route path="*" element={<Navigate to="/signin" />} />
+              </>
             )}
           </Routes>
         </BrowserRouter>
