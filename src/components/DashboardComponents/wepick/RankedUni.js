@@ -35,10 +35,10 @@ const RankedUni = () => {
         }}
       >
         <div className="d-flex custom_between w-100 mb-2">
-          <div className="pl-2 appoinment-detail-text ">University Name</div>
+          <div className="pl-2 appoinment-detail-text ">Parcels</div>
 
           <div className="appoinment-detail-text text-center">
-            Number of Followers
+            Number of Customers
           </div>
           <div className=" pr-md-5 appoinment-detail-text text-right">Rank</div>
         </div>

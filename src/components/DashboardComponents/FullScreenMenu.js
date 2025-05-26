@@ -16,6 +16,85 @@ import {
   UserSvg,
 } from "../../assets/icons";
 
+// Add ParcelSvg component
+const ParcelSvg = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+    <path
+      d="M28.3333 15.8333L20 10L11.6667 15.8333M28.3333 15.8333V24.1667C28.3333 24.3877 28.2455 24.5996 28.0893 24.7559C27.933 24.9121 27.721 25 27.5 25H12.5C12.279 25 12.067 24.9121 11.9107 24.7559C11.7545 24.5996 11.6667 24.3877 11.6667 24.1667V15.8333M28.3333 15.8333L20 21.6667M11.6667 15.8333L20 21.6667"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Add LockerSvg component
+const LockerSvg = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+    <path
+      d="M25 18.3333H15C13.6193 18.3333 12.5 19.4526 12.5 20.8333V28.3333C12.5 29.714 13.6193 30.8333 15 30.8333H25C26.3807 30.8333 27.5 29.714 27.5 28.3333V20.8333C27.5 19.4526 26.3807 18.3333 25 18.3333Z"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M17.5 18.3333V15.8333C17.5 14.2145 18.7145 13 20.3333 13H19.6667C21.2855 13 22.5 14.2145 22.5 15.8333V18.3333"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20 23.3333V26.6667"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Add NotificationSvg component
+const NotificationSvg = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+    <path
+      d="M20 28.997C20.3675 28.9885 20.7201 28.8504 20.9956 28.607C21.271 28.3636 21.4514 28.0306 21.505 27.667H17.4367C17.4918 28.0405 17.6807 28.3813 17.9683 28.6259C18.2559 28.8706 18.6225 29.0024 20 28.997Z"
+      fill="#6CAD61"
+    />
+    <path
+      d="M28.4635 25.2339C27.901 24.7324 27.4085 24.1576 26.9993 23.5247C26.5526 22.6512 26.2849 21.6973 26.2118 20.7189V17.8372C26.2095 17.4872 26.1782 17.138 26.1185 16.7931C25.6594 16.7013 25.2181 16.5358 24.8118 16.3031C24.9667 16.8017 25.0454 17.3209 25.0452 17.8431V20.7247C25.1167 21.9183 25.445 23.0823 26.0077 24.1372C26.4104 24.7754 26.8883 25.3629 27.431 25.8872H12.4918C13.0346 25.3629 13.5124 24.7754 13.9152 24.1372C14.4779 23.0823 14.8062 21.9183 14.8777 20.7247V17.8372C14.8746 17.1621 15.0047 16.4931 15.2606 15.8683C15.5165 15.2436 15.8931 14.6755 16.3688 14.1965C16.8446 13.7175 17.4101 13.337 18.0331 13.0769C18.6561 12.8168 19.3243 12.6821 19.9993 12.6806C20.9874 12.6814 21.9532 12.9736 22.776 13.5206C22.6853 13.1875 22.6344 12.8448 22.6243 12.4997V12.1322C22.0152 11.8326 21.3609 11.6355 20.6877 11.5489V10.8139C20.6877 10.6074 20.6056 10.4093 20.4596 10.2633C20.3136 10.1172 20.1155 10.0352 19.9089 10.0352C19.7024 10.0352 19.5043 10.1172 19.3583 10.2633C19.2122 10.4093 19.1302 10.6074 19.1302 10.8139V11.5781C17.6227 11.7907 16.243 12.5416 15.2459 13.692C14.2488 14.8425 13.7015 16.3148 13.7052 17.8372V20.7189C13.6321 21.6973 13.3644 22.6512 12.9177 23.5247C12.5157 24.1561 12.0311 24.7309 11.4769 25.2339C11.4147 25.2886 11.3648 25.3559 11.3306 25.4313C11.2964 25.5067 11.2787 25.5886 11.2786 25.6714V26.4647C11.2786 26.6194 11.34 26.7678 11.4494 26.8772C11.5588 26.9866 11.7072 27.0481 11.8619 27.0481H28.0785C28.2332 27.0481 28.3816 26.9866 28.491 26.8772C28.6004 26.7678 28.6618 26.6194 28.6618 26.4647V25.6714C28.6617 25.5886 28.644 25.5067 28.6098 25.4313C28.5756 25.3559 28.5257 25.2886 28.4635 25.2339Z"
+      fill="#6CAD61"
+    />
+    <path
+      d="M27 15.4163C28.6108 15.4163 29.9167 14.1105 29.9167 12.4997C29.9167 10.8888 28.6108 9.58301 27 9.58301C25.3892 9.58301 24.0833 10.8888 24.0833 12.4997C24.0833 14.1105 25.3892 15.4163 27 15.4163Z"
+      fill="#6CAD61"
+    />
+  </svg>
+);
+
 const FullScreenMenu = () => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -47,116 +126,242 @@ const FullScreenMenu = () => {
       name: "Users",
       link: "/users",
       icon: UserSvg,
+      submenu: [
+        {
+          id: 1,
+          name: "Retailers List",
+          link: "/retailerslist",
+        },
+        {
+          id: 2,
+          name: "View profile",
+          link: "/viewprofile",
+        },
+        {
+          id: 3,
+          name: "View dispatched parcels",
+          link: "/viewdispatchedparcels",
+        },
+        {
+          id: 4,
+          name: "Customers List",
+          link: "/customerslist",
+        },
+        {
+          id: 5,
+          name: "View profilet",
+          link: "/viewprofile",
+        },
+        {
+          id: 6,
+          name: "View received parcels",
+          link: "/viewreceivedparcels",
+        },
+      ]
     },
     {
       id: 3,
-      name: "Universities",
-      link: "/university",
-      icon: UniSvg,
+      name: "Parcels",
+      link: "/parcels",
+      icon: ParcelSvg,
+      submenu: [
+        {
+          id: 1,
+          name: "List of all parcels",
+          link: "/listallparcels",
+        },
+        {
+          id: 2,
+          name: "Parcel ID",
+          link: "/parcelid",
+        },
+        {
+          id: 3,
+          name: "Status (Dispatched, Delivered, etc.)",
+          link: "/status",
+        },
+        {
+          id: 4,
+          name: "Locker ID",
+          link: "/lockerid",
+        },
+        {
+          id: 5,
+          name: "Linked retailer/customer",
+          link: "/linkedretailer",
+        },
+        {
+          id: 6,
+          name: "Search by Parcel ID",
+          link: "/searchparcelid",
+        },
+        {
+          id: 7,
+          name: "Basic filters (date, status)",
+          link: "/filters",
+        },
+        {
+          id: 8,
+          name: "View parcel details",
+          link: "/parceldetails",
+        },
+      ]
+      
     },
     {
       id: 5,
-      name: "Posts",
-      link: "/allpost",
-      icon: PostSvg,
+      name: "Lockers",
+      link: "/lockers",
+      icon: LockerSvg,
+      submenu: [
+        {
+          id: 1,
+          name: "View list of lockers",
+          link: "/listoflockers",
+        },
+        {
+          id: 2,
+          name: "Location",
+          link: "/location",
+        },
+        {
+          id: 3,
+          name: "Status (Available / Occupied)",
+          link: "/status",
+        },
+        {
+          id: 4,
+          name: "Manual unlock option (if needed via BlueBits API)",
+          link: "/unlockoption",
+        },
+      ]
     },
     {
       id: 6,
-      name: "Events",
-      link: "/events",
-      icon: EventSvg,
+      name: " Notifications",
+      link: "/notifications",
+      icon: NotificationSvg,
+      submenu: [
+        {
+          id: 1,
+          name: "View sent notifications (parcel dispatched, ready for pickup, etc.)",
+          link: "/sentnotification",
+        },
+        {
+          id: 2,
+          name: "Basic filter by user and date",
+          link: "/filters",
+        },
+      ]
     },
     {
       id: 7,
-      name: "Communities",
-      link: "/officialcommunity",
+      name: "Reports",
+      link: "/reports",
       icon: ComSvg,
       submenu: [
         {
           id: 1,
-          name: "Communities",
-          link: "/officialcommunity",
+          name: "Parcels",
+          link: "/parcels",
         },
         {
           id: 2,
-          name: "Withdrawal Requests",
-          link: "/withdrawalrequests",
+          name: "Users",
+          link: "/users",
+        },
+        {
+          id: 3,
+          name: "Locker usage",
+          link: "/lockerusage",
         },
       ],
     },
     {
       id: 8,
-      name: "Stories",
-      link: "/stories",
+      name: "Profile Settings",
+      link: "/profilesettings",
       icon: StorySvg,
-    },
-    {
-      id: 9,
-      name: "Boost",
-      link: "/boost",
-      icon: BoostSvg,
-    },
-    {
-      id: 10,
-      name: "Moderation",
-      link: "/",
-      icon: ModerationSvg,
       submenu: [
         {
           id: 1,
-          name: "Posts",
-          link: "/moderation/posts",
+          name: "Change admin password",
+          link: "/adminpassword",
         },
         {
           id: 2,
-          name: "Events",
-          link: "/moderation/events",
+          name: "Edit profile",
+          link: "/profileedit",
         },
-        {
-          id: 3,
-          name: "Stories",
-          link: "/moderation/stories",
-        },
-        {
-          id: 4,
-          name: "Users",
-          link: "/moderation/users",
-        },
-        {
-          id: 5,
-          name: "Questions",
-          link: "/moderation/questions",
-        },
-        // {
-        //   id: 6,
-        //   name: "Communities",
-        //   link: "/moderation/communities",
-        // },
-        // {
-        //   id: 7,
-        //   name: "Comments",
-        //   link: "/moderation/comments",
-        // },
-      ],
+      ]
     },
-    {
-      id: 11,
-      name: "Configuration",
-      icon: ConfigSvg,
-      submenu: [
-        {
-          id: 1,
-          name: "Account Approval",
-          link: "/accountapproval",
-        },
-      ],
-    },
-    {
-      id: 12,
-      name: "Report Statistics",
-      link: "/statistics",
-      icon: StatSvg,
-    },
+    // {
+    //   id: 9,
+    //   name: "Boost",
+    //   link: "/boost",
+    //   icon: BoostSvg,
+    // },
+    // {
+    //   id: 10,
+    //   name: "Moderation",
+    //   link: "/",
+    //   icon: ModerationSvg,
+    //   submenu: [
+    //     {
+    //       id: 1,
+    //       name: "Posts",
+    //       link: "/moderation/posts",
+    //     },
+    //     {
+    //       id: 2,
+    //       name: "Events",
+    //       link: "/moderation/events",
+    //     },
+    //     {
+    //       id: 3,
+    //       name: "Stories",
+    //       link: "/moderation/stories",
+    //     },
+    //     {
+    //       id: 4,
+    //       name: "Users",
+    //       link: "/moderation/users",
+    //     },
+    //     {
+    //       id: 5,
+    //       name: "Questions",
+    //       link: "/moderation/questions",
+    //     },
+    //     // {
+    //     //   id: 6,
+    //     //   name: "Communities",
+    //     //   link: "/moderation/communities",
+    //     // },
+    //     // {
+    //     //   id: 7,
+    //     //   name: "Comments",
+    //     //   link: "/moderation/comments",
+    //     // },
+    //   ],
+    // },
+    // {
+    //   id: 11,
+    //   name: "Configuration",
+    //   icon: ConfigSvg,
+    //   submenu: [
+    //     {
+    //       id: 1,
+    //       name: "Account Approval",
+    //       link: "/accountapproval",
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: 12,
+    //   name: "Report Statistics",
+    //   link: "/statistics",
+    //   icon: StatSvg,
+    // },
   ];
 
   const renderSubMenu = (menuId, subMenu) => {

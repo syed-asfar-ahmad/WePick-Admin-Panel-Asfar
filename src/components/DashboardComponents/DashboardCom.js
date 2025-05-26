@@ -30,28 +30,28 @@ const DashboardCom = () => {
   const data1 = [
     {
       id: 1,
-      text: "Total Users",
+      text: "Total Retailers",
       total: cardData?.userCount,
       icon: UserSvg,
       route: "/users",
     },
     {
       id: 1,
-      text: "Total Posts",
+      text: "Total Customers",
       total: cardData?.postCount,
       icon: PostSvg,
       route: "/allpost",
     },
     {
       id: 1,
-      text: "Total Events",
+      text: "Total Parcels",
       total: cardData?.eventCount,
       icon: EventSvg,
       route: "/events",
     },
     {
       id: 1,
-      text: "Withdrawal Requests",
+      text: "Locker availability",
       total: cardData?.withdrawRequestCount,
       icon: DownArrowSvg,
       route: "/withdrawalrequests",

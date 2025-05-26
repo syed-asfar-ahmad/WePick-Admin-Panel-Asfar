@@ -67,7 +67,7 @@ const SubscriptionChart = () => {
     ],
     datasets: [
       {
-        label: "Monthly Subscriptions",
+        label: "Monthly Customers",
         data: getMonthlyData(),
         backgroundColor: "#7B61FF",
         borderColor: "#7B61FF",
@@ -133,7 +133,7 @@ const SubscriptionChart = () => {
     <div className="col-12 my-lg-4 pt-lg-2 pb-5">
       <div className="bar-chart pb-4">
         <div className="d-flex justify-content-between align-items-center px-4 mx-2 py-4">
-          <span className="mb-0 bar-chart-text1">Monthly Subscriptions</span>
+          <span className="mb-0 bar-chart-text1">Monthly Customers</span>
 
           <Select
             style={{ width: "100px", height: "33px" }}
