@@ -7,7 +7,7 @@ import "./dashboard.scss";
 //scss
 import "../../assets/css/dashboard.scss";
 //svg
-import { PostSvg, UserSvg, EventSvg, DownArrowSvg } from "../../assets/icons";
+import { PostSvg, UserSvg, EventSvg, LockerSvg, ParcelSvg } from "../../assets/icons";
 import { getDashCount } from "../../services/service";
 
 const DashboardCom = () => {
@@ -39,21 +39,21 @@ const DashboardCom = () => {
       id: 1,
       text: "Total Customers",
       total: cardData?.postCount,
-      icon: PostSvg,
+      icon: UserSvg,
       route: "/allpost",
     },
     {
       id: 1,
       text: "Total Parcels",
       total: cardData?.eventCount,
-      icon: EventSvg,
-      route: "/events",
+      icon: ParcelSvg,
+      route: "/parcels",
     },
     {
       id: 1,
       text: "Locker availability",
       total: cardData?.withdrawRequestCount,
-      icon: DownArrowSvg,
+      icon: LockerSvg,
       route: "/withdrawalrequests",
     },
   ];

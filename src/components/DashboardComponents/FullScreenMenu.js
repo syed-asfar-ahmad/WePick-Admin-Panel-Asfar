@@ -3,18 +3,100 @@ import { NavLink } from "react-router-dom";
 import "../../assets/css/dashboard.scss";
 import DownIcon from "../../assets/images/dashboard/DownIcon.svg";
 import {
-  BoostSvg,
-  ComSvg,
-  ConfigSvg,
-  DashboardSvg,
-  EventSvg,
-  ModerationSvg,
-  PostSvg,
-  StatSvg,
-  StorySvg,
-  UniSvg,
+  // BoostSvg,
+  // ComSvg,
+  // ConfigSvg,
+  // DashboardSvg,
+  // EventSvg,
+  // ModerationSvg,
+  // PostSvg,
+  // StatSvg,
+  // StorySvg,
+  // UniSvg,
   UserSvg,
 } from "../../assets/icons";
+
+// Add DashboardIcon component
+const DashboardIcon = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+    <path
+      d="M15 15H18.3333V25H15V15Z"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M21.6667 12.5H25V25H21.6667V12.5Z"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M28.3333 17.5H31.6667V25H28.3333V17.5Z"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.33333 17.5H11.6667V25H8.33333V17.5Z"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Add ReportsSvg component
+const ReportsSvg = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+    <path
+      d="M25 15.8333H15C13.6193 15.8333 12.5 16.9526 12.5 18.3333V25.8333C12.5 27.214 13.6193 28.3333 15 28.3333H25C26.3807 28.3333 27.5 27.214 27.5 25.8333V18.3333C27.5 16.9526 26.3807 15.8333 25 15.8333Z"
+      stroke="#FF0000"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20 11.6667V15.8333"
+      stroke="#FF0000"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M17.5 22.5H22.5"
+      stroke="#FF0000"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M17.5 19.1667H22.5"
+      stroke="#FF0000"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 // Add ParcelSvg component
 const ParcelSvg = (
@@ -28,7 +110,7 @@ const ParcelSvg = (
     <rect width="40" height="40" rx="20" fill="#F5F5F5" />
     <path
       d="M28.3333 15.8333L20 10L11.6667 15.8333M28.3333 15.8333V24.1667C28.3333 24.3877 28.2455 24.5996 28.0893 24.7559C27.933 24.9121 27.721 25 27.5 25H12.5C12.279 25 12.067 24.9121 11.9107 24.7559C11.7545 24.5996 11.6667 24.3877 11.6667 24.1667V15.8333M28.3333 15.8333L20 21.6667M11.6667 15.8333L20 21.6667"
-      stroke="#6CAD61"
+      stroke="#4169E1"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -95,6 +177,33 @@ const NotificationSvg = (
   </svg>
 );
 
+// Add ProfileSvg component
+const ProfileSvg = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+    <path
+      d="M20 20C22.7614 20 25 17.7614 25 15C25 12.2386 22.7614 10 20 10C17.2386 10 15 12.2386 15 15C15 17.7614 17.2386 20 20 20Z"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M28.3333 30C28.3333 25.8579 24.6421 22.5 20 22.5C15.3579 22.5 11.6667 25.8579 11.6667 30"
+      stroke="#6CAD61"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const FullScreenMenu = () => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -119,7 +228,7 @@ const FullScreenMenu = () => {
       id: 1,
       name: "Dashboard",
       link: "/",
-      icon: DashboardSvg,
+      icon: DashboardIcon,
     },
     {
       id: 2,
@@ -258,7 +367,7 @@ const FullScreenMenu = () => {
       id: 7,
       name: "Reports",
       link: "/reports",
-      icon: ComSvg,
+      icon: ReportsSvg,
       submenu: [
         {
           id: 1,
@@ -281,7 +390,7 @@ const FullScreenMenu = () => {
       id: 8,
       name: "Profile Settings",
       link: "/profilesettings",
-      icon: StorySvg,
+      icon: ProfileSvg,
       submenu: [
         {
           id: 1,
