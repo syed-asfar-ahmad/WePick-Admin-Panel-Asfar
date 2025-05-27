@@ -152,7 +152,7 @@ const Signin = () => {
                           </button>
                         </div>
                         <div className="col-12 mt-3 mb-2 text-center">
-                          <Link to="/forgotpassword" className="wepick-link sign-text"  style={{ color: "#1BC949", fontSize: "14px" }}>
+                          <Link to="/forgotpassword" className="wepick-link sign-text" style={{ color: "#1BC949", fontSize: "14px" }}>
                             Forgot Password?
                           </Link>
                         </div>
