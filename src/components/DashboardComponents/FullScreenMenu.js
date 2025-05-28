@@ -208,14 +208,20 @@ const FullScreenMenu = () => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
+  const [activeNestedSubMenu, setActiveNestedSubMenu] = useState(null);
 
   const handleSubMenuToggle = (id) => {
     setActiveSubMenu(activeSubMenu === id ? null : id);
   };
 
+  const handleNestedSubMenuToggle = (id) => {
+    console.log('Toggling nested submenu:', id, 'Current state:', activeNestedSubMenu);
+    setActiveNestedSubMenu(activeNestedSubMenu === id ? null : id);
+  };
+
   const handleMenuClick = (id) => {
     setSelectedMenu(id);
-    setSelectedSubMenu(null); // Reset selected submenu when a new menu is clicked
+    setSelectedSubMenu(null);
   };
 
   const handleSubMenuClick = (menuId, subMenuId) => {
@@ -240,31 +246,35 @@ const FullScreenMenu = () => {
           id: 1,
           name: "Retailers List",
           link: "/retailerslist",
+          submenu: [
+            {
+              id: 1,
+              name: "View profile",
+              link: "/viewprofile",
+            },
+            {
+              id: 2,
+              name: "View dispatched parcels",
+              link: "/viewdispatchedparcels",
+            }
+          ]
         },
         {
           id: 2,
-          name: "View profile",
-          link: "/viewprofile",
-        },
-        {
-          id: 3,
-          name: "View dispatched parcels",
-          link: "/viewdispatchedparcels",
-        },
-        {
-          id: 4,
           name: "Customers List",
           link: "/customerslist",
-        },
-        {
-          id: 5,
-          name: "View profilet",
-          link: "/viewprofile",
-        },
-        {
-          id: 6,
-          name: "View received parcels",
-          link: "/viewreceivedparcels",
+          submenu: [
+            {
+              id: 1,
+              name: "View profile",
+              link: "/viewprofile",
+            },
+            {
+              id: 2,
+              name: "View received parcels",
+              link: "/viewreceivedparcels",
+            }
+          ]
         },
       ]
     },
@@ -477,19 +487,63 @@ const FullScreenMenu = () => {
     return (
       <>
         {subMenu?.map((item) => (
-          <NavLink
-            to={item.link}
-            key={item.id}
-            className="sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center"
-            style={{
-              paddingLeft: "81px",
-              color: selectedSubMenu === item.id ? "black" : "black",
-            }}
-            onClick={() => handleSubMenuClick(menuId, item.id)}
-          >
-            {item.name}
-          </NavLink>
-
+          <div key={item.id}>
+            <div
+              className="sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center"
+              style={{
+                paddingLeft: "81px",
+                color: selectedSubMenu === item.id ? "black" : "black",
+              }}
+            >
+              <NavLink
+                to={item.link}
+                className="w-100 text-decoration-none"
+                style={{ color: "inherit" }}
+                onClick={() => handleSubMenuClick(menuId, item.id)}
+              >
+                {item.name}
+              </NavLink>
+              {item.submenu && (
+                <div style={{ marginRight: "15px" }}>
+                  <img
+                    className="size-small-screen"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNestedSubMenuToggle(item.id);
+                    }}
+                    src={DownIcon}
+                    alt=""
+                    style={{
+                      transform: activeNestedSubMenu === item.id ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                      width: "8px",
+                      height: "8px",
+                      cursor: "pointer"
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            {activeNestedSubMenu === item.id && item.submenu && (
+              <div style={{ paddingLeft: "20px" }}>
+                {item.submenu.map((subItem) => (
+                  <NavLink
+                    key={subItem.id}
+                    to={subItem.link}
+                    className="sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center text-decoration-none"
+                    style={{
+                      paddingLeft: "81px",
+                      color: "inherit",
+                    }}
+                    onClick={() => handleSubMenuClick(menuId, subItem.id)}
+                  >
+                    {subItem.name}
+                  </NavLink>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
       </>
     );
