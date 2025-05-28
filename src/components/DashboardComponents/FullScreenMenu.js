@@ -241,11 +241,11 @@ const FullScreenMenu = () => {
           name: "Retailers List",
           link: "/retailerslist",
         },
-        {
-          id: 2,
-          name: "View profile",
-          link: "/viewprofile",
-        },
+        // {
+        //   id: 2,
+        //   name: "View profile",
+        //   link: "/viewprofile",
+        // },
         {
           id: 3,
           name: "View dispatched parcels",
@@ -256,11 +256,11 @@ const FullScreenMenu = () => {
           name: "Customers List",
           link: "/customerslist",
         },
-        {
-          id: 5,
-          name: "View profilet",
-          link: "/viewprofile",
-        },
+        // {
+        //   id: 5,
+        //   name: "View profilet",
+        //   link: "/viewprofile",
+        // },
         {
           id: 6,
           name: "View received parcels",
