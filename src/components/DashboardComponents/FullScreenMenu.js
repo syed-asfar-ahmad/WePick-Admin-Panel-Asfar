@@ -394,6 +394,11 @@ const FullScreenMenu = () => {
           name: "Locker usage",
           link: "/lockerusage",
         },
+        {
+          id: 4,
+          name: "Simple charts (Success vs Failed deliveries)",
+          link: "/simplecharts",
+        }
       ],
     },
     {

@@ -134,7 +134,7 @@ const Dashboard = () => {
                 className={
                   MobileMenu1
                     ? " notheight "
-                    : "notheight  InnerClassMobileScreen headerMobileSideBar "
+                    : "notheight InnerClassMobileScreen headerMobileSideBar "
                 }
               >
                 <i
