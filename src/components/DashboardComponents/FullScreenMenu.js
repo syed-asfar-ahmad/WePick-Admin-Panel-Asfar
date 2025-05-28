@@ -244,17 +244,17 @@ const FullScreenMenu = () => {
       submenu: [
         {
           id: 1,
-          name: "Retailers List",
-          link: "/retailerslist",
+          name: "Retailers",
+          link: "/retailers",
           submenu: [
             {
               id: 1,
-              name: "View profile",
-              link: "/viewprofile",
+              name: "Retailers List",
+              link: "/retailers",
             },
             {
               id: 2,
-              name: "View dispatched parcels",
+              name: "Dispatched Parcels",
               link: "/viewdispatchedparcels",
             }
           ]
@@ -266,8 +266,8 @@ const FullScreenMenu = () => {
           submenu: [
             {
               id: 1,
-              name: "View profile",
-              link: "/viewprofile",
+              name: "Retailers Profile",
+              link: "/viewprofile/2",
             },
             {
               id: 2,
@@ -500,14 +500,19 @@ const FullScreenMenu = () => {
                 color: selectedSubMenu === item.id ? "black" : "black",
               }}
             >
-              <NavLink
-                to={item.link}
+              <div 
                 className="w-100 text-decoration-none"
-                style={{ color: "inherit" }}
-                onClick={() => handleSubMenuClick(menuId, item.id)}
+                style={{ color: "inherit", cursor: "pointer" }}
+                onClick={() => {
+                  if (item.submenu) {
+                    handleNestedSubMenuToggle(item.id);
+                  } else {
+                    handleSubMenuClick(menuId, item.id);
+                  }
+                }}
               >
                 {item.name}
-              </NavLink>
+              </div>
               {item.submenu && (
                 <div style={{ marginRight: "15px" }}>
                   <img

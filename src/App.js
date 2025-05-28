@@ -42,8 +42,12 @@ import Boost from "./pages/Boost";
 import AccountApproval from "./pages/Configuration/AccountApproval";
 import ReportView from "./pages/ReportView";
 import UserFriends from "./pages/Users/UserFriends";
+import RetailersProfile from './pages/RetailersProfile';
+import RetailersList from './pages/RetailersList';
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
+import DispatchedParcels from './pages/DispatchedParcels';
+import ParcelDetails from './pages/ParcelDetails';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -90,6 +94,11 @@ function App() {
     { path: "/accountapproval", Comp: AccountApproval },
     { path: "/reportdetails", Comp: ReportView },
     { path: "/userfriends/:id", Comp: UserFriends },
+    { path: "/viewprofile/:id", Comp: RetailersProfile },
+    { path: "/viewdispatchedparcels", Comp: DispatchedParcels },
+    { path: "/viewdispatchedparcels/:parcelId", Comp: ParcelDetails },
+    { path: "/retailers", Comp: RetailersList },
+    { path: "/retailers/:id", Comp: RetailersProfile },
   ];
 
   return (
