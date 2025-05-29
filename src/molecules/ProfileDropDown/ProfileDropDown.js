@@ -21,9 +21,9 @@ const ProfileDropDown = () => {
   const navigate = useNavigate();
 
   return (
-    <div class="dropdown ">
+    <div className="dropdown">
       <div
-        class="profile-menu-button-right-img  "
+        className="profile-menu-button-right-img"
         type="button"
         id="dropdownMenuButton"
         data-toggle="dropdown"
@@ -42,7 +42,7 @@ const ProfileDropDown = () => {
       </div>
 
       <div
-        class=" profile-drop-down-body dropdown-menu py-2"
+        className="profile-drop-down-body dropdown-menu py-2"
         aria-labelledby="dropdownMenuButton"
         style={{ boxShadow: "0px 1px 14px 0px rgba(0, 0, 0, 0.08)" }}
       >

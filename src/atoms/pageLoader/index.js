@@ -1,9 +1,15 @@
 import React from "react";
-import { LoadingOutlined } from "@ant-design/icons";
+import CircularProgress from "@mui/material/CircularProgress";
+
 const PageLoader = () => {
   return (
     <div className="loader-overlay">
-      <LoadingOutlined style={{ fontSize: "4rem", color: "#4fa6d1" }} spin />
+      <CircularProgress 
+        size={64} 
+        sx={{ 
+          color: '#4fa6d1'
+        }} 
+      />
     </div>
   );
 };

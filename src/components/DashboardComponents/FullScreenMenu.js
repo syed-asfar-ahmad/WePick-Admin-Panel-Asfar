@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../../assets/css/dashboard.scss";
 import DownIcon from "../../assets/images/dashboard/DownIcon.svg";
 import {
@@ -205,6 +205,7 @@ const ProfileSvg = (
 );
 
 const FullScreenMenu = () => {
+  const navigate = useNavigate();
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
@@ -220,13 +221,19 @@ const FullScreenMenu = () => {
   };
 
   const handleMenuClick = (id) => {
+    console.log('Menu clicked:', id);
     setSelectedMenu(id);
     setSelectedSubMenu(null);
   };
 
   const handleSubMenuClick = (menuId, subMenuId) => {
+    console.log('SubMenu clicked:', menuId, subMenuId);
     setSelectedMenu(menuId);
     setSelectedSubMenu(subMenuId);
+  };
+
+  const handleNavigation = (link) => {
+    navigate(link);
   };
 
   const menuData = [
@@ -286,46 +293,10 @@ const FullScreenMenu = () => {
       submenu: [
         {
           id: 1,
-          name: "List of all parcels",
-          link: "/listallparcels",
-        },
-        {
-          id: 2,
-          name: "Parcel ID",
-          link: "/parcelid",
-        },
-        {
-          id: 3,
-          name: "Status (Dispatched, Delivered, etc.)",
-          link: "/status",
-        },
-        {
-          id: 4,
-          name: "Locker ID",
-          link: "/lockerid",
-        },
-        {
-          id: 5,
-          name: "Linked retailer/customer",
-          link: "/linkedretailer",
-        },
-        {
-          id: 6,
-          name: "Search by Parcel ID",
-          link: "/searchparcelid",
-        },
-        {
-          id: 7,
-          name: "Basic filters (date, status)",
-          link: "/filters",
-        },
-        {
-          id: 8,
-          name: "View parcel details",
-          link: "/parceldetails",
-        },
+          name: "Parcels List",
+          link: "/parcelslist"
+        }
       ]
-      
     },
     {
       id: 5,
@@ -499,20 +470,24 @@ const FullScreenMenu = () => {
                 paddingLeft: "81px",
                 color: selectedSubMenu === item.id ? "black" : "black",
               }}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubMenuClick(menuId, item.id);
+                if (item.submenu) {
+                  handleNestedSubMenuToggle(item.id);
+                } else {
+                  handleNavigation(item.link);
+                }
+              }}
             >
-              <div 
+              <NavLink
+                to={item.link}
                 className="w-100 text-decoration-none"
                 style={{ color: "inherit", cursor: "pointer" }}
-                onClick={() => {
-                  if (item.submenu) {
-                    handleNestedSubMenuToggle(item.id);
-                  } else {
-                    handleSubMenuClick(menuId, item.id);
-                  }
-                }}
+                onClick={(e) => e.preventDefault()}
               >
                 {item.name}
-              </div>
+              </NavLink>
               {item.submenu && (
                 <div style={{ marginRight: "15px" }}>
                   <img
@@ -537,7 +512,7 @@ const FullScreenMenu = () => {
                 </div>
               )}
             </div>
-            {activeNestedSubMenu === item.id && item.submenu && (
+            {item.submenu && activeNestedSubMenu === item.id && (
               <div 
                 style={{ 
                   paddingLeft: "20px",
@@ -556,7 +531,13 @@ const FullScreenMenu = () => {
                       opacity: 0,
                       animationFillMode: "forwards"
                     }}
-                    onClick={() => handleSubMenuClick(menuId, subItem.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSubMenuClick(menuId, subItem.id);
+                      if (!subItem.submenu) {
+                        handleNavigation(subItem.link);
+                      }
+                    }}
                   >
                     {subItem.name}
                   </NavLink>
@@ -624,6 +605,9 @@ const FullScreenMenu = () => {
                 handleSubMenuToggle(item.id);
                 handleMenuClick(item.id);
               }}
+              style={{
+                animation: activeSubMenu === item.id ? "slideDown 0.3s ease-out" : "none"
+              }}
             >
               <div className="dashboard-left-icon">{item.icon}</div>
 
@@ -652,7 +636,8 @@ const FullScreenMenu = () => {
                         activeSubMenu === item.id
                           ? "rotate(180deg)"
                           : "rotate(0deg)",
-                      transition: "transform 0.3s ease",
+                      transition: "transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                      animation: activeSubMenu === item.id ? "bounceDown 0.4s ease" : "none"
                     }}
                   />
                 </div>

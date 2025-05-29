@@ -15,20 +15,20 @@ const NotificationDropDown = () => {
         <>
         
 
-            <div class="dropdown">
+            <div className="dropdown">
                 <div
                     type="button"
                     id="dropdownMenuButton"
                     data-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    className=" cursor-pointer menu-button p-4 mr-2 d-flex align-items-center justify-content-center"
+                    className="cursor-pointer menu-button p-4 mr-2 d-flex align-items-center justify-content-center"
                 >
                     <img src={NotificationIcon} alt="" />
                 </div>
 
                 <div
-                    class="  notification-drop-down-body dropdown-menu"
+                    className="notification-drop-down-body dropdown-menu"
                     aria-labelledby="dropdownMenuButton"
                 >
                     <div className="row  px-3">

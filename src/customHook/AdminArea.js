@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FullScreenMenu from "../components/DashboardComponents/FullScreenMenu";
 import Header from "../organisms/Header/Header";
-import SiteFooter from "../organisms/Footer/Footer";
+import Footer from "../organisms/Footer/Footer";
 import { useSelector } from "react-redux";
 
 const AdminArea = ({ children }) => {
@@ -99,7 +99,7 @@ const AdminArea = ({ children }) => {
           >
             <div style={{ minHeight: "84vh" }}>{children}</div>
             <div className="row">
-              <SiteFooter />
+              <Footer />
             </div>
           </div>
         </div>

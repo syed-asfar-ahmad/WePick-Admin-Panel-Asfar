@@ -981,3 +981,52 @@
   text-align: left;
   color: #0d0d0d;
 }
+
+// Dropdown animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceDown {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(90deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(180deg) scale(1);
+  }
+}
+
+.left-drop-down {
+  position: relative;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(17, 24, 39, 0.1);
+  }
+
+  .sub-menu {
+    position: relative;
+    overflow: hidden;
+  }
+}

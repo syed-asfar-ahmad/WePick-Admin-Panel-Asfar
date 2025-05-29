@@ -48,6 +48,7 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import DispatchedParcels from './pages/DispatchedParcels';
 import ParcelDetails from './pages/ParcelDetails';
+import ParcelsList from './components/Parcels/ParcelsList';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -58,10 +59,8 @@ function App() {
   }, [isAuthenticated]);
 
   const adminRoutes = [
-    { path: "/", Comp: DashboardCom },
+    { path: "/dashboard", Comp: DashboardCom },
     { path: "/allpost", Comp: AllPosts },
-    // { path: "/boostedpost", Comp: BoostedPosts },
-    // { path: "/anonymouspost", Comp: AnonymousPosts },
     { path: "/users", Comp: UsersPage },
     { path: "/university", Comp: University },
     { path: "/events", Comp: AllEvents },
@@ -99,6 +98,20 @@ function App() {
     { path: "/viewdispatchedparcels/:parcelId", Comp: ParcelDetails },
     { path: "/retailers", Comp: RetailersList },
     { path: "/retailers/:id", Comp: RetailersProfile },
+    { path: "/parcelslist", Comp: ParcelsList },
+    { path: "/parcels/listallparcels", Comp: ParcelsList },
+    { path: "/customerslist", Comp: UsersPage },
+    { path: "/viewreceivedparcels", Comp: ParcelsList },
+    { path: "/listoflockers", Comp: ParcelsList },
+    { path: "/location", Comp: ParcelsList },
+    { path: "/status", Comp: ParcelsList },
+    { path: "/unlockoption", Comp: ParcelsList },
+    { path: "/sentnotification", Comp: ParcelsList },
+    { path: "/filters", Comp: ParcelsList },
+    { path: "/lockerusage", Comp: ParcelsList },
+    { path: "/simplecharts", Comp: ParcelsList },
+    { path: "/adminpassword", Comp: ParcelsList },
+    { path: "/profileedit", Comp: ParcelsList },
   ];
 
   return (
