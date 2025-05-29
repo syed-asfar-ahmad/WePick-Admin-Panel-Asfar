@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import ForgotPassword from "./pages/ForgotPassword";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
-import Privacy from "./pages/Privacy/Privacy";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SkeletonTheme } from "react-loading-skeleton";
@@ -12,39 +11,9 @@ import CustomersList from "./components/DashboardComponents/CustomersList";
 import CustomersProfile from "./components/DashboardComponents/CustomersProfile";
 import ReceivedDetails from "./components/DashboardComponents/ReceivedDetails";
 import ReceivedParcels from "./components/DashboardComponents/ReceivedParcels";
-import AllPosts from "./pages/Post/AllPosts";
 import EditUniversity from "./components/University/EditUniversity";
 import UsersPage from "./pages/Users/Users";
-import University from "./pages/University/University";
-import AllEvents from "./pages/Events/AllEvents";
-// import BoostedPosts from "./pages/Post/BoostedPost";
-// import AnonymousPosts from "./pages/Post/AnonymousPost";
-import BoostedEvents from "./pages/Events/BoostedEvents";
-import AnonymousEvents from "./pages/Events/AnonymousEvents";
-import OfficialComunity from "./pages/Community/OfficialCommunity";
-import CustomComunity from "./pages/Community/CustomCommunity";
-// import BoostedStories from "./pages/Stories/BoostedStories";
-import AllStories from "./pages/Stories/AllStories";
-import Questions from "./pages/Moderations/Questions";
-import Communities from "./pages/Moderations/Communities";
-import Comments from "./pages/Moderations/Comments";
-import AnonymousStories from "./pages//Stories/AnonymousStories";
 import UserViewPage from "./pages/Users/UserView";
-// import ManageRoles from "./components/DashboardComponents/ManageRoles";
-import Statistics from "./pages/statistics";
-import PostDetail from "./pages/PostDetail";
-import SinglePostDetails from "./pages/Post/SinglePostDetails";
-import Likes from "./pages/Likes/Likes";
-import EventView from "./pages/Events/EventView";
-import EditEvent from "./pages/Events/EditEvent";
-import EditCommunity from "./pages/Community/EditCommunity";
-import Posts from "./pages/Moderations/Posts";
-import Events from "./pages/Moderations/Events";
-import Stories from "./pages/Moderations/Stories";
-import Users from "./pages/Moderations/Users";
-import Boost from "./pages/Boost";
-import AccountApproval from "./pages/Configuration/AccountApproval";
-import ReportView from "./pages/ReportView";
 import UserFriends from "./pages/Users/UserFriends";
 import RetailersProfile from './pages/RetailersProfile';
 import RetailersList from './pages/RetailersList';
@@ -64,42 +33,14 @@ function App() {
 
   const adminRoutes = [
     { path: "/dashboard", Comp: DashboardCom },
-    { path: "/allpost", Comp: AllPosts },
     { path: "/users", Comp: UsersPage },
     { path: "/customers", Comp: CustomersList },
     { path: "/customers/:id", Comp: CustomersProfile },
     { path: "/receivedparcels", Comp: ReceivedParcels },
     { path: "/receivedparcels/:parcelId", Comp: ReceivedDetails },
-    { path: "/university", Comp: University },
-    { path: "/events", Comp: AllEvents },
-    { path: "/boostedevents", Comp: BoostedEvents },
-    { path: "/event/view/:id", Comp: EventView },
-    { path: "/event/edit/:id", Comp: EditEvent },
-    { path: "/anonymousevents", Comp: AnonymousEvents },
-    { path: "/officialcommunity", Comp: OfficialComunity },
-    { path: "/withdrawalrequests", Comp: CustomComunity },
-    { path: "/community/edit/:id", Comp: EditCommunity },
     { path: "/university/edit/:id", Comp: EditUniversity },
     { path: "/university/add", Comp: EditUniversity },
-    { path: "/stories", Comp: AllStories },
-    { path: "/boost", Comp: Boost },
-    { path: "/anonymousstories", Comp: AnonymousStories },
     { path: "/users/detail/:id", Comp: UserViewPage },
-    { path: "/users/likes/:id", Comp: Likes },
-    { path: "/statistics", Comp: Statistics },
-    { path: "/user/posts/:id", Comp: PostDetail },
-    { path: "/user/posts/post-detail/:id", Comp: SinglePostDetails, name: 'userPostDetail' },
-    { path: "/post/detail/:id", Comp: SinglePostDetails, name: 'postDetail' },
-    { path: "/moderation/questions", Comp: Questions },
-    { path: "/moderation/communities", Comp: Communities },
-    { path: "/moderation/comments", Comp: Comments },
-    { path: "/moderation/posts", Comp: Posts },
-    { path: "/moderation/posts/post/:id", Comp: SinglePostDetails, name: 'moderationPostDetail' },
-    { path: "/moderation/events", Comp: Events },
-    { path: "/moderation/stories", Comp: Stories },
-    { path: "/moderation/users", Comp: Users },
-    { path: "/accountapproval", Comp: AccountApproval },
-    { path: "/reportdetails", Comp: ReportView },
     { path: "/userfriends/:id", Comp: UserFriends },
     { path: "/viewprofile/:id", Comp: RetailersProfile },
     { path: "/viewdispatchedparcels", Comp: DispatchedParcels },
@@ -130,7 +71,6 @@ function App() {
           <Routes>
             <Route path="/signin" element={!isLoggedIn ? <Signin /> : <Navigate to="/" />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/privacy" element={<Privacy />} />
             <Route path="/signup" element={<Signup />} />
             
             {isLoggedIn ? (
