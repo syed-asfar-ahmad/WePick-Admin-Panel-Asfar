@@ -143,6 +143,66 @@ const RetailersList = () => {
     });
   };
 
+  const handleApplyFilters = () => {
+    // The filtering is already handled by getFilteredRetailers
+    // This function is just to provide feedback to the user
+    const filteredCount = getFilteredRetailers().length;
+    alert(`Found ${filteredCount} retailers matching your criteria`);
+  };
+
+  const getFilteredRetailers = () => {
+    return retailers.filter(retailer => {
+      // Search filter
+      if (filters.search && !retailer.name.toLowerCase().includes(filters.search.toLowerCase()) &&
+          !retailer.owner.toLowerCase().includes(filters.search.toLowerCase()) &&
+          !retailer.email.toLowerCase().includes(filters.search.toLowerCase())) {
+        return false;
+      }
+
+      // Status filter
+      if (filters.status && retailer.status.toLowerCase() !== filters.status.toLowerCase()) {
+        return false;
+      }
+
+      // Business Type filter
+      if (filters.businessType && retailer.businessType.toLowerCase() !== filters.businessType.toLowerCase()) {
+        return false;
+      }
+
+      // Date Range filter
+      if (filters.dateRange) {
+        const registrationDate = new Date(retailer.registrationDate);
+        const filterDate = new Date(filters.dateRange);
+        if (registrationDate < filterDate) {
+          return false;
+        }
+      }
+
+      // Performance filter
+      if (filters.performance) {
+        const successRate = retailer.performance.successRate;
+        switch (filters.performance) {
+          case 'high':
+            if (successRate <= 90) return false;
+            break;
+          case 'medium':
+            if (successRate < 80 || successRate > 90) return false;
+            break;
+          case 'low':
+            if (successRate >= 80) return false;
+            break;
+        }
+      }
+
+      // Location filter
+      if (filters.location && !retailer.address.toLowerCase().includes(filters.location.toLowerCase())) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
   const getStatusColor = (status) => {
     return status === 'Active' ? '#4CAF50' : '#F44336';
   };
@@ -267,7 +327,7 @@ const RetailersList = () => {
             <button className="reset-button" onClick={handleResetFilters}>
               Reset Filters
             </button>
-            <button className="apply-button">
+            <button className="apply-button" onClick={handleApplyFilters}>
               Apply Filters
             </button>
           </div>
@@ -385,7 +445,7 @@ const RetailersList = () => {
               </tr>
             </thead>
             <tbody>
-              {retailers.map((retailer) => (
+              {getFilteredRetailers().map((retailer) => (
                 <tr key={retailer.id}>
                   <td className="store-cell">
                     <FaStore className="store-icon" />

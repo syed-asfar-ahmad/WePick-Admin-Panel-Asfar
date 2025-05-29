@@ -526,18 +526,25 @@ const FullScreenMenu = () => {
                     alt=""
                     style={{
                       transform: activeNestedSubMenu === item.id ? "rotate(180deg)" : "rotate(0deg)",
-                      transition: "transform 0.3s ease",
-                      width: "8px",
-                      height: "8px",
-                      cursor: "pointer"
+                      transition: "transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                      width: "10px",
+                      height: "10px",
+                      cursor: "pointer",
+                      filter: "brightness(0.8)",
+                      animation: activeNestedSubMenu === item.id ? "bounceDown 0.4s ease" : "none"
                     }}
                   />
                 </div>
               )}
             </div>
             {activeNestedSubMenu === item.id && item.submenu && (
-              <div style={{ paddingLeft: "20px" }}>
-                {item.submenu.map((subItem) => (
+              <div 
+                style={{ 
+                  paddingLeft: "20px",
+                  animation: "slideDown 0.3s ease-out"
+                }}
+              >
+                {item.submenu.map((subItem, index) => (
                   <NavLink
                     key={subItem.id}
                     to={subItem.link}
@@ -545,6 +552,9 @@ const FullScreenMenu = () => {
                     style={{
                       paddingLeft: "81px",
                       color: "inherit",
+                      animation: `fadeIn 0.3s ease-out ${index * 0.1}s`,
+                      opacity: 0,
+                      animationFillMode: "forwards"
                     }}
                     onClick={() => handleSubMenuClick(menuId, subItem.id)}
                   >
@@ -558,6 +568,45 @@ const FullScreenMenu = () => {
       </>
     );
   };
+
+  // Add keyframes for the animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes bounceDown {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      50% {
+        transform: rotate(90deg) scale(1.2);
+      }
+      100% {
+        transform: rotate(180deg) scale(1);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  `;
+  document.head.appendChild(style);
 
   return (
     <div className="hover-effect h-100 mt-2">

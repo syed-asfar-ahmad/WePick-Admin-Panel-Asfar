@@ -17,7 +17,7 @@ const DispatchedParcels = () => {
     lockerId: '',
     size: '',
     priority: '',
-    timeRange: '24h' // 24h, week, month
+    timeRange: ''  // Changed from '24h' to empty string to show all parcels by default
   });
 
   // Analytics data
@@ -178,7 +178,80 @@ const DispatchedParcels = () => {
       lockerId: '',
       size: '',
       priority: '',
-      timeRange: '24h'
+      timeRange: ''  // Reset to empty string to show all parcels
+    });
+  };
+
+  const handleApplyFilters = () => {
+    // The filtering is already handled by getFilteredParcels
+    // This function is just to provide feedback to the user
+    const filteredCount = getFilteredParcels().length;
+    alert(`Found ${filteredCount} parcels matching your criteria`);
+  };
+
+  const getFilteredParcels = () => {
+    // If no filters are active, return all parcels
+    const hasActiveFilters = Object.values(filters).some(value => value !== '');
+    if (!hasActiveFilters) {
+      return parcels;
+    }
+
+    return parcels.filter(parcel => {
+      // Search filters (case-insensitive partial matches)
+      if (filters.parcelId && !parcel.id.toLowerCase().includes(filters.parcelId.toLowerCase())) {
+        return false;
+      }
+      if (filters.retailer && !parcel.retailer.toLowerCase().includes(filters.retailer.toLowerCase())) {
+        return false;
+      }
+      if (filters.customer && !parcel.customer.toLowerCase().includes(filters.customer.toLowerCase())) {
+        return false;
+      }
+      if (filters.lockerId && !parcel.lockerId.toLowerCase().includes(filters.lockerId.toLowerCase())) {
+        return false;
+      }
+
+      // Exact match filters
+      if (filters.status && parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
+        return false;
+      }
+      if (filters.size && parcel.size.toLowerCase() !== filters.size.toLowerCase()) {
+        return false;
+      }
+      if (filters.priority && parcel.priority.toLowerCase() !== filters.priority.toLowerCase()) {
+        return false;
+      }
+
+      // Date Range filter
+      if (filters.dateRange) {
+        const parcelDate = new Date(parcel.date);
+        const filterDate = new Date(filters.dateRange);
+        if (parcelDate < filterDate) {
+          return false;
+        }
+      }
+
+      // Time Range filter
+      if (filters.timeRange) {
+        const parcelDate = new Date(parcel.date);
+        const now = new Date();
+        const diffTime = Math.abs(now - parcelDate);
+        const diffHours = diffTime / (1000 * 60 * 60);
+
+        switch (filters.timeRange) {
+          case '24h':
+            if (diffHours > 24) return false;
+            break;
+          case 'week':
+            if (diffHours > 168) return false; // 7 days
+            break;
+          case 'month':
+            if (diffHours > 720) return false; // 30 days
+            break;
+        }
+      }
+
+      return true;
     });
   };
 
@@ -289,105 +362,103 @@ const DispatchedParcels = () => {
       </div>
 
       {/* Enhanced Filters Section */}
-      {showFilters && (
-        <div className="filters-section">
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label>Time Range</label>
-              <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
-                <option value="24h">Last 24 Hours</option>
-                <option value="week">Last Week</option>
-                <option value="month">Last Month</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Date Range</label>
-              <input
-                type="date"
-                name="dateRange"
-                value={filters.dateRange}
-                onChange={handleFilterChange}
-              />
-            </div>
-            <div className="filter-group">
-              <label>Status</label>
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All Status</option>
-                <option value="delivered">Delivered</option>
-                <option value="in transit">In Transit</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Parcel ID</label>
-              <input
-                type="text"
-                name="parcelId"
-                value={filters.parcelId}
-                onChange={handleFilterChange}
-                placeholder="Enter Parcel ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Retailer</label>
-              <input
-                type="text"
-                name="retailer"
-                value={filters.retailer}
-                onChange={handleFilterChange}
-                placeholder="Enter Retailer Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Customer</label>
-              <input
-                type="text"
-                name="customer"
-                value={filters.customer}
-                onChange={handleFilterChange}
-                placeholder="Enter Customer Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Locker ID</label>
-              <input
-                type="text"
-                name="lockerId"
-                value={filters.lockerId}
-                onChange={handleFilterChange}
-                placeholder="Enter Locker ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Size</label>
-              <select name="size" value={filters.size} onChange={handleFilterChange}>
-                <option value="">All Sizes</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Priority</label>
-              <select name="priority" value={filters.priority} onChange={handleFilterChange}>
-                <option value="">All Priorities</option>
-                <option value="standard">Standard</option>
-                <option value="express">Express</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </div>
+      <div className={`filters-section ${showFilters ? '' : 'hidden'}`}>
+        <div className="filters-grid">
+          <div className="filter-group">
+            <label>Time Range</label>
+            <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
+              <option value="24h">Last 24 Hours</option>
+              <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+            </select>
           </div>
-          <div className="filter-actions">
-            <button className="reset-button" onClick={handleResetFilters}>
-              Reset Filters
-            </button>
-            <button className="apply-button">
-              Apply Filters
-            </button>
+          <div className="filter-group">
+            <label>Date Range</label>
+            <input
+              type="date"
+              name="dateRange"
+              value={filters.dateRange}
+              onChange={handleFilterChange}
+            />
+          </div>
+          <div className="filter-group">
+            <label>Status</label>
+            <select name="status" value={filters.status} onChange={handleFilterChange}>
+              <option value="">All Status</option>
+              <option value="delivered">Delivered</option>
+              <option value="in transit">In Transit</option>
+              <option value="pending">Pending</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Parcel ID</label>
+            <input
+              type="text"
+              name="parcelId"
+              value={filters.parcelId}
+              onChange={handleFilterChange}
+              placeholder="Enter Parcel ID"
+            />
+          </div>
+          <div className="filter-group">
+            <label>Retailer</label>
+            <input
+              type="text"
+              name="retailer"
+              value={filters.retailer}
+              onChange={handleFilterChange}
+              placeholder="Enter Retailer Name"
+            />
+          </div>
+          <div className="filter-group">
+            <label>Customer</label>
+            <input
+              type="text"
+              name="customer"
+              value={filters.customer}
+              onChange={handleFilterChange}
+              placeholder="Enter Customer Name"
+            />
+          </div>
+          <div className="filter-group">
+            <label>Locker ID</label>
+            <input
+              type="text"
+              name="lockerId"
+              value={filters.lockerId}
+              onChange={handleFilterChange}
+              placeholder="Enter Locker ID"
+            />
+          </div>
+          <div className="filter-group">
+            <label>Size</label>
+            <select name="size" value={filters.size} onChange={handleFilterChange}>
+              <option value="">All Sizes</option>
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Priority</label>
+            <select name="priority" value={filters.priority} onChange={handleFilterChange}>
+              <option value="">All Priorities</option>
+              <option value="standard">Standard</option>
+              <option value="express">Express</option>
+              <option value="urgent">Urgent</option>
+            </select>
           </div>
         </div>
-      )}
+        <div className="filter-actions">
+          <button className="reset-button" onClick={handleResetFilters}>
+            Reset Filters
+          </button>
+          <button className="apply-button" onClick={handleApplyFilters}>
+            Apply Filters
+          </button>
+        </div>
+      </div>
 
       {/* Edit Modal */}
       {showEditModal && selectedParcel && (
@@ -522,7 +593,7 @@ const DispatchedParcels = () => {
               </tr>
             </thead>
             <tbody>
-              {parcels.map((parcel) => (
+              {getFilteredParcels().map((parcel) => (
                 <tr key={parcel.id} className="clickable-row">
                   <td>{parcel.id}</td>
                   <td>{parcel.retailer}</td>
