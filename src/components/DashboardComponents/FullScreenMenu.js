@@ -268,18 +268,18 @@ const FullScreenMenu = () => {
         },
         {
           id: 2,
-          name: "Customers List",
-          link: "/customerslist",
+          name: "Customers",
+          link: "/customers",
           submenu: [
             {
               id: 1,
-              name: "Retailers Profile",
-              link: "/viewprofile/2",
+              name: "Customer List",
+              link: "/customers",
             },
             {
               id: 2,
-              name: "View received parcels",
-              link: "/viewreceivedparcels",
+              name: "Received parcels",
+              link: "/receivedparcels",
             }
           ]
         },

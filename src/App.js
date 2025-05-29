@@ -8,6 +8,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { SkeletonTheme } from "react-loading-skeleton";
 import AdminArea from "./customHook/AdminArea";
 import DashboardCom from "./components/DashboardComponents/DashboardCom";
+import CustomersList from "./components/DashboardComponents/CustomersList";
+import CustomersProfile from "./components/DashboardComponents/CustomersProfile";
+import ReceivedDetails from "./components/DashboardComponents/ReceivedDetails";
+import ReceivedParcels from "./components/DashboardComponents/ReceivedParcels";
 import AllPosts from "./pages/Post/AllPosts";
 import EditUniversity from "./components/University/EditUniversity";
 import UsersPage from "./pages/Users/Users";
@@ -62,6 +66,10 @@ function App() {
     { path: "/dashboard", Comp: DashboardCom },
     { path: "/allpost", Comp: AllPosts },
     { path: "/users", Comp: UsersPage },
+    { path: "/customers", Comp: CustomersList },
+    { path: "/customers/:id", Comp: CustomersProfile },
+    { path: "/receivedparcels", Comp: ReceivedParcels },
+    { path: "/receivedparcels/:parcelId", Comp: ReceivedDetails },
     { path: "/university", Comp: University },
     { path: "/events", Comp: AllEvents },
     { path: "/boostedevents", Comp: BoostedEvents },
