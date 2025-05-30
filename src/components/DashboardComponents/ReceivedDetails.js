@@ -1,23 +1,36 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FaBox, FaStore, FaUser, FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
 import './ReceivedDetails.scss';
 
 const ReceivedDetails = () => {
   const { parcelId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Mock data - In real application, this would come from an API
-  const parcel = {
+  // const parcel = {
+  //   id: parcelId,
+  //   retailer: 'Tech Gadgets Store',
+  //   customer: 'John Doe',
+  //   date: '2024-03-15',
+  //   status: 'In Transit',
+  //   lockerId: 'L789',
+  //   size: 'Medium',
+  //   priority: 'Standard',
+  //   trackingNumber: 'TRK123456789'
+  // };
+
+  const parcel = location.state?.parcel || {
     id: parcelId,
-    retailer: 'Tech Gadgets Store',
-    customer: 'John Doe',
-    date: '2024-03-15',
-    status: 'In Transit',
-    lockerId: 'L789',
-    size: 'Medium',
-    priority: 'Standard',
-    trackingNumber: 'TRK123456789'
+    retailer: 'Unknown Retailer',
+    customer: 'Unknown Customer',
+    date: 'N/A',
+    status: 'Unknown',
+    lockerId: 'N/A',
+    size: 'N/A',
+    priority: 'N/A',
+    trackingNumber: 'N/A'
   };
 
   // Mock locker locations data
@@ -73,7 +86,7 @@ const ReceivedDetails = () => {
   return (
     <div className="parcel-details-container">
       <div className="page-header">
-        <button className="back-button" onClick={() => navigate('/viewdispatchedparcels')}>
+        <button className="back-button" onClick={() => navigate('/receivedparcels')}>
           <FaArrowLeft /> Back to Parcels
         </button>
         <h1>Parcel Details</h1>

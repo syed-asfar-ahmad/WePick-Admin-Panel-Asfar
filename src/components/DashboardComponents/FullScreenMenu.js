@@ -278,7 +278,7 @@ const FullScreenMenu = () => {
             },
             {
               id: 2,
-              name: "Received parcels",
+              name: "Received Parcels",
               link: "/receivedparcels",
             }
           ]

@@ -144,19 +144,26 @@ const CustomersList = () => {
   };
 
   const handleApplyFilters = () => {
-    // The filtering is already handled by getFilteredRetailers
-    // This function is just to provide feedback to the user
     const filteredCount = getFilteredRetailers().length;
     alert(`Found ${filteredCount} retailers matching your criteria`);
   };
 
   const getFilteredRetailers = () => {
     return retailers.filter(retailer => {
-      // Search filter
-      if (filters.search && !retailer.name.toLowerCase().includes(filters.search.toLowerCase()) &&
-          !retailer.owner.toLowerCase().includes(filters.search.toLowerCase()) &&
-          !retailer.email.toLowerCase().includes(filters.search.toLowerCase())) {
-        return false;
+      // Search filter (case-insensitive)
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        const retailerName = retailer.owner.toLowerCase();
+        const retailerEmail = retailer.email.toLowerCase();
+        const retailerPhone = retailer.phone.toLowerCase();
+
+        if (
+          !retailerName.includes(searchTerm) &&
+          !retailerEmail.includes(searchTerm) &&
+          !retailerPhone.includes(searchTerm)
+        ) {
+          return false;
+        }
       }
 
       // Status filter
@@ -218,7 +225,6 @@ const CustomersList = () => {
 
   const handleSaveEdit = (e) => {
     e.preventDefault();
-    // Here you would typically make an API call to update the retailer
     console.log('Saving changes for retailer:', selectedRetailer);
     setShowEditModal(false);
     setSelectedRetailer(null);
@@ -246,7 +252,7 @@ const CustomersList = () => {
         <div className="analytics-card">
           <FaCheckCircle />
           <div className="analytics-info">
-            <h3>Active Vustomers</h3>
+            <h3>Active Customers</h3>
             <p>{analytics.activeRetailers}</p>
           </div>
         </div>
@@ -272,7 +278,7 @@ const CustomersList = () => {
                 name="search"
                 value={filters.search}
                 onChange={handleFilterChange}
-                placeholder="Search retailers..."
+                placeholder="Search Customers..."
               />
             </div>
             <div className="filter-group">
@@ -346,15 +352,6 @@ const CustomersList = () => {
             </div>
             <form onSubmit={handleSaveEdit}>
               <div className="form-grid">
-                {/* <div className="form-group">
-                  <label>Store Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={selectedRetailer.owner}
-                    onChange={handleInputChange}
-                  />
-                </div> */}
                 <div className="form-group">
                   <label>Name</label>
                   <input
@@ -436,9 +433,8 @@ const CustomersList = () => {
           <table className="retailers-table">
             <thead>
               <tr>
-                {/* <th>Store Name</th> */}
                 <th>Name</th>
-                <th>order Type</th>
+                <th>Order Type</th>
                 <th>Status</th>
                 <th>Total Parcels</th>
                 <th>Actions</th>
@@ -447,10 +443,6 @@ const CustomersList = () => {
             <tbody>
               {getFilteredRetailers().map((retailer) => (
                 <tr key={retailer.id}>
-                  {/* <td className="store-cell">
-                    <FaStore className="store-icon" />
-                    {retailer.name}
-                  </td> */}
                   <td>{retailer.owner}</td>
                   <td>{retailer.businessType}</td>
                   <td>
@@ -483,4 +475,4 @@ const CustomersList = () => {
   );
 };
 
-export default CustomersList; 
+export default CustomersList;
