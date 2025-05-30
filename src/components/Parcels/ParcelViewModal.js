@@ -87,7 +87,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="info-icon-wrapper">
                   <FaBox className="info-icon" />
                 </div>
-                <div>
+                <div className="info-content">
                   <label>Parcel ID</label>
                   <p>{parcel.id}</p>
                 </div>
@@ -96,7 +96,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="info-icon-wrapper">
                   <FaBarcode className="info-icon" />
                 </div>
-                <div>
+                <div className="info-content">
                   <label>Tracking Number</label>
                   <p className="tracking-number">{parcel.trackingNumber}</p>
                 </div>
@@ -105,7 +105,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="info-icon-wrapper">
                   <FaCalendarAlt className="info-icon" />
                 </div>
-                <div>
+                <div className="info-content">
                   <label>Created Date</label>
                   <p>{parcel.createdAt}</p>
                 </div>
