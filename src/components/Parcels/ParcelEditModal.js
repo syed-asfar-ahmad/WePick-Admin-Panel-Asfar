@@ -213,6 +213,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
               </div>
             </div>
 
+
             <div className="form-section">
               <div className="section-header">
                 <div className="section-icon-wrapper">
@@ -261,9 +262,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="form-actions">
+            <div className="form-actions">
             <button type="button" className="cancel-button" onClick={onClose}>
               Cancel
             </button>
@@ -271,6 +270,16 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
               Save Changes
             </button>
           </div>
+          </div>
+
+          {/* <div className="form-actions">
+            <button type="button" className="cancel-button" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" className="save-button">
+              Save Changes
+            </button>
+          </div> */}
         </form>
       </div>
     </div>

@@ -229,7 +229,7 @@
             color: #6CAD61;
             font-weight: 500;
             background: rgba(108, 173, 97, 0.1);
-            padding: 8px 12px;
+            padding: 5px 8px;
             border-radius: 8px;
             display: inline-block;
           }
@@ -331,7 +331,8 @@
           .location-card {
             background: #f8f9fa;
             border-radius: 12px;
-            padding: 20px;
+            padding-top: 20px;
+            padding-bottom: 7px;
             transition: transform 0.2s ease;
 
             &:hover {
@@ -492,33 +493,40 @@
         gap: 16px;
 
         .delivery-card {
-          background: #f8f9fa;
-          padding: 20px;
-          border-radius: 12px;
+          background: rgba(108, 173, 97, 0.1);
           display: flex;
           align-items: center;
           gap: 12px;
-          transition: transform 0.2s ease;
+          margin-bottom: 24px;
+          padding-bottom: 16px;
+          border-bottom: 2px solid #f0f0f0;
+          border-radius: 10px;
+          
+
 
           &:hover {
             transform: translateY(-2px);
           }
 
           .delivery-icon-wrapper {
-            background: rgba(108, 173, 97, 0.1);
-            padding: 10px;
-            border-radius: 10px;
+            // background: rgba(108, 173, 97, 0.1);
+            // border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            // padding: 10px;
+            
+          
+            
+            
 
             .delivery-icon {
               font-size: 18px;
               color: #6CAD61;
+              
             }
           }
+          
 
           div {
             flex: 1;

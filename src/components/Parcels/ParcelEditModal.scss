@@ -92,11 +92,13 @@
     }
   }
 
+
   .modal-content {
     padding: 24px;
     overflow-y: auto;
     flex: 1;
     background: #f8f9fa;
+    
 
     // Custom scrollbar styling
     &::-webkit-scrollbar {
@@ -194,6 +196,7 @@
             border-radius: 8px;
             font-size: 14px;
             color: #333;
+            opacity: 0.2;
             transition: all 0.2s;
             background: #fafafa;
             height: 45px;
@@ -260,15 +263,19 @@
       }
     }
 
+    
+
+
     .form-actions {
       display: flex;
       justify-content: flex-end;
       gap: 16px;
-      padding: 24px 0;
-      margin-top: 32px;
+      padding: 14px 0;
+      margin-top: 345px;
 
       button {
-        padding: 12px 32px;
+        width: 80px;
+        height: 50px;
         border-radius: 8px;
         font-size: 14px;
         font-weight: 500;
@@ -291,6 +298,7 @@
         &.save-button {
           background: #6CAD61;
           border: none;
+          width: 120px;
           color: white;
           box-shadow: 0 2px 4px rgba(108, 173, 97, 0.2);
 
