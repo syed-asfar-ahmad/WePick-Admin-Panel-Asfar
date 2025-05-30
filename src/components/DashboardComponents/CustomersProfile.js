@@ -20,14 +20,14 @@ const CustomersProfile = () => {
   const retailerData = {
     status: 'Active',
     recentActivity: [
-      { type: 'delivery', status: 'completed', date: '2024-03-15', details: 'Parcel #12345 delivered successfully' },
-      { type: 'pickup', status: 'pending', date: '2024-03-14', details: 'New pickup request for Parcel #12346' },
-      { type: 'delivery', status: 'failed', date: '2024-03-13', details: 'Failed delivery attempt for Parcel #12344' }
+      { type: 'delivery', status: 'completed', date: '2024-03-15', details: 'Parcel #12345 received successfully' },
+      { type: 'pickup', status: 'pending', date: '2024-03-14', details: 'New order request for Parcel #12346' },
+      { type: 'delivery', status: 'failed', date: '2024-03-13', details: 'Failed order attempt for Parcel #12344' }
     ],
     documents: [
-      { name: 'Business License', url: '#', status: 'verified' },
-      { name: 'Tax Certificate', url: '#', status: 'verified' },
-      { name: 'Insurance Policy', url: '#', status: 'pending' }
+      { name: 'Order Invoices', url: '#', status: 'verified' },
+      { name: 'Membership Card', url: '#', status: 'verified' },
+      { name: 'Return Policy', url: '#', status: 'pending' }
     ]
   };
 
@@ -287,15 +287,6 @@ const CustomersProfile = () => {
           <div className="store-details">
             {isEditing ? (
               <div className="edit-form">
-                {/* <div className="form-group">
-                  <label>Store Name</label>
-                  <input
-                    type="text"
-                    name="storeName"
-                    value={formData.storeName}
-                    onChange={handleInputChange}
-                  />
-                </div> */}
                 <div className="form-group">
                   <label>Name</label>
                   <input
@@ -343,8 +334,7 @@ const CustomersProfile = () => {
               </div>
             ) : (
               <>
-                {/* <h2><FaStore /> {formData.storeName}</h2> */}
-                <p className="owner-name">Name: {formData.ownerName}</p>
+                <h2>{formData.ownerName}</h2>
                 <div className="contact-info">
                   <p><FaEnvelope /> {formData.email}</p>
                   <p><FaPhone /> {formData.phone}</p>

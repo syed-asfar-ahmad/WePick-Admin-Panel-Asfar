@@ -8,6 +8,7 @@ const ReceivedParcels = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
+  const [filteredParcels, setFilteredParcels] = useState([]);
   const [filters, setFilters] = useState({
     dateRange: '',
     status: '',
@@ -17,7 +18,7 @@ const ReceivedParcels = () => {
     lockerId: '',
     size: '',
     priority: '',
-    timeRange: ''  // Changed from '24h' to empty string to show all parcels by default
+    timeRange: '24h'
   });
 
   // Analytics data
@@ -160,6 +161,16 @@ const ReceivedParcels = () => {
     }
   };
 
+  // Apply filters whenever filters state changes
+  useEffect(() => {
+    applyFilters();
+  }, [filters]);
+
+  // Initialize filtered parcels with all parcels
+  useEffect(() => {
+    setFilteredParcels(parcels);
+  }, []);
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({
@@ -178,81 +189,71 @@ const ReceivedParcels = () => {
       lockerId: '',
       size: '',
       priority: '',
-      timeRange: ''  // Reset to empty string to show all parcels
+      timeRange: '24h'
     });
+    setFilteredParcels(parcels);
   };
 
-  const handleApplyFilters = () => {
-    // The filtering is already handled by getFilteredParcels
-    // This function is just to provide feedback to the user
-    const filteredCount = getFilteredParcels().length;
-    alert(`Found ${filteredCount} parcels matching your criteria`);
-  };
-
-  const getFilteredParcels = () => {
-    // If no filters are active, return all parcels
-    const hasActiveFilters = Object.values(filters).some(value => value !== '');
-    if (!hasActiveFilters) {
-      return parcels;
+  const applyFilters = () => {
+    let result = [...parcels];
+    
+    // Apply parcel ID filter
+    if (filters.parcelId) {
+      result = result.filter(parcel => 
+        parcel.id.toLowerCase().includes(filters.parcelId.toLowerCase())
+      );
     }
-
-    return parcels.filter(parcel => {
-      // Search filters (case-insensitive partial matches)
-      if (filters.parcelId && !parcel.id.toLowerCase().includes(filters.parcelId.toLowerCase())) {
-        return false;
-      }
-      if (filters.retailer && !parcel.retailer.toLowerCase().includes(filters.retailer.toLowerCase())) {
-        return false;
-      }
-      if (filters.customer && !parcel.customer.toLowerCase().includes(filters.customer.toLowerCase())) {
-        return false;
-      }
-      if (filters.lockerId && !parcel.lockerId.toLowerCase().includes(filters.lockerId.toLowerCase())) {
-        return false;
-      }
-
-      // Exact match filters
-      if (filters.status && parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
-        return false;
-      }
-      if (filters.size && parcel.size.toLowerCase() !== filters.size.toLowerCase()) {
-        return false;
-      }
-      if (filters.priority && parcel.priority.toLowerCase() !== filters.priority.toLowerCase()) {
-        return false;
-      }
-
-      // Date Range filter
-      if (filters.dateRange) {
-        const parcelDate = new Date(parcel.date);
-        const filterDate = new Date(filters.dateRange);
-        if (parcelDate < filterDate) {
-          return false;
-        }
-      }
-
-      // Time Range filter
-      if (filters.timeRange) {
-        const parcelDate = new Date(parcel.date);
-        const now = new Date();
-        const diffTime = Math.abs(now - parcelDate);
-        const diffHours = diffTime / (1000 * 60 * 60);
-
-        switch (filters.timeRange) {
-          case '24h':
-            if (diffHours > 24) return false;
-            break;
-          case 'week':
-            if (diffHours > 168) return false; // 7 days
-            break;
-          case 'month':
-            if (diffHours > 720) return false; // 30 days
-            break;
-        }
-      }
-
-      return true;
-    });
+    
+    // Apply retailer filter
+    if (filters.retailer) {
+      result = result.filter(parcel => 
+        parcel.retailer.toLowerCase().includes(filters.retailer.toLowerCase())
+      );
+    }
+    
+    // Apply customer filter
+    if (filters.customer) {
+      result = result.filter(parcel => 
+        parcel.customer.toLowerCase().includes(filters.customer.toLowerCase())
+      );
+    }
+    
+    // Apply locker ID filter
+    if (filters.lockerId) {
+      result = result.filter(parcel => 
+        parcel.lockerId.toLowerCase().includes(filters.lockerId.toLowerCase())
+      );
+    }
+    
+    // Apply status filter
+    if (filters.status) {
+      result = result.filter(parcel => 
+        parcel.status.toLowerCase() === filters.status.toLowerCase()
+      );
+    }
+    
+    // Apply size filter
+    if (filters.size) {
+      result = result.filter(parcel => 
+        parcel.size.toLowerCase() === filters.size.toLowerCase()
+      );
+    }
+    
+    // Apply priority filter
+    if (filters.priority) {
+      result = result.filter(parcel => 
+        parcel.priority.toLowerCase() === filters.priority.toLowerCase()
+      );
+    }
+    
+    // Apply date range filter
+    if (filters.dateRange) {
+      result = result.filter(parcel => 
+        parcel.date === filters.dateRange
+      );
+    }
+    
+    setFilteredParcels(result);
   };
 
   const getStatusColor = (status) => {
@@ -279,6 +280,13 @@ const ReceivedParcels = () => {
     e.preventDefault();
     // Here you would typically make an API call to update the parcel
     console.log('Saving changes for parcel:', selectedParcel);
+    
+    // Update the parcel in the local state
+    const updatedParcels = parcels.map(p => 
+      p.id === selectedParcel.id ? selectedParcel : p
+    );
+    setFilteredParcels(updatedParcels);
+    
     setShowEditModal(false);
     setSelectedParcel(null);
   };
@@ -291,38 +299,12 @@ const ReceivedParcels = () => {
     }));
   };
 
-  const handleViewParcel = (parcel) => {
-    navigate(`/viewdispatchedparcels/${parcel.id}`);
-  };
+  // const handleViewParcel = (parcel) => {
+  //   navigate(`/receivedparcels/${parcel.id}`);
+  // };
 
-  // Mock tracking history data
-  const getTrackingHistory = (parcelId) => {
-    return [
-      {
-        timestamp: '2024-03-17 14:30:00',
-        status: 'Delivered',
-        location: 'Customer Location',
-        description: 'Package delivered to customer'
-      },
-      {
-        timestamp: '2024-03-17 13:15:00',
-        status: 'In Transit',
-        location: 'Downtown Hub',
-        description: 'Package out for delivery'
-      },
-      {
-        timestamp: '2024-03-17 10:00:00',
-        status: 'In Transit',
-        location: 'Westside Center',
-        description: 'Package arrived at sorting facility'
-      },
-      {
-        timestamp: '2024-03-16 16:45:00',
-        status: 'Pending',
-        location: 'Eastside Station',
-        description: 'Package received at locker'
-      }
-    ];
+  const handleViewParcel = (parcel) => {
+    navigate(`/receivedparcels/${parcel.id}`, { state: { parcel } });
   };
 
   return (
@@ -353,7 +335,7 @@ const ReceivedParcels = () => {
       </div>
 
       <div className="page-header">
-        <h1>Dispatched Parcels</h1>
+        <h1>Received Parcels</h1>
         <div className="header-actions">
           <button className="filter-button" onClick={() => setShowFilters(!showFilters)}>
             <FaFilter style={{ color: '#4CAF50' }} /> {showFilters ? 'Hide Filters' : 'Show Filters'}
@@ -362,103 +344,105 @@ const ReceivedParcels = () => {
       </div>
 
       {/* Enhanced Filters Section */}
-      <div className={`filters-section ${showFilters ? '' : 'hidden'}`}>
-        <div className="filters-grid">
-          <div className="filter-group">
-            <label>Time Range</label>
-            <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
-              <option value="24h">Last 24 Hours</option>
-              <option value="week">Last Week</option>
-              <option value="month">Last Month</option>
-            </select>
+      {showFilters && (
+        <div className="filters-section">
+          <div className="filters-grid">
+            <div className="filter-group">
+              <label>Time Range</label>
+              <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
+                <option value="24h">Last 24 Hours</option>
+                <option value="week">Last Week</option>
+                <option value="month">Last Month</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Date Range</label>
+              <input
+                type="date"
+                name="dateRange"
+                value={filters.dateRange}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-group">
+              <label>Status</label>
+              <select name="status" value={filters.status} onChange={handleFilterChange}>
+                <option value="">All Status</option>
+                <option value="delivered">Delivered</option>
+                <option value="in transit">In Transit</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Parcel ID</label>
+              <input
+                type="text"
+                name="parcelId"
+                value={filters.parcelId}
+                onChange={handleFilterChange}
+                placeholder="Enter Parcel ID"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Retailer</label>
+              <input
+                type="text"
+                name="retailer"
+                value={filters.retailer}
+                onChange={handleFilterChange}
+                placeholder="Enter Retailer Name"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Customer</label>
+              <input
+                type="text"
+                name="customer"
+                value={filters.customer}
+                onChange={handleFilterChange}
+                placeholder="Enter Customer Name"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Locker ID</label>
+              <input
+                type="text"
+                name="lockerId"
+                value={filters.lockerId}
+                onChange={handleFilterChange}
+                placeholder="Enter Locker ID"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Size</label>
+              <select name="size" value={filters.size} onChange={handleFilterChange}>
+                <option value="">All Sizes</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Priority</label>
+              <select name="priority" value={filters.priority} onChange={handleFilterChange}>
+                <option value="">All Priorities</option>
+                <option value="standard">Standard</option>
+                <option value="express">Express</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
           </div>
-          <div className="filter-group">
-            <label>Date Range</label>
-            <input
-              type="date"
-              name="dateRange"
-              value={filters.dateRange}
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="filter-group">
-            <label>Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Status</option>
-              <option value="delivered">Delivered</option>
-              <option value="in transit">In Transit</option>
-              <option value="pending">Pending</option>
-              <option value="failed">Failed</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Parcel ID</label>
-            <input
-              type="text"
-              name="parcelId"
-              value={filters.parcelId}
-              onChange={handleFilterChange}
-              placeholder="Enter Parcel ID"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Retailer</label>
-            <input
-              type="text"
-              name="retailer"
-              value={filters.retailer}
-              onChange={handleFilterChange}
-              placeholder="Enter Retailer Name"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Customer</label>
-            <input
-              type="text"
-              name="customer"
-              value={filters.customer}
-              onChange={handleFilterChange}
-              placeholder="Enter Customer Name"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Locker ID</label>
-            <input
-              type="text"
-              name="lockerId"
-              value={filters.lockerId}
-              onChange={handleFilterChange}
-              placeholder="Enter Locker ID"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Size</label>
-            <select name="size" value={filters.size} onChange={handleFilterChange}>
-              <option value="">All Sizes</option>
-              <option value="small">Small</option>
-              <option value="medium">Medium</option>
-              <option value="large">Large</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Priority</label>
-            <select name="priority" value={filters.priority} onChange={handleFilterChange}>
-              <option value="">All Priorities</option>
-              <option value="standard">Standard</option>
-              <option value="express">Express</option>
-              <option value="urgent">Urgent</option>
-            </select>
+          <div className="filter-actions">
+            <button className="reset-button" onClick={handleResetFilters}>
+              Reset Filters
+            </button>
+            <button className="apply-button" onClick={applyFilters}>
+              Apply Filters
+            </button>
           </div>
         </div>
-        <div className="filter-actions">
-          <button className="reset-button" onClick={handleResetFilters}>
-            Reset Filters
-          </button>
-          <button className="apply-button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Edit Modal */}
       {showEditModal && selectedParcel && (
@@ -593,31 +577,42 @@ const ReceivedParcels = () => {
               </tr>
             </thead>
             <tbody>
-              {getFilteredParcels().map((parcel) => (
-                <tr key={parcel.id} className="clickable-row">
-                  <td>{parcel.id}</td>
-                  <td>{parcel.retailer}</td>
-                  <td>{parcel.customer}</td>
-                  <td>{parcel.date}</td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{ backgroundColor: getStatusColor(parcel.status) }}
-                    >
-                      {parcel.status}
-                    </span>
-                  </td>
-                  <td>{parcel.lockerId}</td>
-                  <td>{parcel.size}</td>
-                  <td>{parcel.priority}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>
-                      <button className="edit-button" onClick={() => handleEditParcel(parcel)}>Edit</button>
-                    </div>
+              {filteredParcels.length > 0 ? (
+                filteredParcels.map((parcel) => (
+                  <tr key={parcel.id} className="clickable-row">
+                    <td>{parcel.id}</td>
+                    <td>{parcel.retailer}</td>
+                    <td>{parcel.customer}</td>
+                    <td>{parcel.date}</td>
+                    <td>
+                      <span 
+                        className="status-badge"
+                        style={{ 
+                          backgroundColor: getStatusColor(parcel.status),
+                          whiteSpace: 'nowrap' // This ensures the text stays on one line
+                        }}
+                      >
+                        {parcel.status}
+                      </span>
+                    </td>
+                    <td>{parcel.lockerId}</td>
+                    <td>{parcel.size}</td>
+                    <td>{parcel.priority}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>
+                        <button className="edit-button" onClick={() => handleEditParcel(parcel)}>Edit</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9" className="no-results">
+                    No parcels found matching your filters
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -626,4 +621,4 @@ const ReceivedParcels = () => {
   );
 };
 
-export default ReceivedParcels; 
+export default ReceivedParcels;
