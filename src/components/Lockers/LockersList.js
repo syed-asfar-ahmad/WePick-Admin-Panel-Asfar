@@ -1,0 +1,354 @@
+import React, { useState, useEffect } from 'react';
+import { FaMapMarkerAlt, FaLock, FaUnlock, FaFilter, FaSearch, FaTools, FaBox, FaClock, FaExclamationTriangle, FaRedo, FaSpinner } from 'react-icons/fa';
+import './LockersList.scss';
+
+const LockersList = () => {
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedLocker, setSelectedLocker] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isUnlocking, setIsUnlocking] = useState({});
+  const [filters, setFilters] = useState({
+    search: '',
+    status: '',
+    location: '',
+  });
+
+  // Mock data for lockers
+  const mockLockers = [
+    {
+      id: 'L001',
+      location: 'Downtown Hub',
+      status: 'Available',
+      lastUsed: '2024-03-15 14:30',
+      size: 'Medium',
+      coordinates: { lat: 37.7749, lng: -122.4194 },
+      capacity: '75%',
+      lastMaintenance: '2024-02-15'
+    },
+    {
+      id: 'L002',
+      location: 'Westside Center',
+      status: 'Occupied',
+      lastUsed: '2024-03-17 09:15',
+      size: 'Large',
+      coordinates: { lat: 37.7833, lng: -122.4167 },
+      capacity: '90%',
+      lastMaintenance: '2024-03-01'
+    },
+    {
+      id: 'L003',
+      location: 'Eastside Station',
+      status: 'Available',
+      lastUsed: '2024-03-16 16:45',
+      size: 'Small',
+      coordinates: { lat: 37.7855, lng: -122.4067 },
+      capacity: '60%',
+      lastMaintenance: '2024-02-28'
+    },
+    {
+      id: 'L004',
+      location: 'North Terminal',
+      status: 'Occupied',
+      lastUsed: '2024-03-17 11:20',
+      size: 'Medium',
+      coordinates: { lat: 37.7895, lng: -122.4000 },
+      capacity: '85%',
+      lastMaintenance: '2024-03-10'
+    },
+    {
+      id: 'L005',
+      location: 'South Point',
+      status: 'Available',
+      lastUsed: '2024-03-15 13:10',
+      size: 'Large',
+      coordinates: { lat: 37.7800, lng: -122.4100 },
+      capacity: '70%',
+      lastMaintenance: '2024-03-05'
+    }
+  ];
+
+  // Simulate API call to fetch lockers
+  const fetchLockers = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // In real app, this would be an API call
+      return mockLockers;
+    } catch (err) {
+      setError('Failed to load lockers. Please try again.');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const [lockers, setLockers] = useState([]);
+
+  useEffect(() => {
+    loadLockers();
+  }, []);
+
+  const loadLockers = async () => {
+    try {
+      const data = await fetchLockers();
+      setLockers(data);
+    } catch (err) {
+      console.error('Error loading lockers:', err);
+    }
+  };
+
+  // Analytics data
+  const analytics = {
+    totalLockers: lockers.length,
+    availableLockers: lockers.filter(l => l.status === 'Available').length,
+    occupiedLockers: lockers.filter(l => l.status === 'Occupied').length
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      search: '',
+      status: '',
+      location: ''
+    });
+  };
+
+  const handleApplyFilters = () => {
+    const filteredCount = getFilteredLockers().length;
+    alert(`Found ${filteredCount} lockers matching your criteria`);
+  };
+
+  const getFilteredLockers = () => {
+    return lockers.filter(locker => {
+      if (filters.search && !locker.id.toLowerCase().includes(filters.search.toLowerCase())) {
+        return false;
+      }
+
+      if (filters.status && locker.status.toLowerCase() !== filters.status.toLowerCase()) {
+        return false;
+      }
+
+      if (filters.location && !locker.location.toLowerCase().includes(filters.location.toLowerCase())) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
+  const handleUnlockLocker = async (lockerId) => {
+    try {
+      setIsUnlocking(prev => ({ ...prev, [lockerId]: true }));
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Here you would integrate with the BlueBits API
+      alert(`Unlocking locker ${lockerId} via BlueBits API`);
+      // Update locker status in the list
+      setLockers(prev => prev.map(locker => 
+        locker.id === lockerId 
+          ? { ...locker, status: 'Available' }
+          : locker
+      ));
+    } catch (error) {
+      console.error('Error unlocking locker:', error);
+      setError(`Failed to unlock locker ${lockerId}. Please try again.`);
+    } finally {
+      setIsUnlocking(prev => ({ ...prev, [lockerId]: false }));
+    }
+  };
+
+  const getStatusColor = (status) => {
+    return status === 'Available' ? '#4CAF50' : '#F44336';
+  };
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <div className="error-content">
+          <FaExclamationTriangle className="error-icon" />
+          <h2>Error Loading Lockers</h2>
+          <p>{error}</p>
+          <button className="retry-button" onClick={loadLockers}>
+            <FaRedo /> Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="lockers-list-container">
+      <div className="analytics-section">
+        <div className="analytics-card">
+          <div className="analytics-icon total">
+            <FaBox />
+          </div>
+          <div className="analytics-info">
+            <h3>Total Lockers</h3>
+            <p>{isLoading ? '...' : analytics.totalLockers}</p>
+          </div>
+        </div>
+        <div className="analytics-card">
+          <div className="analytics-icon available">
+            <FaLock />
+          </div>
+          <div className="analytics-info">
+            <h3>Available</h3>
+            <p>{isLoading ? '...' : analytics.availableLockers}</p>
+          </div>
+        </div>
+        <div className="analytics-card">
+          <div className="analytics-icon occupied">
+            <FaUnlock />
+          </div>
+          <div className="analytics-info">
+            <h3>Occupied</h3>
+            <p>{isLoading ? '...' : analytics.occupiedLockers}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="page-header">
+        <div className="header-content">
+          <h1>Lockers Management</h1>
+          <p className="subtitle">Monitor and manage your smart lockers</p>
+        </div>
+        <div className="header-actions">
+          <button 
+            className="filter-button"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <FaFilter />{showFilters ? 'Close Filters' : 'Show Filters'}
+          </button>
+        </div>
+      </div>
+
+      <div className={`filters-section ${showFilters ? 'show' : ''}`}>
+        <div className="filters-grid">
+          <div className="filter-group">
+            <label>Search</label>
+            <div className="search-input">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                name="search"
+                value={filters.search}
+                onChange={handleFilterChange}
+                placeholder="Search by Locker ID"
+              />
+            </div>
+          </div>
+          <div className="filter-group">
+            <label>Status</label>
+            <select name="status" value={filters.status} onChange={handleFilterChange}>
+              <option value="">All Status</option>
+              <option value="available">Available</option>
+              <option value="occupied">Occupied</option>
+            </select>
+          </div>
+          <div className="filter-group">
+            <label>Location</label>
+            <input
+              type="text"
+              name="location"
+              value={filters.location}
+              onChange={handleFilterChange}
+              placeholder="Enter Location"
+            />
+          </div>
+        </div>
+        <div className="filter-actions">
+          <button className="reset-button" onClick={handleResetFilters}>
+            Reset Filters
+          </button>
+          <button className="apply-button" onClick={handleApplyFilters}>
+            Apply Filters
+          </button>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="loading-container">
+          <FaSpinner className="spinner" />
+          <p>Loading lockers...</p>
+        </div>
+      ) : (
+        <div className="lockers-grid">
+          {getFilteredLockers().map((locker) => (
+            <div key={locker.id} className="locker-card">
+              <div className="locker-header">
+                <div className="locker-title">
+                  <h3>Locker {locker.id}</h3>
+                  <span className="size-badge">{locker.size}</span>
+                </div>
+                <span 
+                  className="status-badge"
+                  style={{ backgroundColor: getStatusColor(locker.status) }}
+                >
+                  {locker.status}
+                </span>
+              </div>
+              <div className="locker-details">
+                <div className="detail-item">
+                  <FaMapMarkerAlt className="icon" />
+                  <span>{locker.location}</span>
+                </div>
+                <div className="detail-item">
+                  <FaClock className="icon" />
+                  <span>Last Used: {locker.lastUsed}</span>
+                </div>
+                <div className="detail-item">
+                  <FaTools className="icon" />
+                  <span>Last Maintenance: {locker.lastMaintenance}</span>
+                </div>
+                <div className="progress-section">
+                  <div className="progress-label">
+                    <span>Capacity</span>
+                    <span>{locker.capacity}</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill"
+                      style={{ 
+                        width: locker.capacity,
+                        backgroundColor: locker.capacity > '80%' ? '#4CAF50' : '#FFC107'
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="locker-actions">
+                <button 
+                  className={`unlock-button ${isUnlocking[locker.id] ? 'loading' : ''}`}
+                  onClick={() => handleUnlockLocker(locker.id)}
+                  disabled={locker.status === 'Available' || isUnlocking[locker.id]}
+                >
+                  {isUnlocking[locker.id] ? (
+                    <div className="button-spinner"></div>
+                  ) : (
+                    <>
+                      {locker.status === 'Available' ? <FaLock /> : <FaUnlock />}
+                      {locker.status === 'Available' ? 'Locked' : 'Unlock'}
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default LockersList; 

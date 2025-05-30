@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
 
@@ -8,6 +8,8 @@ const DispatchedParcels = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     dateRange: '',
     status: '',
@@ -19,6 +21,23 @@ const DispatchedParcels = () => {
     priority: '',
     timeRange: ''  // Changed from '24h' to empty string to show all parcels by default
   });
+
+  useEffect(() => {
+    const fetchParcels = async () => {
+      try {
+        setIsLoading(true);
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // In a real application, you would fetch data from your API here
+        setIsLoading(false);
+      } catch (err) {
+        setError('Failed to load parcels. Please try again.');
+        setIsLoading(false);
+      }
+    };
+
+    fetchParcels();
+  }, []);
 
   // Analytics data
   const analytics = {
@@ -324,6 +343,34 @@ const DispatchedParcels = () => {
       }
     ];
   };
+
+  if (isLoading) {
+    return (
+      <div className="dispatched-parcels-container">
+        <div className="loading-container">
+          <FaSpinner className="spinner" />
+          <p>Loading parcels...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dispatched-parcels-container">
+        <div className="error-container">
+          <div className="error-content">
+            <FaTimesCircle className="error-icon" />
+            <h2>Error Loading Parcels</h2>
+            <p>{error}</p>
+            <button className="retry-button" onClick={() => window.location.reload()}>
+              <FaSpinner /> Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dispatched-parcels-container">

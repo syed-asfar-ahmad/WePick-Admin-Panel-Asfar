@@ -22,6 +22,7 @@ import { useState, useEffect } from "react";
 import DispatchedParcels from './pages/DispatchedParcels';
 import ParcelDetails from './pages/ParcelDetails';
 import ParcelsList from './components/Parcels/ParcelsList';
+import LockersList from './components/Lockers/LockersList';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -51,10 +52,10 @@ function App() {
     { path: "/parcels/listallparcels", Comp: ParcelsList },
     { path: "/customerslist", Comp: UsersPage },
     { path: "/viewreceivedparcels", Comp: ParcelsList },
-    { path: "/listoflockers", Comp: ParcelsList },
-    { path: "/location", Comp: ParcelsList },
-    { path: "/status", Comp: ParcelsList },
-    { path: "/unlockoption", Comp: ParcelsList },
+    { path: "/listoflockers", Comp: LockersList },
+    { path: "/location", Comp: LockersList },
+    { path: "/status", Comp: LockersList },
+    { path: "/unlockoption", Comp: LockersList },
     { path: "/sentnotification", Comp: ParcelsList },
     { path: "/filters", Comp: ParcelsList },
     { path: "/lockerusage", Comp: ParcelsList },

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner } from 'react-icons/fa';
 import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
@@ -8,6 +8,8 @@ const ParcelsList = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [editingParcel, setEditingParcel] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -161,6 +163,24 @@ const ParcelsList = () => {
       lastUpdate: '2024-03-09 15:00'
     }
   ];
+
+  useEffect(() => {
+    const fetchParcels = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // In a real application, you would fetch data from an API here
+        setIsLoading(false);
+      } catch (err) {
+        setError('Failed to load parcels. Please try again later.');
+        setIsLoading(false);
+      }
+    };
+
+    fetchParcels();
+  }, []);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -365,72 +385,92 @@ const ParcelsList = () => {
       {/* Table View */}
       <div className="view-content">
         <div className="table-container">
-          <table className="parcels-table">
-            <thead>
-              <tr>
-                <th>Parcel ID</th>
-                <th>Status</th>
-                <th>Sender</th>
-                <th>Recipient</th>
-                <th>Locker ID</th>
-                <th>Location</th>
-                <th>Tracking Number</th>
-                <th>Created Date</th>
-                <th>Estimated Delivery</th>
-                <th>Dimensions</th>
-                <th>Weight</th>
-                <th>Retailer</th>
-                <th>Delivery Attempts</th>
-                <th>Last Update</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {getFilteredParcels().map((parcel) => (
-                <tr key={parcel.id}>
-                  <td className="parcel-cell">
-                    <div className="icon-text">
-                      <FaBox className="parcel-icon" style={{ color: '#4CAF50' }} />
-                      <span>{parcel.id}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{ backgroundColor: getStatusColor(parcel.status) }}
-                    >
-                      {parcel.status}
-                    </span>
-                  </td>
-                  <td>{parcel.sender}</td>
-                  <td>{parcel.recipient}</td>
-                  <td>{parcel.lockerId}</td>
-                  <td>{parcel.location}</td>
-                  <td>{parcel.trackingNumber}</td>
-                  <td>{parcel.createdAt}</td>
-                  <td>{parcel.estimatedDelivery}</td>
-                  <td>{parcel.dimensions}</td>
-                  <td>{parcel.weight}</td>
-                  <td>{parcel.retailer}</td>
-                  <td>{parcel.deliveryAttempts}</td>
-                  <td>{parcel.lastUpdate}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button 
-                        className="action-button view"
-                        onClick={() => handleViewParcel(parcel)}
-                      >
-                        View
-                      </button>
-                      <button className="action-button edit" onClick={() => handleEditParcel(parcel)}>
-                        Edit
-                      </button>
-                    </div>
-                  </td>
+          {isLoading ? (
+            <div className="loading-container">
+              <FaSpinner className="spinner" />
+              <p>Loading parcels...</p>
+            </div>
+          ) : error ? (
+            <div className="error-container">
+              <p className="error-message">{error}</p>
+              <button 
+                className="retry-button"
+                onClick={() => window.location.reload()}
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <table className="parcels-table">
+              <thead>
+                <tr>
+                  <th>Parcel ID</th>
+                  <th>Status</th>
+                  <th>Sender</th>
+                  <th>Recipient</th>
+                  <th>Locker ID</th>
+                  <th>Location</th>
+                  <th>Tracking Number</th>
+                  <th>Created Date</th>
+                  <th>Estimated Delivery</th>
+                  <th>Dimensions</th>
+                  <th>Weight</th>
+                  <th>Retailer</th>
+                  <th>Delivery Attempts</th>
+                  <th>Last Update</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {getFilteredParcels().map((parcel) => (
+                  <tr key={parcel.id}>
+                    <td className="parcel-cell">
+                      <div className="icon-text">
+                        <FaBox className="parcel-icon" style={{ color: '#4CAF50' }} />
+                        <span>{parcel.id}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span 
+                        className="status-badge"
+                        style={{ backgroundColor: getStatusColor(parcel.status) }}
+                      >
+                        {parcel.status}
+                      </span>
+                    </td>
+                    <td>{parcel.sender}</td>
+                    <td>{parcel.recipient}</td>
+                    <td>{parcel.lockerId}</td>
+                    <td>{parcel.location}</td>
+                    <td>{parcel.trackingNumber}</td>
+                    <td>{parcel.createdAt}</td>
+                    <td>{parcel.estimatedDelivery}</td>
+                    <td>{parcel.dimensions}</td>
+                    <td>{parcel.weight}</td>
+                    <td>{parcel.retailer}</td>
+                    <td>{parcel.deliveryAttempts}</td>
+                    <td>{parcel.lastUpdate}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button 
+                          className="action-button view"
+                          onClick={() => handleViewParcel(parcel)}
+                        >
+                          View
+                        </button>
+                        <button 
+                          className="action-button edit" 
+                          onClick={() => handleEditParcel(parcel)}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 

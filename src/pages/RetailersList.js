@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaExclamationTriangle, FaRedo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './RetailersList.scss';
 
@@ -8,6 +8,8 @@ const RetailersList = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRetailer, setSelectedRetailer] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -31,7 +33,7 @@ const RetailersList = () => {
   };
 
   // Mock data for retailers
-  const retailers = [
+  const mockRetailers = [
     {
       id: 1,
       name: 'Tech Gadgets Store',
@@ -123,6 +125,38 @@ const RetailersList = () => {
       }
     }
   ];
+
+  // Simulate API call to fetch retailers
+  const fetchRetailers = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // In real app, this would be an API call
+      return mockRetailers;
+    } catch (err) {
+      setError('Failed to load retailers. Please try again.');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const [retailers, setRetailers] = useState([]);
+
+  useEffect(() => {
+    loadRetailers();
+  }, []);
+
+  const loadRetailers = async () => {
+    try {
+      const data = await fetchRetailers();
+      setRetailers(data);
+    } catch (err) {
+      console.error('Error loading retailers:', err);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -232,6 +266,21 @@ const RetailersList = () => {
     }));
   };
 
+  if (error) {
+    return (
+      <div className="error-container">
+        <div className="error-content">
+          <FaExclamationTriangle className="error-icon" />
+          <h2>Error Loading Retailers</h2>
+          <p>{error}</p>
+          <button className="retry-button" onClick={loadRetailers}>
+            <FaRedo /> Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="retailers-list-container">
       {/* Analytics Dashboard */}
@@ -240,14 +289,14 @@ const RetailersList = () => {
           <FaStore />
           <div className="analytics-info">
             <h3>Total Retailers</h3>
-            <p>{analytics.totalRetailers}</p>
+            <p>{isLoading ? '...' : analytics.totalRetailers}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaCheckCircle />
           <div className="analytics-info">
             <h3>Active Retailers</h3>
-            <p>{analytics.activeRetailers}</p>
+            <p>{isLoading ? '...' : analytics.activeRetailers}</p>
           </div>
         </div>
       </div>
@@ -431,50 +480,57 @@ const RetailersList = () => {
       {/* Table View */}
       <div className="view-content">
         <div className="table-container">
-          <table className="retailers-table">
-            <thead>
-              <tr>
-                <th>Store Name</th>
-                <th>Owner</th>
-                <th>Business Type</th>
-                <th>Status</th>
-                <th>Total Parcels</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {getFilteredRetailers().map((retailer) => (
-                <tr key={retailer.id}>
-                  <td className="store-cell">
-                    <FaStore className="store-icon" />
-                    {retailer.name}
-                  </td>
-                  <td>{retailer.owner}</td>
-                  <td>{retailer.businessType}</td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{ backgroundColor: getStatusColor(retailer.status) }}
-                    >
-                      {retailer.status}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="metric">
-                      <FaChartBar />
-                      <span>{retailer.performance.totalParcels}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="view-button" onClick={() => handleViewRetailer(retailer.id)}>View</button>
-                      <button className="edit-button" onClick={() => handleEditRetailer(retailer)}>Edit</button>
-                    </div>
-                  </td>
+          {isLoading ? (
+            <div className="loading-container">
+              <FaSpinner className="spinner" />
+              <p>Loading retailers...</p>
+            </div>
+          ) : (
+            <table className="retailers-table">
+              <thead>
+                <tr>
+                  <th>Store Name</th>
+                  <th>Owner</th>
+                  <th>Business Type</th>
+                  <th>Status</th>
+                  <th>Total Parcels</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {getFilteredRetailers().map((retailer) => (
+                  <tr key={retailer.id}>
+                    <td className="store-cell">
+                      <FaStore className="store-icon" />
+                      {retailer.name}
+                    </td>
+                    <td>{retailer.owner}</td>
+                    <td>{retailer.businessType}</td>
+                    <td>
+                      <span 
+                        className="status-badge"
+                        style={{ backgroundColor: getStatusColor(retailer.status) }}
+                      >
+                        {retailer.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="metric">
+                        <FaChartBar />
+                        <span>{retailer.performance.totalParcels}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="view-button" onClick={() => handleViewRetailer(retailer.id)}>View</button>
+                        <button className="edit-button" onClick={() => handleEditRetailer(retailer)}>Edit</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

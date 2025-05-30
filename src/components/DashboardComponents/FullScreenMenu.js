@@ -306,23 +306,8 @@ const FullScreenMenu = () => {
       submenu: [
         {
           id: 1,
-          name: "View list of lockers",
+          name: "Lockers List",
           link: "/listoflockers",
-        },
-        {
-          id: 2,
-          name: "Location",
-          link: "/location",
-        },
-        {
-          id: 3,
-          name: "Status (Available / Occupied)",
-          link: "/status",
-        },
-        {
-          id: 4,
-          name: "Manual unlock option (if needed via BlueBits API)",
-          link: "/unlockoption",
         },
       ]
     },
