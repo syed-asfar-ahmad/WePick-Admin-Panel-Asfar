@@ -249,7 +249,7 @@ const Dashboard = () => {
                   ) : location.pathname === "/manageroles" ? (
                     <ManageRoles />
                   ) : (
-                    <DefultRoute />
+                    <DashboardCom />
                   )}
                   <div className="row">
                     <SiteFooter />
