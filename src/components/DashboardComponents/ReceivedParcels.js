@@ -585,11 +585,11 @@ const ReceivedParcels = () => {
                     <td>{parcel.customer}</td>
                     <td>{parcel.date}</td>
                     <td>
-                      <span 
+                      <span
                         className="status-badge"
                         style={{ 
                           backgroundColor: getStatusColor(parcel.status),
-                          whiteSpace: 'nowrap' // This ensures the text stays on one line
+                          whiteSpace: 'nowrap'
                         }}
                       >
                         {parcel.status}
