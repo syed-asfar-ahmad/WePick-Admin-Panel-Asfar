@@ -24,7 +24,7 @@ const LockersList = () => {
       size: 'Medium',
       coordinates: { lat: 37.7749, lng: -122.4194 },
       capacity: '75%',
-      lastMaintenance: '2024-02-15'
+      busNumber: 'BUS-101'
     },
     {
       id: 'L002',
@@ -34,7 +34,7 @@ const LockersList = () => {
       size: 'Large',
       coordinates: { lat: 37.7833, lng: -122.4167 },
       capacity: '90%',
-      lastMaintenance: '2024-03-01'
+      busNumber: 'BUS-203'
     },
     {
       id: 'L003',
@@ -44,7 +44,7 @@ const LockersList = () => {
       size: 'Small',
       coordinates: { lat: 37.7855, lng: -122.4067 },
       capacity: '60%',
-      lastMaintenance: '2024-02-28'
+      busNumber: 'BUS-305'
     },
     {
       id: 'L004',
@@ -54,7 +54,7 @@ const LockersList = () => {
       size: 'Medium',
       coordinates: { lat: 37.7895, lng: -122.4000 },
       capacity: '85%',
-      lastMaintenance: '2024-03-10'
+      busNumber: 'BUS-402'
     },
     {
       id: 'L005',
@@ -64,7 +64,7 @@ const LockersList = () => {
       size: 'Large',
       coordinates: { lat: 37.7800, lng: -122.4100 },
       capacity: '70%',
-      lastMaintenance: '2024-03-05'
+      busNumber: 'BUS-504'
     }
   ];
 
@@ -283,68 +283,90 @@ const LockersList = () => {
           <p>Loading lockers...</p>
         </div>
       ) : (
-        <div className="lockers-grid">
-          {getFilteredLockers().map((locker) => (
-            <div key={locker.id} className="locker-card">
-              <div className="locker-header">
-                <div className="locker-title">
-                  <h3>Locker {locker.id}</h3>
-                  <span className="size-badge">{locker.size}</span>
-                </div>
-                <span 
-                  className="status-badge"
-                  style={{ backgroundColor: getStatusColor(locker.status) }}
-                >
-                  {locker.status}
-                </span>
-              </div>
-              <div className="locker-details">
-                <div className="detail-item">
-                  <FaMapMarkerAlt className="icon" />
-                  <span>{locker.location}</span>
-                </div>
-                <div className="detail-item">
-                  <FaClock className="icon" />
-                  <span>Last Used: {locker.lastUsed}</span>
-                </div>
-                <div className="detail-item">
-                  <FaTools className="icon" />
-                  <span>Last Maintenance: {locker.lastMaintenance}</span>
-                </div>
-                <div className="progress-section">
-                  <div className="progress-label">
-                    <span>Capacity</span>
-                    <span>{locker.capacity}</span>
-                  </div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
-                      style={{ 
-                        width: locker.capacity,
-                        backgroundColor: locker.capacity > '80%' ? '#4CAF50' : '#FFC107'
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="locker-actions">
-                <button 
-                  className={`unlock-button ${isUnlocking[locker.id] ? 'loading' : ''}`}
-                  onClick={() => handleUnlockLocker(locker.id)}
-                  disabled={locker.status === 'Available' || isUnlocking[locker.id]}
-                >
-                  {isUnlocking[locker.id] ? (
-                    <div className="button-spinner"></div>
-                  ) : (
-                    <>
-                      {locker.status === 'Available' ? <FaLock /> : <FaUnlock />}
-                      {locker.status === 'Available' ? 'Locked' : 'Unlock'}
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="lockers-table-container">
+          <table className="lockers-table">
+            <thead>
+              <tr>
+                <th>Locker ID</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Size</th>
+                <th>Last Used</th>
+                <th>Bus Number</th>
+                <th>Capacity</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {getFilteredLockers().map((locker) => (
+                <tr key={locker.id}>
+                  <td>
+                    <div className="locker-id">
+                      <span>{locker.id}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="location-cell">
+                      <FaMapMarkerAlt className="icon" />
+                      <span>{locker.location}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span 
+                      className="status-badge"
+                      style={{ backgroundColor: getStatusColor(locker.status) }}
+                    >
+                      {locker.status}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="size-badge">{locker.size}</span>
+                  </td>
+                  <td>
+                    <div className="time-cell">
+                      <FaClock className="icon" />
+                      <span>{locker.lastUsed}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="bus-number">
+                      <span className="bus-badge">{locker.busNumber}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="capacity-cell">
+                      <div className="progress-bar">
+                        <div 
+                          className="progress-fill"
+                          style={{ 
+                            width: locker.capacity,
+                            backgroundColor: locker.capacity > '80%' ? '#4CAF50' : '#FFC107'
+                          }}
+                        />
+                      </div>
+                      <span className="capacity-text">{locker.capacity}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <button 
+                      className={`unlock-button ${isUnlocking[locker.id] ? 'loading' : ''}`}
+                      onClick={() => handleUnlockLocker(locker.id)}
+                      disabled={locker.status === 'Available' || isUnlocking[locker.id]}
+                    >
+                      {isUnlocking[locker.id] ? (
+                        <div className="button-spinner"></div>
+                      ) : (
+                        <>
+                          {locker.status === 'Available' ? <FaLock /> : <FaUnlock />}
+                          {locker.status === 'Available' ? 'Locked' : 'Unlock'}
+                        </>
+                      )}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

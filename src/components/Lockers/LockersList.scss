@@ -86,19 +86,41 @@
   }
 
   .unlock-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #6CAD61;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #5a9c4f;
+    }
+
+    &:disabled {
+      background-color: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
     &.loading {
       position: relative;
-      color: transparent !important;
+      color: transparent;
 
       .button-spinner {
         position: absolute;
-        top: 50%;
         left: 50%;
+        top: 50%;
         transform: translate(-50%, -50%);
-        width: 20px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
         border: 2px solid #fff;
-        border-top: 2px solid transparent;
+        border-top-color: transparent;
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -507,5 +529,157 @@
         }
       }
     }
+  }
+
+  .bus-number {
+    .bus-badge {
+      padding: 6px 12px;
+      background-color: #e3f2fd;
+      color: #1976d2;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      border: 1px solid #bbdefb;
+    }
+  }
+}
+
+.lockers-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lockers-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+
+  th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+  }
+
+  tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .locker-id {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .location-cell, .time-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+      color: #666;
+      font-size: 14px;
+    }
+  }
+
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .size-badge {
+    padding: 4px 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #495057;
+  }
+
+  .capacity-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 150px;
+
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background-color: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+      }
+    }
+
+    .capacity-text {
+      font-size: 12px;
+      color: #666;
+      min-width: 45px;
+    }
+  }
+
+  .unlock-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #6CAD61;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #5a9c4f;
+    }
+
+    &:disabled {
+      background-color: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    &.loading {
+      position: relative;
+      color: transparent;
+
+      .button-spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 } 
