@@ -210,7 +210,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="delivery-icon-wrapper">
                   <FaCalendarAlt className="delivery-icon" />
                 </div>
-                <div>
+                <div className="delivery-content">
                   <label>Estimated Delivery</label>
                   <p>{parcel.estimatedDelivery}</p>
                 </div>
@@ -219,7 +219,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="delivery-icon-wrapper">
                   <FaHistory className="delivery-icon" />
                 </div>
-                <div>
+                <div className="delivery-content">
                   <label>Delivery Attempts</label>
                   <p>{parcel.deliveryAttempts}</p>
                 </div>
@@ -228,7 +228,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="delivery-icon-wrapper">
                   <FaStoreAlt className="delivery-icon" />
                 </div>
-                <div>
+                <div className="delivery-content">
                   <label>Retailer</label>
                   <p>{parcel.retailer}</p>
                 </div>

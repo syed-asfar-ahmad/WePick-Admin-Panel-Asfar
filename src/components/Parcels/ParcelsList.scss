@@ -204,17 +204,16 @@
 
   .view-content {
     background: white;
-    border-radius: 12px;
+    // border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 
     .table-container {
       background: #fff;
-      border-radius: 12px;
+      // border-radius: 12px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       overflow-x: auto;
       width: 100%;
-      // margin-top: 24px;
       min-height: 400px;
 
       &.loading {
@@ -277,6 +276,7 @@
         width: 100%;
         min-width: 1000px;
         border-collapse: collapse;
+        position: relative;
 
         td {
           padding: 16px;
@@ -284,6 +284,7 @@
           border-bottom: 1px solid #eee;
           white-space: nowrap;
         }
+
 
         th {
           background: #f8f9fa;
@@ -297,9 +298,20 @@
           z-index: 1;
           padding: 16px;
           text-align: center;
-          border-bottom: 1px solid #eee;
           white-space: nowrap;
           margin: 0;
+          border-top: 1px solid #eee;
+          border-bottom: 1px solid #eee;
+          border-left: none;
+          border-right: none;
+        }
+
+        th:first-child {
+          border-left: 1px solid #eee;
+        }
+
+        th:last-child {
+          border-right: 1px solid #eee;
         }
 
         .clickable-row {
@@ -398,3 +410,5 @@
     transform: rotate(360deg);
   }
 } 
+
+
