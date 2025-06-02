@@ -11,7 +11,6 @@ import CustomersList from "./components/DashboardComponents/CustomersList";
 import CustomersProfile from "./components/DashboardComponents/CustomersProfile";
 import ReceivedDetails from "./components/DashboardComponents/ReceivedDetails";
 import ReceivedParcels from "./components/DashboardComponents/ReceivedParcels";
-import EditUniversity from "./components/University/EditUniversity";
 import UsersPage from "./pages/Users/Users";
 import UserViewPage from "./pages/Users/UserView";
 import UserFriends from "./pages/Users/UserFriends";
@@ -39,8 +38,6 @@ function App() {
     { path: "/customers/:id", Comp: CustomersProfile },
     { path: "/receivedparcels", Comp: ReceivedParcels },
     { path: "/receivedparcels/:parcelId", Comp: ReceivedDetails },
-    { path: "/university/edit/:id", Comp: EditUniversity },
-    { path: "/university/add", Comp: EditUniversity },
     { path: "/users/detail/:id", Comp: UserViewPage },
     { path: "/userfriends/:id", Comp: UserFriends },
     { path: "/viewprofile/:id", Comp: RetailersProfile },
