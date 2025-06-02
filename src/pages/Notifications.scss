@@ -1,0 +1,389 @@
+.notifications-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 64px);
+
+  // Analytics Dashboard
+  .analytics-dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .analytics-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      svg {
+        font-size: 2rem;
+        color: #6CAD61;
+      }
+
+      .analytics-info {
+        h3 {
+          font-size: 0.9rem;
+          color: #666;
+          margin: 0 0 0.5rem 0;
+        }
+
+        p {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #333;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+
+      .filter-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        color: #666;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        svg {
+          font-size: 1.1rem;
+          color: #6CAD61;
+        }
+
+        &:hover {
+          background: #f8f9fa;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      .mark-all-read-button {
+        padding: 0.5rem 1rem;
+        background-color: #6CAD61;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: darken(#6CAD61, 10%);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+  .filters-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.3s ease-out;
+    transform-origin: top;
+    overflow: hidden;
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    &.closing {
+      animation: slideUp 0.3s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+      animation: fadeIn 0.3s ease-out 0.1s both;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        animation: fadeIn 0.3s ease-out;
+        animation-fill-mode: both;
+
+        @for $i from 1 through 4 {
+          &:nth-child(#{$i}) {
+            animation-delay: #{$i * 0.1}s;
+          }
+        }
+
+        label {
+          font-weight: 500;
+          color: #333;
+        }
+
+        input, select {
+          padding: 0.5rem;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          transition: all 0.3s ease;
+
+          &:focus {
+            outline: none;
+            border-color: #6CAD61;
+            box-shadow: 0 0 0 2px rgba(108, 173, 97, 0.1);
+          }
+        }
+      }
+    }
+
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      animation: fadeIn 0.3s ease-out 0.4s both;
+
+      button {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &.reset-button {
+          background: white;
+          border: 1px solid #dc3545;
+          color: #dc3545;
+
+          &:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-1px);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+
+        &.apply-button {
+          background: #6CAD61;
+          border: none;
+          color: white;
+
+          &:hover {
+            background: #5a9c4f;
+          }
+        }
+      }
+    }
+  }
+
+  .notifications-list {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background-color 0.3s ease;
+
+      &.unread {
+        background-color: rgba(108, 173, 97, 0.05);
+        border-left: 3px solid #6CAD61;
+
+        .notification-title {
+          font-weight: 600;
+        }
+
+        .notification-meta {
+          color: #666;
+        }
+      }
+
+      &:hover {
+        background-color: rgba(108, 173, 97, 0.1);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          font-size: 1.2rem;
+          color: #6CAD61;
+        }
+      }
+
+      .notification-content {
+        flex: 1;
+
+        .notification-title {
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 0.25rem;
+        }
+
+        .notification-meta {
+          font-size: 0.85rem;
+          color: #666;
+          display: flex;
+          gap: 1rem;
+
+          .notification-type {
+            color: #6CAD61;
+            font-weight: 500;
+          }
+
+          .notification-user {
+            color: #4169E1;
+          }
+
+          .notification-date {
+            color: #666;
+          }
+
+          .notification-time {
+            color: #888;
+            font-style: italic;
+          }
+        }
+      }
+
+      .notification-actions {
+        display: flex;
+        gap: 0.5rem;
+
+        button {
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-weight: 500;
+
+          &.view-button {
+            background: #6CAD61;
+            color: white;
+            border: none;
+
+            &:hover {
+              background: darken(#6CAD61, 10%);
+              transform: translateY(-1px);
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+          }
+
+          &.mark-read-button {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+
+            &:hover {
+              background: #f8f9fa;
+              border-color: #6CAD61;
+              color: #6CAD61;
+              transform: translateY(-1px);
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes bounceDown {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(90deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(180deg) scale(1);
+  }
+} 

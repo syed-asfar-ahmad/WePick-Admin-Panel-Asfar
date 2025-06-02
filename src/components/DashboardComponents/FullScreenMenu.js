@@ -319,44 +319,40 @@ const FullScreenMenu = () => {
       submenu: [
         {
           id: 1,
-          name: "View sent notifications (parcel dispatched, ready for pickup, etc.)",
-          link: "/sentnotification",
+          name: "View Notifications",
+          link: "/notifications",
         },
-        {
-          id: 2,
-          name: "Basic filter by user and date",
-          link: "/filters",
-        },
+       
       ]
     },
-    {
-      id: 7,
-      name: "Reports",
-      link: "/reports",
-      icon: ReportsSvg,
-      submenu: [
-        {
-          id: 1,
-          name: "Parcels",
-          link: "/parcels",
-        },
-        {
-          id: 2,
-          name: "Users",
-          link: "/users",
-        },
-        {
-          id: 3,
-          name: "Locker usage",
-          link: "/lockerusage",
-        },
-        {
-          id: 4,
-          name: "Simple charts (Success vs Failed deliveries)",
-          link: "/simplecharts",
-        }
-      ],
-    },
+    // {
+    //   id: 7,
+    //   name: "Reports",
+    //   link: "/reports",
+    //   icon: ReportsSvg,
+    //   submenu: [
+    //     {
+    //       id: 1,
+    //       name: "Parcels",
+    //       link: "/parcels",
+    //     },
+    //     {
+    //       id: 2,
+    //       name: "Users",
+    //       link: "/users",
+    //     },
+    //     {
+    //       id: 3,
+    //       name: "Locker usage",
+    //       link: "/lockerusage",
+    //     },
+    //     {
+    //       id: 4,
+    //       name: "Simple charts (Success vs Failed deliveries)",
+    //       link: "/simplecharts",
+    //     }
+    //   ],
+    // },
     {
       id: 8,
       name: "Profile Settings",
@@ -375,73 +371,7 @@ const FullScreenMenu = () => {
         },
       ]
     },
-    // {
-    //   id: 9,
-    //   name: "Boost",
-    //   link: "/boost",
-    //   icon: BoostSvg,
-    // },
-    // {
-    //   id: 10,
-    //   name: "Moderation",
-    //   link: "/",
-    //   icon: ModerationSvg,
-    //   submenu: [
-    //     {
-    //       id: 1,
-    //       name: "Posts",
-    //       link: "/moderation/posts",
-    //     },
-    //     {
-    //       id: 2,
-    //       name: "Events",
-    //       link: "/moderation/events",
-    //     },
-    //     {
-    //       id: 3,
-    //       name: "Stories",
-    //       link: "/moderation/stories",
-    //     },
-    //     {
-    //       id: 4,
-    //       name: "Users",
-    //       link: "/moderation/users",
-    //     },
-    //     {
-    //       id: 5,
-    //       name: "Questions",
-    //       link: "/moderation/questions",
-    //     },
-    //     // {
-    //     //   id: 6,
-    //     //   name: "Communities",
-    //     //   link: "/moderation/communities",
-    //     // },
-    //     // {
-    //     //   id: 7,
-    //     //   name: "Comments",
-    //     //   link: "/moderation/comments",
-    //     // },
-    //   ],
-    // },
-    // {
-    //   id: 11,
-    //   name: "Configuration",
-    //   icon: ConfigSvg,
-    //   submenu: [
-    //     {
-    //       id: 1,
-    //       name: "Account Approval",
-    //       link: "/accountapproval",
-    //     },
-    //   ],
-    // },
-    // {
-    //   id: 12,
-    //   name: "Report Statistics",
-    //   link: "/statistics",
-    //   icon: StatSvg,
-    // },
+   
   ];
 
   const renderSubMenu = (menuId, subMenu) => {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import ForgotPassword from "./pages/ForgotPassword";
 import Signin from "./pages/Signin";
@@ -22,6 +23,10 @@ import DispatchedParcels from './pages/DispatchedParcels';
 import ParcelDetails from './pages/ParcelDetails';
 import ParcelsList from './components/Parcels/ParcelsList';
 import LockersList from './components/Lockers/LockersList';
+import Notifications from './pages/Notifications';
+import { NotificationsProvider } from './context/NotificationsContext';
+import AdminPassword from './pages/AdminPassword';
+import ProfileEdit from "./pages/ProfileEdit";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -57,12 +62,13 @@ function App() {
     { path: "/filters", Comp: ParcelsList },
     { path: "/lockerusage", Comp: ParcelsList },
     { path: "/simplecharts", Comp: ParcelsList },
-    { path: "/adminpassword", Comp: ParcelsList },
-    { path: "/profileedit", Comp: ParcelsList },
+    { path: "/adminpassword", Comp: AdminPassword },
+    { path: "/profileedit", Comp: ProfileEdit },
+    { path: "/notifications", Comp: Notifications },
   ];
 
   return (
-    <>
+    <NotificationsProvider>
       <ToastContainer closeOnClick={false} closeButton={true} />
       <SkeletonTheme baseColor="#D8D8D8" highlightColor="#c9c9c9">
         <BrowserRouter>
@@ -94,7 +100,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </SkeletonTheme>
-    </>
+    </NotificationsProvider>
   );
 }
 
