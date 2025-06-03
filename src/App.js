@@ -1,12 +1,16 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import ForgotPassword from "./pages/ForgotPassword";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SkeletonTheme } from "react-loading-skeleton";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+
+// Components
 import AdminArea from "./customHook/AdminArea";
+import ForgotPassword from "./pages/ForgotPassword";
+import Signin from "./pages/Signin";
+import Signup from "./pages/Signup";
 import DashboardCom from "./components/DashboardComponents/DashboardCom";
 import CustomersList from "./components/DashboardComponents/CustomersList";
 import CustomersProfile from "./components/DashboardComponents/CustomersProfile";
@@ -17,8 +21,6 @@ import UserViewPage from "./pages/Users/UserView";
 import UserFriends from "./pages/Users/UserFriends";
 import RetailersProfile from './pages/RetailersProfile';
 import RetailersList from './pages/RetailersList';
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
 import DispatchedParcels from './pages/DispatchedParcels';
 import ParcelDetails from './pages/ParcelDetails';
 import ParcelsList from './components/Parcels/ParcelsList';
@@ -27,6 +29,7 @@ import Notifications from './pages/Notifications';
 import { NotificationsProvider } from './context/NotificationsContext';
 import AdminPassword from './pages/AdminPassword';
 import ProfileEdit from "./pages/ProfileEdit";
+import ReportParcels from './components/DashboardComponents/wepick/ReportParcels';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -65,6 +68,7 @@ function App() {
     { path: "/adminpassword", Comp: AdminPassword },
     { path: "/profileedit", Comp: ProfileEdit },
     { path: "/notifications", Comp: Notifications },
+    { path: "/reportparcels", Comp: ReportParcels },
   ];
 
   return (

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import SubscriptionChart from "./wepick/SubscriptionChart";
-import RankedUni from "./wepick/RankedUni";
-import "./dashboard.scss";
-
-//scss
-import "../../assets/css/dashboard.scss";
-//svg
-import { PostSvg, UserSvg, EventSvg, LockerSvg, ParcelSvg } from "../../assets/icons";
 import { getDashCount } from "../../services/service";
+import { PostSvg, UserSvg, EventSvg, LockerSvg, ParcelSvg } from "../../assets/icons";
+
+// Components
+import ParcelsChart from "./wepick/ParcelsChart";
+import ReportParcels from "./wepick/ReportParcels";
+
+// Styles
+import "./dashboard.scss";
+import "../../assets/css/dashboard.scss";
 
 const DashboardCom = () => {
   const [cardData, setCardData] = useState([]);
@@ -27,6 +28,7 @@ const DashboardCom = () => {
   useEffect(() => {
     handlegetData();
   }, []);
+
   const data1 = [
     {
       id: 1,
@@ -69,33 +71,31 @@ const DashboardCom = () => {
       <div className="row  px-2 pt-4" style={{ overflowX: "hidden" }}>
         <div className="col-12 mt-1">
           <div className="row">
-            {data1.map(({ text, total, icon, route }) => {
+            {data1.map(({ text, total, icon }) => {
               return (
-                <div className="px-3 col-lg-3 col-6">
-                  <Link to={`${route}`}>
-                    <div className="dashboard-right-side-top-card my-lg-3 w-100 box-shadow-hover d-flex pl-1 py-3">
-                      <div className="px-3 w-100 ">
-                        <div className="d-flex justify-content-between  text-center align-items-center ">
-                          <div className="dashboard_icon">{icon}</div>
-                          <div className=" m-0 p-0  dashboard-left-icon-top-text1 text-right">
-                            <div>{total}</div>
-                            <p className="card-text">{text}</p>
-                          </div>
+                <div key={text} className="px-3 col-lg-3 col-6">
+                  <div className="dashboard-right-side-top-card my-lg-3 w-100 box-shadow-hover d-flex pl-1 py-3">
+                    <div className="px-3 w-100 ">
+                      <div className="d-flex justify-content-between  text-center align-items-center ">
+                        <div className="dashboard_icon">{icon}</div>
+                        <div className=" m-0 p-0  dashboard-left-icon-top-text1 text-right">
+                          <div>{total}</div>
+                          <p className="card-text">{text}</p>
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
 
-        <SubscriptionChart />
+        <ParcelsChart />
 
         <div className="col-lg-12 pb-lg-5 mt-0 dashboardCom-scroller-appoinment ">
           <div className="appoinment  mb-5">
-            <RankedUni />
+            <ReportParcels />
           </div>
         </div>
       </div>
