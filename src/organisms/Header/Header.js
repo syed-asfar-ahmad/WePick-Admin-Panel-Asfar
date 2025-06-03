@@ -5,6 +5,7 @@ import ProfileDropDown from "../../molecules/ProfileDropDown/ProfileDropDown";
 import NotificationDropDown from "../../molecules/NotificationDropDown/NotificationDropDown";
 import MenuBtnMobile from "../../atoms/MenuBtnMobile/MenuBtnMobile";
 import { Link } from "react-router-dom";
+import "./Header.scss";
 
 const Header = ({ isLargeScreen, setMobileMenu1, MobileMenu1 }) => {
   return (
@@ -12,29 +13,21 @@ const Header = ({ isLargeScreen, setMobileMenu1, MobileMenu1 }) => {
       {isLargeScreen ? (
         <div className="d-flex border-bottom pl-3">
           {/* fullscreen header  */}
-          <Link to="/" style={{ cursor: "pointer" }}>
-            <div
-              className={`col-2 d-flex align-items-center  dashboard-logo py-3`}
-            >
-              <img src={logo} alt="WePick Logo" />
-              <h2 style={{ color: "#1BC949" }}>WePick</h2>
+          <Link to="/" className="header-logo-link">
+            <div className="col-2 d-flex align-items-center dashboard-logo py-3">
+              <img src={logo} alt="WePick Logo" className="header-logo-img" />
+              <h2 className="header-logo-text">WePick</h2>
             </div>
           </Link>
 
-          <div
-            className={
-              "d-flex flex-grow-1 px-4 align-items-center justify-content-end"
-            }
-          >
+          <div className="d-flex flex-grow-1 px-4 align-items-center justify-content-end">
             <NotificationDropDown />
             <ProfileDropDown />
           </div>
-          {/* fullscreen header  */}
         </div>
       ) : (
         // mobile menu
-
-        <div className="row border-bottom ">
+        <div className="row border-bottom">
           <div className="col-2 pl-4 dashboard-logo py-3">
             <MenuBtnMobile
               setMobileMenu1={(data) => {
@@ -43,12 +36,10 @@ const Header = ({ isLargeScreen, setMobileMenu1, MobileMenu1 }) => {
               MobileMenu1={MobileMenu1}
             />
           </div>
-          <div
-            className={`col-8 d-flex align-items-center  justify-content-center dashboard-logo py-3`}
-          >
-            <div className="d-flex">
-              <img src={logo} alt="WePick Logo" />
-              <h2 style={{ color: "#1BC949" }}>WePick</h2>
+          <div className="col-8 d-flex align-items-center justify-content-center dashboard-logo py-3">
+            <div className="d-flex header-logo-container">
+              <img src={logo} alt="WePick Logo" className="header-logo-img" />
+              <h2 className="header-logo-text">WePick</h2>
             </div>
           </div>
           <div className="col-2 d-flex justify-content-end align-items-center pr-4">

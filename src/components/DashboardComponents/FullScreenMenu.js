@@ -58,45 +58,45 @@ const DashboardIcon = (
 );
 
 // Add ReportsSvg component
-const ReportsSvg = (
-  <svg
-    width="40"
-    height="40"
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect width="40" height="40" rx="20" fill="#F5F5F5" />
-    <path
-      d="M25 15.8333H15C13.6193 15.8333 12.5 16.9526 12.5 18.3333V25.8333C12.5 27.214 13.6193 28.3333 15 28.3333H25C26.3807 28.3333 27.5 27.214 27.5 25.8333V18.3333C27.5 16.9526 26.3807 15.8333 25 15.8333Z"
-      stroke="#FF0000"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M20 11.6667V15.8333"
-      stroke="#FF0000"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M17.5 22.5H22.5"
-      stroke="#FF0000"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M17.5 19.1667H22.5"
-      stroke="#FF0000"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+// const ReportsSvg = (
+//   <svg
+//     width="40"
+//     height="40"
+//     viewBox="0 0 40 40"
+//     fill="none"
+//     xmlns="http://www.w3.org/2000/svg"
+//   >
+//     <rect width="40" height="40" rx="20" fill="#F5F5F5" />
+//     <path
+//       d="M25 15.8333H15C13.6193 15.8333 12.5 16.9526 12.5 18.3333V25.8333C12.5 27.214 13.6193 28.3333 15 28.3333H25C26.3807 28.3333 27.5 27.214 27.5 25.8333V18.3333C27.5 16.9526 26.3807 15.8333 25 15.8333Z"
+//       stroke="#FF0000"
+//       strokeWidth="1.5"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     />
+//     <path
+//       d="M20 11.6667V15.8333"
+//       stroke="#FF0000"
+//       strokeWidth="1.5"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     />
+//     <path
+//       d="M17.5 22.5H22.5"
+//       stroke="#FF0000"
+//       strokeWidth="1.5"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     />
+//     <path
+//       d="M17.5 19.1667H22.5"
+//       stroke="#FF0000"
+//       strokeWidth="1.5"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     />
+//   </svg>
+// );
 
 // Add ParcelSvg component
 const ParcelSvg = (
