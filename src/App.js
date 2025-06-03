@@ -68,7 +68,7 @@ function App() {
     { path: "/lockerusage", Comp: ParcelsList },
     { path: "/simplecharts", Comp: ParcelsList },
     { path: "/adminpassword", Comp: AdminPassword },
-    { path: "/profileedit", Comp: ProfileEdit },
+    { path: "/editprofile", Comp: ProfileEdit },
     { path: "/notifications", Comp: Notifications },
     { path: "/reportparcels", Comp: ReportParcels },
   ];

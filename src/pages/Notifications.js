@@ -139,10 +139,7 @@ const Notifications = () => {
 
       {/* Filters Section */}
       {showFilters && (
-        <div 
-          ref={filtersRef}
-          className={`filters-section ${isClosing ? 'closing' : ''}`}
-        >
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
           <div className="filters-grid">
             <div className="filter-group">
               <label>Notification Type</label>

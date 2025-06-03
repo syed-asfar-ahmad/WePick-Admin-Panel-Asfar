@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory } from 'react-icons/fa';
+import {  FaFilter, FaBox, FaTruck,  FaClock, FaTimes,  } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './ReceivedParcels.scss';
 import Loading from '../common/Loading';
@@ -349,9 +349,9 @@ const ReceivedParcels = () => {
         </div>
       </div>
 
-      {/* Enhanced Filters Section */}
+      {/* Filters Section */}
       {showFilters && (
-        <div className="filters-section">
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
           <div className="filters-grid">
             <div className="filter-group">
               <label>Time Range</label>
