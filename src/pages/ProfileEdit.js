@@ -14,6 +14,7 @@ const ProfileEdit = () => {
   const [isLoading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { user } = useSelector((state) => state.auth || {});
 
   useEffect(() => {
@@ -71,12 +72,21 @@ const ProfileEdit = () => {
   };
 
   const handleDeleteAvatar = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteAvatar = () => {
     setAvatar(null);
     setAvatarPreview(null);
     const fileInput = document.getElementById('avatar-input');
     if (fileInput) {
       fileInput.value = '';
     }
+    setShowDeleteModal(false);
+  };
+
+  const cancelDeleteAvatar = () => {
+    setShowDeleteModal(false);
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -119,6 +129,28 @@ const ProfileEdit = () => {
 
   return (
     <div className="profile-edit-container">
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="delete-confirmation-modal">
+            <h3>Delete Profile Photo</h3>
+            <p>Are you sure you want to delete your profile photo?</p>
+            <div className="modal-actions">
+              <button 
+                className="cancel-button"
+                onClick={cancelDeleteAvatar}
+              >
+                Cancel
+              </button>
+              <button 
+                className="delete-button"
+                onClick={confirmDeleteAvatar}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="profile-header">
         <div className="profile-avatar">
           <div className="avatar-placeholder">

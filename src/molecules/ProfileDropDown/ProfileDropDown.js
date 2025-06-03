@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 const ProfileDropDown = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   return (
@@ -46,15 +45,20 @@ const ProfileDropDown = () => {
         aria-labelledby="dropdownMenuButton"
         style={{ boxShadow: "0px 1px 14px 0px rgba(0, 0, 0, 0.08)" }}
       >
-        <div className="row py-2 px-3 ">
+        <div className="row py-2 px-3">
           <div className="col-4">
             <DummyUserProfile size={"31px"} />
           </div>
 
-          <div className="col-8 px-2 d-flex  justify-content-center align-items-start  flex-column">
-            <p className="mb-0  profile-drop-down-text1">{user?.role}</p>
-
-            <p className="mb-0 profile-drop-down-text2">Super Admin</p>
+          <div className="col-8 px-2 d-flex justify-content-center align-items-start flex-column">
+            <p className="mb-0 profile-drop-down-text1">{user?.role}</p>
+            <button 
+              className="btn btn-link p-0 text-decoration-none profile-drop-down-text2"
+              onClick={() => navigate("/editprofile")}
+              style={{ color: "#6CAD61" }}
+            >
+              Edit Profile
+            </button>
           </div>
         </div>
 
@@ -63,7 +67,6 @@ const ProfileDropDown = () => {
           onClick={() => {
             dispatch(clearAuthentication());
             localStorage.removeItem("token");
-            // navigate("/signin");
             window.location.href = "/signin";
           }}
         >

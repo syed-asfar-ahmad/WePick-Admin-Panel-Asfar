@@ -367,7 +367,7 @@ const FullScreenMenu = () => {
         {
           id: 2,
           name: "Edit profile",
-          link: "/profileedit",
+          link: "/editprofile",
         },
       ]
     },
