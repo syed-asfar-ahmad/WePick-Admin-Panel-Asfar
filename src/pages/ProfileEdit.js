@@ -44,7 +44,7 @@ const ProfileEdit = () => {
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         CustomToast({
           type: "error",
           message: "Image size should be less than 5MB"
@@ -73,7 +73,6 @@ const ProfileEdit = () => {
   const handleDeleteAvatar = () => {
     setAvatar(null);
     setAvatarPreview(null);
-    // Clear the file input
     const fileInput = document.getElementById('avatar-input');
     if (fileInput) {
       fileInput.value = '';
@@ -124,25 +123,26 @@ const ProfileEdit = () => {
         <div className="profile-avatar">
           <div className="avatar-placeholder">
             {avatarPreview ? (
-              <img src={avatarPreview} alt="Profile" />
+              <div className="avatar-with-controls">
+                <img src={avatarPreview} alt="Profile" />
+                <button 
+                  onClick={handleDeleteAvatar}
+                  type="button"
+                  className="delete-avatar-btn"
+                  aria-label="Delete profile photo"
+                >
+                  <i className="fas fa-trash"></i>
+                </button>
+              </div>
             ) : (
               <i className="fa fa-user"></i>
             )}
           </div>
           <div className="avatar-controls">
-            {!avatarPreview ? (
+            {!avatarPreview && (
               <label htmlFor="avatar-input" className="control-btn">
                 <i className="fas fa-camera"></i>
               </label>
-            ) : (
-              <button 
-                onClick={handleDeleteAvatar}
-                type="button"
-                className="control-btn delete-btn"
-                aria-label="Delete profile photo"
-              >
-                <i className="fas fa-trash"></i>
-              </button>
             )}
           </div>
           <input
@@ -303,4 +303,4 @@ const ProfileEdit = () => {
   );
 };
 
-export default ProfileEdit; 
+export default ProfileEdit;

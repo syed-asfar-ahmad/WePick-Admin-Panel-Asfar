@@ -14,12 +14,31 @@ const AdminPassword = () => {
     confirmPassword: "password"
   });
   const [isLoading, setLoading] = useState(false);
+  const [passwordChecks, setPasswordChecks] = useState({
+    length: null,
+    uppercase: null,
+    lowercase: null,
+    number: null,
+    specialChar: null
+  });
 
   const togglePassword = (field) => {
     setPasswordType(prev => ({
       ...prev,
       [field]: prev[field] === "password" ? "text" : "password"
     }));
+  };
+
+  const checkPasswordRequirements = (password) => {
+    const checks = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      specialChar: /[^a-zA-Z0-9]/.test(password)
+    };
+    setPasswordChecks(checks);
+    return checks;
   };
 
   const validationSchema = Yup.object().shape({
@@ -40,8 +59,6 @@ const AdminPassword = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setLoading(true);
     try {
-      // Here you would typically make an API call to change the password
-      // For now, we'll simulate a successful password change
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       CustomToast({
@@ -59,6 +76,23 @@ const AdminPassword = () => {
       setLoading(false);
       setSubmitting(false);
     }
+  };
+
+  const handlePasswordChange = (e, setFieldValue) => {
+    const { name, value } = e.target;
+    setFieldValue(name, value);
+    if (name === "newPassword") {
+      checkPasswordRequirements(value);
+    }
+  };
+
+  const getCheckIcon = (condition) => {
+    if (condition === null) return null;
+    return condition ? (
+      <i className="fa fa-check-circle check-icon valid"></i>
+    ) : (
+      <i className="fa fa-times-circle check-icon invalid"></i>
+    );
   };
 
   return (
@@ -81,7 +115,7 @@ const AdminPassword = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue }) => (
             <Form>
               <div className="form-section">
                 <h3>Current Password</h3>
@@ -124,6 +158,7 @@ const AdminPassword = () => {
                       type={passwordType.newPassword}
                       name="newPassword"
                       placeholder="Enter new password"
+                      onChange={(e) => handlePasswordChange(e, setFieldValue)}
                     />
                     <button
                       type="button"
@@ -143,11 +178,26 @@ const AdminPassword = () => {
                 <div className="password-requirements">
                   <h4>Password Requirements</h4>
                   <ul>
-                    <li><i className="fa fa-check-circle"></i> At least 8 characters long</li>
-                    <li><i className="fa fa-check-circle"></i> One uppercase letter</li>
-                    <li><i className="fa fa-check-circle"></i> One lowercase letter</li>
-                    <li><i className="fa fa-check-circle"></i> One number</li>
-                    <li><i className="fa fa-check-circle"></i> One special character</li>
+                    <li>
+                      {getCheckIcon(passwordChecks.length)}
+                      At least 8 characters long
+                    </li>
+                    <li>
+                      {getCheckIcon(passwordChecks.uppercase)}
+                      One uppercase letter
+                    </li>
+                    <li>
+                      {getCheckIcon(passwordChecks.lowercase)}
+                      One lowercase letter
+                    </li>
+                    <li>
+                      {getCheckIcon(passwordChecks.number)}
+                      One number
+                    </li>
+                    <li>
+                      {getCheckIcon(passwordChecks.specialChar)}
+                      One special character
+                    </li>
                   </ul>
                 </div>
 
@@ -202,4 +252,4 @@ const AdminPassword = () => {
   );
 };
 
-export default AdminPassword; 
+export default AdminPassword;
