@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import { FaBell, FaFilter } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../context/NotificationsContext';
 import './Notifications.scss';
+import Loading from '../components/common/Loading';
+
 
 const notificationTypes = [
   'All',
@@ -20,6 +22,7 @@ const Notifications = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [typeFilter, setTypeFilter] = useState('All');
   const [userFilter, setUserFilter] = useState('All');
+  const [isLoading, setIsLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState('');
   const filtersRef = useRef(null);
 
@@ -73,6 +76,13 @@ const Notifications = () => {
     markAsRead(notificationId);
   };
 
+  useEffect(() => {
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+        return () => clearTimeout(timer);
+  }, []);
+
   // Analytics data
   const analytics = {
     totalNotifications: notifications.length,
@@ -88,21 +98,21 @@ const Notifications = () => {
           <FaBell />
           <div className="analytics-info">
             <h3>Total Notifications</h3>
-            <p>{analytics.totalNotifications}</p>
+            <p>{isLoading ? "..." : analytics.totalNotifications}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaBell />
           <div className="analytics-info">
             <h3>Unread</h3>
-            <p>{analytics.unreadNotifications}</p>
+            <p>{isLoading ? "..." : analytics.unreadNotifications}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaBell />
           <div className="analytics-info">
             <h3>Today</h3>
-            <p>{analytics.todayNotifications}</p>
+            <p>{isLoading ? "..." : analytics.todayNotifications}</p>
           </div>
         </div>
       </div>
@@ -176,6 +186,12 @@ const Notifications = () => {
         </div>
       )}
 
+      {isLoading ? (
+        <>
+        <Loading />
+        </>
+      ) : (
+        <>
       {/* Notifications List */}
       <div className="notifications-list">
         {filteredNotifications.length === 0 ? (
@@ -220,6 +236,8 @@ const Notifications = () => {
           ))
         )}
       </div>
+      </>
+      )}
     </div>
   );
 };

@@ -48,6 +48,7 @@ const Dashboard = () => {
   const [menuLeft, setMenuLeft] = useState("col-3");
   const [menuRight, setMenuRight] = useState("col-9");
   const [menuLeftText, setMenuLeftText] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   // const [addRole, setAddRole] = useState({ country: "Kuwait" });
   const [menuLeftRightDropDown1, setMenuLeftRightDropDown1] =
     useState("col-10");
@@ -90,6 +91,7 @@ const Dashboard = () => {
       setMenuRight("col-9");
     }
   }, [isLargeScreen]);
+
 
   const handleMenu = () => {
     if (isLargeScreen) {

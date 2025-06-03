@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './ReceivedParcels.scss';
+import Loading from '../common/Loading';
+
 
 const ReceivedParcels = () => {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [filteredParcels, setFilteredParcels] = useState([]);
   const [filters, setFilters] = useState({
     dateRange: '',
@@ -139,7 +142,14 @@ const ReceivedParcels = () => {
     { id: 'L890', name: 'South Point', lat: 37.7800, lng: -122.4100, parcels: 7 }
   ];
 
-  // Timeline data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+
   const timelineData = {
     '2024-03-17': {
       total: 45,
@@ -299,10 +309,6 @@ const ReceivedParcels = () => {
     }));
   };
 
-  // const handleViewParcel = (parcel) => {
-  //   navigate(`/receivedparcels/${parcel.id}`);
-  // };
-
   const handleViewParcel = (parcel) => {
     navigate(`/receivedparcels/${parcel.id}`, { state: { parcel } });
   };
@@ -315,21 +321,21 @@ const ReceivedParcels = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Today</h3>
-            <p>{analytics.totalToday}</p>
+            <p>{isLoading ? "..." : analytics.totalToday}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaClock />
           <div className="analytics-info">
             <h3>Avg. Delivery Time</h3>
-            <p>{analytics.avgDeliveryTime}</p>
+            <p>{isLoading ? "..." : analytics.avgDeliveryTime}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaTruck />
           <div className="analytics-info">
             <h3>In Transit</h3>
-            <p>{analytics.statusBreakdown.inTransit}</p>
+            <p>{isLoading ? "..." : analytics.statusBreakdown.inTransit}</p>
           </div>
         </div>
       </div>
@@ -559,6 +565,13 @@ const ReceivedParcels = () => {
         </div>
       )}
 
+      {isLoading ? (
+        <>
+        <Loading />
+        </>
+      ) : (
+        <>
+
       {/* View Content */}
       <div className="view-content">
         <div className="table-container">
@@ -617,6 +630,8 @@ const ReceivedParcels = () => {
           </table>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

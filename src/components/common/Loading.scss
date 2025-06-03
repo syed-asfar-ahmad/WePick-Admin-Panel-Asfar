@@ -1,0 +1,43 @@
+ .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    height: 300px;
+    width: 100%;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+
+    .spinner {
+      font-size: 2rem;
+      color: #6CAD61;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+      position: absolute;
+      transform: translate(-50%, -50%);
+    }
+
+    p {
+      color: #6c757d;
+      font-size: 16px;
+      margin: 0;
+      position: absolute;
+      // top: calc(50% + 30px);
+      top: 50%;
+      left: calc(50% - 10px);
+      transform: translateX(-50%);
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

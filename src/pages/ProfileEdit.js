@@ -7,11 +7,13 @@ import ButtonLoader from "../atoms/buttonLoader";
 import "./ProfileEdit.scss";
 import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
+import Loading from '../components/common/Loading';
+
 
 const ProfileEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const { user } = useSelector((state) => state.auth || {});
@@ -79,8 +81,15 @@ const ProfileEdit = () => {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append('firstName', values.firstName);
@@ -112,7 +121,7 @@ const ProfileEdit = () => {
         message: error.response?.data?.message || "Failed to update profile"
       });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
       setSubmitting(false);
     }
   };
@@ -157,6 +166,12 @@ const ProfileEdit = () => {
         <p className="profile-subtitle">Update your personal information</p>
       </div>
 
+      {isLoading ? (
+        <>
+        <Loading />
+        </>
+      ) : (
+        <>
       <div className="profile-card">
         <Formik
           initialValues={{
@@ -299,6 +314,8 @@ const ProfileEdit = () => {
           )}
         </Formik>
       </div>
+      </>
+      )}
     </div>
   );
 };

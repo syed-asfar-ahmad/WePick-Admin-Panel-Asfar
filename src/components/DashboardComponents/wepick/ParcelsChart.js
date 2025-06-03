@@ -4,6 +4,7 @@ import { Chart, registerables } from "chart.js";
 import "./chart.scss";
 import { getRequest } from "../../../services/api";
 import { Select } from "antd";
+import Loading from '../../../components/common/Loading';
 
 Chart.register(...registerables);
 
@@ -16,7 +17,7 @@ const STATUS_COLORS = {
 
 const DispatchedParcelsChart = () => {
   const [dailyData, setDailyData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2020 + 1 }, (_, i) => currentYear - i).filter(year => year >= 2020);
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -38,26 +39,33 @@ const DispatchedParcelsChart = () => {
   ];
 
   useEffect(() => {
-    fetchDailyData();
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
-  const fetchDailyData = async () => {
-    try {
-      setLoading(true);
-      // Replace with your actual endpoint for last 10 days
-      const response = await getRequest(`/daily-dispatched-parcels?days=10`);
-      if (response && response.data && response.data.length > 0) {
-        setDailyData(response.data);
-      } else {
-        setDailyData(mockMonthlyData);
-      }
-    } catch (error) {
-      setDailyData(mockMonthlyData);
-      console.error("Error fetching dispatched parcels data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // useEffect(() => {
+  //   fetchDailyData();
+  // }, []);
+
+  // const fetchDailyData = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     // Replace with your actual endpoint for last 10 days
+  //     const response = await getRequest(`/daily-dispatched-parcels?days=10`);
+  //     if (response && response.data && response.data.length > 0) {
+  //       setDailyData(response.data);
+  //     } else {
+  //       setDailyData(mockMonthlyData);
+  //     }
+  //   } catch (error) {
+  //     setDailyData(mockMonthlyData);
+  //     console.error("Error fetching dispatched parcels data:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // Prepare chart data
   const labels = mockMonthlyData.map(item => item.month);
@@ -132,32 +140,38 @@ const DispatchedParcelsChart = () => {
   return (
     <div className="col-12 my-lg-4 pt-lg-2 pb-5">
       <div className="bar-chart pb-4" style={{ borderRadius: 16, background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <div className="d-flex justify-content-between align-items-center px-4 mx-2 py-4">
-          <span className="mb-0 bar-chart-text1" style={{ fontFamily: 'Montserrat', fontSize: 18, fontWeight: 600, color: '#0d0d0d' }}>
-            Dispatched Parcels Chart
-          </span>
-          <Select
-            style={{ width: "100px", height: "33px" }}
-            className="dash-select"
-            value={selectedYear}
-            onChange={setSelectedYear}
-            dropdownStyle={{ fontFamily: 'Montserrat' }}
-          >
-            {years.map((year) => (
-              <Select.Option key={year} value={year}>
-                {year}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-        <div className="bar-chart-padding">
-          <div className="pt-3" style={{ height: "350px" }}>
-            <Bar data={data} options={options} />
-          </div>
-        </div>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <div className="d-flex justify-content-between align-items-center px-4 mx-2 py-4">
+              <span className="mb-0 bar-chart-text1" style={{ fontFamily: 'Montserrat', fontSize: 18, fontWeight: 600, color: '#0d0d0d' }}>
+                Dispatched Parcels Chart
+              </span>
+              <Select
+                style={{ width: "100px", height: "33px" }}
+                className="dash-select"
+                value={selectedYear}
+                onChange={setSelectedYear}
+                dropdownStyle={{ fontFamily: 'Montserrat' }}
+              >
+                {years.map((year) => (
+                  <Select.Option key={year} value={year}>
+                    {year}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div className="bar-chart-padding">
+              <div className="pt-3" style={{ height: "350px" }}>
+                <Bar data={data} options={options} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-export default DispatchedParcelsChart; 
+export default DispatchedParcelsChart;

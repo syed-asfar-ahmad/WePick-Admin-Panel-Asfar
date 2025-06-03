@@ -3,6 +3,8 @@ import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner } from '
 import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
+import Loading from '../common/Loading';
+
 
 const ParcelsList = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -190,6 +192,13 @@ const ParcelsList = () => {
     }));
   };
 
+  useEffect(() => {
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+        return () => clearTimeout(timer);
+  }, []);
+
   const handleResetFilters = () => {
     setFilters({
       search: '',
@@ -275,21 +284,21 @@ const ParcelsList = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Parcels</h3>
-            <p>{analytics.totalParcels}</p>
+            <p>{isLoading ? "..." : analytics.totalParcels}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaCheckCircle />
           <div className="analytics-info">
             <h3>Active Parcels</h3>
-            <p>{analytics.activeParcels}</p>
+            <p>{isLoading ? "..." : analytics.activeParcels}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaChartBar />
           <div className="analytics-info">
             <h3>Average Delivery Time</h3>
-            <p>{analytics.averageDeliveryTime}</p>
+            <p>{isLoading ? "..." : analytics.averageDeliveryTime}</p>
           </div>
         </div>
       </div>
@@ -386,10 +395,9 @@ const ParcelsList = () => {
       <div className="view-content">
         <div className="table-container">
           {isLoading ? (
-            <div className="loading-container">
-              <FaSpinner className="spinner" />
-              <p>Loading parcels...</p>
-            </div>
+            <>
+             <Loading /> 
+            </>
           ) : error ? (
             <div className="error-container">
               <p className="error-message">{error}</p>

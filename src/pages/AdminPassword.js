@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { CustomToast } from "../atoms/toastMessage";
 import ButtonLoader from "../atoms/buttonLoader";
 import "./AdminPassword.scss";
+import Loading from '../components/common/Loading';
+
 
 const AdminPassword = () => {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ const AdminPassword = () => {
     newPassword: "password",
     confirmPassword: "password"
   });
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [passwordChecks, setPasswordChecks] = useState({
     length: null,
     uppercase: null,
@@ -57,7 +59,7 @@ const AdminPassword = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -73,7 +75,7 @@ const AdminPassword = () => {
         message: error.message || "Failed to change password"
       });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
       setSubmitting(false);
     }
   };
@@ -85,6 +87,13 @@ const AdminPassword = () => {
       checkPasswordRequirements(value);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const getCheckIcon = (condition) => {
     if (condition === null) return null;
@@ -106,6 +115,12 @@ const AdminPassword = () => {
       </div>
 
       <div className="password-card">
+        {isLoading ? (
+          <>
+          <Loading />
+          </>
+        ) : (
+          <>
         <Formik
           initialValues={{
             currentPassword: "",
@@ -247,6 +262,8 @@ const AdminPassword = () => {
             </Form>
           )}
         </Formik>
+        </>
+        )}
       </div>
     </div>
   );

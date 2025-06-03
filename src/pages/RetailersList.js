@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaExclamationTriangle, FaRedo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './RetailersList.scss';
+import Loading from '../components/common/Loading';
+
 
 const RetailersList = () => {
   const navigate = useNavigate();
@@ -158,6 +160,13 @@ const RetailersList = () => {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({
@@ -266,20 +275,20 @@ const RetailersList = () => {
     }));
   };
 
-  if (error) {
-    return (
-      <div className="error-container">
-        <div className="error-content">
-          <FaExclamationTriangle className="error-icon" />
-          <h2>Error Loading Retailers</h2>
-          <p>{error}</p>
-          <button className="retry-button" onClick={loadRetailers}>
-            <FaRedo /> Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="error-container">
+  //       <div className="error-content">
+  //         <FaExclamationTriangle className="error-icon" />
+  //         <h2>Error Loading Retailers</h2>
+  //         <p>{error}</p>
+  //         <button className="retry-button" onClick={loadRetailers}>
+  //           <FaRedo /> Retry
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="retailers-list-container">
@@ -380,6 +389,16 @@ const RetailersList = () => {
           </button>
         </div>
       </div>
+
+      {isLoading ? (
+        <>
+        <Loading />
+        </>
+      ) : (
+        <>
+        
+        {/* </>
+      )} */}
 
       {/* Edit Modal */}
       {showEditModal && selectedRetailer && (
@@ -533,6 +552,8 @@ const RetailersList = () => {
           )}
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

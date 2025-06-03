@@ -320,7 +320,6 @@ const ReportParcels = () => {
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
-    // Replace with API call if needed
     setReports(mockParcelReports);
   }, []);
 

@@ -11,6 +11,7 @@ import AdminArea from "./customHook/AdminArea";
 import ForgotPassword from "./pages/ForgotPassword";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import Loading from "./components/common/Loading";
 import DashboardCom from "./components/DashboardComponents/DashboardCom";
 import CustomersList from "./components/DashboardComponents/CustomersList";
 import CustomersProfile from "./components/DashboardComponents/CustomersProfile";
@@ -41,6 +42,7 @@ function App() {
 
   const adminRoutes = [
     { path: "/dashboard", Comp: DashboardCom },
+    { path: "/loading", Comp: Loading },
     { path: "/users", Comp: UsersPage },
     { path: "/customers", Comp: CustomersList },
     { path: "/customers/:id", Comp: CustomersProfile },

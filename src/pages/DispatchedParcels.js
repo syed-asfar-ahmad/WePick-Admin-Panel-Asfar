@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
+import Loading from '../components/common/Loading';
+
 
 const DispatchedParcels = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const DispatchedParcels = () => {
     lockerId: '',
     size: '',
     priority: '',
-    timeRange: ''  // Changed from '24h' to empty string to show all parcels by default
+    timeRange: ''
   });
 
   useEffect(() => {
@@ -187,6 +189,13 @@ const DispatchedParcels = () => {
     }));
   };
 
+  useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }, []);
+
   const handleResetFilters = () => {
     setFilters({
       dateRange: '',
@@ -197,26 +206,22 @@ const DispatchedParcels = () => {
       lockerId: '',
       size: '',
       priority: '',
-      timeRange: ''  // Reset to empty string to show all parcels
+      timeRange: ''
     });
   };
 
   const handleApplyFilters = () => {
-    // The filtering is already handled by getFilteredParcels
-    // This function is just to provide feedback to the user
     const filteredCount = getFilteredParcels().length;
     alert(`Found ${filteredCount} parcels matching your criteria`);
   };
 
   const getFilteredParcels = () => {
-    // If no filters are active, return all parcels
     const hasActiveFilters = Object.values(filters).some(value => value !== '');
     if (!hasActiveFilters) {
       return parcels;
     }
 
     return parcels.filter(parcel => {
-      // Search filters (case-insensitive partial matches)
       if (filters.parcelId && !parcel.id.toLowerCase().includes(filters.parcelId.toLowerCase())) {
         return false;
       }
@@ -344,33 +349,33 @@ const DispatchedParcels = () => {
     ];
   };
 
-  if (isLoading) {
-    return (
-      <div className="dispatched-parcels-container">
-        <div className="loading-container">
-          <FaSpinner className="spinner" />
-          <p>Loading parcels...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="dispatched-parcels-container">
+  //       <div className="loading-container">
+  //         <FaSpinner className="spinner" />
+  //         <p>Loading parcels...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="dispatched-parcels-container">
-        <div className="error-container">
-          <div className="error-content">
-            <FaTimesCircle className="error-icon" />
-            <h2>Error Loading Parcels</h2>
-            <p>{error}</p>
-            <button className="retry-button" onClick={() => window.location.reload()}>
-              <FaSpinner /> Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="dispatched-parcels-container">
+  //       <div className="error-container">
+  //         <div className="error-content">
+  //           <FaTimesCircle className="error-icon" />
+  //           <h2>Error Loading Parcels</h2>
+  //           <p>{error}</p>
+  //           <button className="retry-button" onClick={() => window.location.reload()}>
+  //             <FaSpinner /> Retry
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="dispatched-parcels-container">
@@ -380,21 +385,21 @@ const DispatchedParcels = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Today</h3>
-            <p>{analytics.totalToday}</p>
+            <p>{isLoading ? "..." : analytics.totalToday}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaClock />
           <div className="analytics-info">
             <h3>Avg. Delivery Time</h3>
-            <p>{analytics.avgDeliveryTime}</p>
+            <p>{isLoading ? "..." : analytics.avgDeliveryTime}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaTruck />
           <div className="analytics-info">
             <h3>In Transit</h3>
-            <p>{analytics.statusBreakdown.inTransit}</p>
+            <p>{isLoading ? "..." : analytics.statusBreakdown.inTransit}</p>
           </div>
         </div>
       </div>
@@ -622,6 +627,16 @@ const DispatchedParcels = () => {
         </div>
       )}
 
+      {isLoading ? (
+        <>
+        <Loading />
+        </>
+      ) : (
+        <>
+        
+        {/* </>
+      )} */}
+
       {/* View Content */}
       <div className="view-content">
         <div className="table-container">
@@ -669,6 +684,8 @@ const DispatchedParcels = () => {
           </table>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

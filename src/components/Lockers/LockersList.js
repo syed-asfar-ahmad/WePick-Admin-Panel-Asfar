@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaLock, FaUnlock, FaFilter, FaSearch, FaTools, FaBox, FaClock, FaExclamationTriangle, FaRedo, FaSpinner } from 'react-icons/fa';
 import './LockersList.scss';
+import Loading from '../common/Loading';
 
 const LockersList = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -173,16 +174,10 @@ const LockersList = () => {
 
   if (error) {
     return (
-      <div className="error-container">
-        <div className="error-content">
-          <FaExclamationTriangle className="error-icon" />
-          <h2>Error Loading Lockers</h2>
-          <p>{error}</p>
-          <button className="retry-button" onClick={loadLockers}>
-            <FaRedo /> Retry
-          </button>
-        </div>
-      </div>
+      <Loading
+        error={error}
+        onRetry={loadLockers}
+      />
     );
   }
 
@@ -278,10 +273,9 @@ const LockersList = () => {
       </div>
 
       {isLoading ? (
-        <div className="loading-container">
-          <FaSpinner className="spinner" />
-          <p>Loading lockers...</p>
-        </div>
+        <>
+        <Loading />
+        </>
       ) : (
         <div className="lockers-table-container">
           <table className="lockers-table">
