@@ -383,11 +383,11 @@ const ReportParcels = () => {
   return (
     <div className="row px-4 pt-3 my-2">
       <div className="col-12 d-flex justify-content-between align-items-center">
-        <p className="mb-0 appoinment-text" style={{ fontWeight: 600, fontSize: 18 }}>
+        <p className="mt-2 appoinment-text" style={{ fontWeight: 600, fontSize: 18 }}>
           Report Detail
         </p>
       </div>
-      <div className="col-12 mt-2">
+      <div className="col-12 mt-3">
         <Table
           columns={columns}
           dataSource={reports}
