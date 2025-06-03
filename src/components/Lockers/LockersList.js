@@ -12,6 +12,7 @@ const LockersList = () => {
     search: '',
     status: '',
     location: '',
+    capacity: '',
   });
 
   // Mock data for lockers
@@ -119,7 +120,8 @@ const LockersList = () => {
     setFilters({
       search: '',
       status: '',
-      location: ''
+      location: '',
+      capacity: '',
     });
   };
 
@@ -139,6 +141,10 @@ const LockersList = () => {
       }
 
       if (filters.location && !locker.location.toLowerCase().includes(filters.location.toLowerCase())) {
+        return false;
+      }
+
+      if (filters.capacity && locker.size !== filters.capacity) {
         return false;
       }
 
@@ -233,49 +239,50 @@ const LockersList = () => {
         </div>
       </div>
 
-      <div className={`filters-section ${showFilters ? 'show' : ''}`}>
-        <div className="filters-grid">
-          <div className="filter-group">
-            <label>Search</label>
-            <div className="search-input">
-              <FaSearch className="search-icon" />
+      {showFilters && (
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
+          <div className="filters-grid">
+            <div className="filter-group">
+              <label>Search</label>
               <input
                 type="text"
                 name="search"
                 value={filters.search}
                 onChange={handleFilterChange}
-                placeholder="Search by Locker ID"
+                placeholder="Search Lockers..."
               />
             </div>
-          </div>
-          <div className="filter-group">
-            <label>Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Status</option>
-              <option value="available">Available</option>
-              <option value="occupied">Occupied</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Location</label>
-            <input
-              type="text"
-              name="location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              placeholder="Enter Location"
-            />
+            <div className="filter-group">
+              <label>Status</label>
+              <select name="status" value={filters.status} onChange={handleFilterChange}>
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="maintenance">Maintenance</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Location</label>
+              <input
+                type="text"
+                name="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+                placeholder="Enter location..."
+              />
+            </div>
+            <div className="filter-group">
+              <label>Capacity</label>
+              <select name="capacity" value={filters.capacity} onChange={handleFilterChange}>
+                <option value="">All Capacities</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div className="filter-actions">
-          <button className="reset-button" onClick={handleResetFilters}>
-            Reset Filters
-          </button>
-          <button className="apply-button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-        </div>
-      </div>
+      )}
 
       {isLoading ? (
         <div className="loading-container">

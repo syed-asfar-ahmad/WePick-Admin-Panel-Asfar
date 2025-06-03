@@ -311,75 +311,50 @@ const RetailersList = () => {
       </div>
 
       {/* Enhanced Filters Section */}
-      <div className={`filters-section ${showFilters ? '' : 'hidden'}`}>
-        <div className="filters-grid">
-          <div className="filter-group">
-            <label>Search</label>
-            <input
-              type="text"
-              name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
-              placeholder="Search retailers..."
-            />
-          </div>
-          <div className="filter-group">
-            <label>Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Business Type</label>
-            <select name="businessType" value={filters.businessType} onChange={handleFilterChange}>
-              <option value="">All Types</option>
-              <option value="electronics">Electronics</option>
-              <option value="fashion">Fashion</option>
-              <option value="home">Home Goods</option>
-              <option value="food">Food & Beverage</option>
-              <option value="sports">Sports</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Date Range</label>
-            <input
-              type="date"
-              name="dateRange"
-              value={filters.dateRange}
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="filter-group">
-            <label>Performance</label>
-            <select name="performance" value={filters.performance} onChange={handleFilterChange}>
-              <option value="">All Performance</option>
-              <option value="high">High (&gt;90%)</option>
-              <option value="medium">Medium (80-90%)</option>
-              <option value="low">Low (&lt;80%)</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Location</label>
-            <input
-              type="text"
-              name="location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              placeholder="Enter location..."
-            />
+      {showFilters && (
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
+          <div className="filters-grid">
+            <div className="filter-group">
+              <label>Search</label>
+              <input
+                type="text"
+                name="search"
+                value={filters.search}
+                onChange={handleFilterChange}
+                placeholder="Search Retailers..."
+              />
+            </div>
+            <div className="filter-group">
+              <label>Status</label>
+              <select name="status" value={filters.status} onChange={handleFilterChange}>
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Business Type</label>
+              <select name="businessType" value={filters.businessType} onChange={handleFilterChange}>
+                <option value="">All Types</option>
+                <option value="electronics">Electronics</option>
+                <option value="fashion">Fashion</option>
+                <option value="home">Home Goods</option>
+                <option value="food">Food & Beverage</option>
+                <option value="sports">Sports</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Date Range</label>
+              <input
+                type="date"
+                name="dateRange"
+                value={filters.dateRange}
+                onChange={handleFilterChange}
+              />
+            </div>
           </div>
         </div>
-        <div className="filter-actions">
-          <button className="reset-button" onClick={handleResetFilters}>
-            Reset Filters
-          </button>
-          <button className="apply-button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Edit Modal */}
       {showEditModal && selectedRetailer && (

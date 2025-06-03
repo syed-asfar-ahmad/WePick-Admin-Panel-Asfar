@@ -408,104 +408,106 @@ const DispatchedParcels = () => {
         </div>
       </div>
 
-      {/* Enhanced Filters Section */}
-      <div className={`filters-section ${showFilters ? '' : 'hidden'}`}>
-        <div className="filters-grid">
-          <div className="filter-group">
-            <label>Time Range</label>
-            <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
-              <option value="24h">Last 24 Hours</option>
-              <option value="week">Last Week</option>
-              <option value="month">Last Month</option>
-            </select>
+      {/* Filters Section */}
+      {showFilters && (
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
+          <div className="filters-grid">
+            <div className="filter-group">
+              <label>Time Range</label>
+              <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
+                <option value="24h">Last 24 Hours</option>
+                <option value="week">Last Week</option>
+                <option value="month">Last Month</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Date Range</label>
+              <input
+                type="date"
+                name="dateRange"
+                value={filters.dateRange}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-group">
+              <label>Status</label>
+              <select name="status" value={filters.status} onChange={handleFilterChange}>
+                <option value="">All Status</option>
+                <option value="delivered">Delivered</option>
+                <option value="in transit">In Transit</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Parcel ID</label>
+              <input
+                type="text"
+                name="parcelId"
+                value={filters.parcelId}
+                onChange={handleFilterChange}
+                placeholder="Enter Parcel ID"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Retailer</label>
+              <input
+                type="text"
+                name="retailer"
+                value={filters.retailer}
+                onChange={handleFilterChange}
+                placeholder="Enter Retailer Name"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Customer</label>
+              <input
+                type="text"
+                name="customer"
+                value={filters.customer}
+                onChange={handleFilterChange}
+                placeholder="Enter Customer Name"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Locker ID</label>
+              <input
+                type="text"
+                name="lockerId"
+                value={filters.lockerId}
+                onChange={handleFilterChange}
+                placeholder="Enter Locker ID"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Size</label>
+              <select name="size" value={filters.size} onChange={handleFilterChange}>
+                <option value="">All Sizes</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Priority</label>
+              <select name="priority" value={filters.priority} onChange={handleFilterChange}>
+                <option value="">All Priorities</option>
+                <option value="standard">Standard</option>
+                <option value="express">Express</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
           </div>
-          <div className="filter-group">
-            <label>Date Range</label>
-            <input
-              type="date"
-              name="dateRange"
-              value={filters.dateRange}
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="filter-group">
-            <label>Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Status</option>
-              <option value="delivered">Delivered</option>
-              <option value="in transit">In Transit</option>
-              <option value="pending">Pending</option>
-              <option value="failed">Failed</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Parcel ID</label>
-            <input
-              type="text"
-              name="parcelId"
-              value={filters.parcelId}
-              onChange={handleFilterChange}
-              placeholder="Enter Parcel ID"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Retailer</label>
-            <input
-              type="text"
-              name="retailer"
-              value={filters.retailer}
-              onChange={handleFilterChange}
-              placeholder="Enter Retailer Name"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Customer</label>
-            <input
-              type="text"
-              name="customer"
-              value={filters.customer}
-              onChange={handleFilterChange}
-              placeholder="Enter Customer Name"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Locker ID</label>
-            <input
-              type="text"
-              name="lockerId"
-              value={filters.lockerId}
-              onChange={handleFilterChange}
-              placeholder="Enter Locker ID"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Size</label>
-            <select name="size" value={filters.size} onChange={handleFilterChange}>
-              <option value="">All Sizes</option>
-              <option value="small">Small</option>
-              <option value="medium">Medium</option>
-              <option value="large">Large</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Priority</label>
-            <select name="priority" value={filters.priority} onChange={handleFilterChange}>
-              <option value="">All Priorities</option>
-              <option value="standard">Standard</option>
-              <option value="express">Express</option>
-              <option value="urgent">Urgent</option>
-            </select>
+          <div className="filter-actions">
+            <button className="reset-button" onClick={handleResetFilters}>
+              Reset Filters
+            </button>
+            <button className="apply-button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
           </div>
         </div>
-        <div className="filter-actions">
-          <button className="reset-button" onClick={handleResetFilters}>
-            Reset Filters
-          </button>
-          <button className="apply-button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Edit Modal */}
       {showEditModal && selectedParcel && (

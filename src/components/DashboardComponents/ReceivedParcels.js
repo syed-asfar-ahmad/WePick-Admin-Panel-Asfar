@@ -343,9 +343,9 @@ const ReceivedParcels = () => {
         </div>
       </div>
 
-      {/* Enhanced Filters Section */}
+      {/* Filters Section */}
       {showFilters && (
-        <div className="filters-section">
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
           <div className="filters-grid">
             <div className="filter-group">
               <label>Time Range</label>

@@ -309,78 +309,80 @@ const ParcelsList = () => {
       </div>
 
       {/* Filters Section */}
-      <div className={`filters-section ${showFilters ? '' : 'hidden'}`}>
-        <div className="filters-grid">
-          <div className="filter-group">
-            <label>Search</label>
-            <input
-              type="text"
-              name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
-              placeholder="Search by ID or tracking number"
-            />
+      {showFilters && (
+        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
+          <div className="filters-grid">
+            <div className="filter-group">
+              <label>Search</label>
+              <input
+                type="text"
+                name="search"
+                value={filters.search}
+                onChange={handleFilterChange}
+                placeholder="Search by ID or tracking number"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Status</label>
+              <select name="status" value={filters.status} onChange={handleFilterChange}>
+                <option value="">All Status</option>
+                <option value="dispatched">Dispatched</option>
+                <option value="in transit">In Transit</option>
+                <option value="delivered">Delivered</option>
+                <option value="failed">Failed</option>
+                <option value="ready for pickup">Ready for Pickup</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Locker ID</label>
+              <input
+                type="text"
+                name="lockerId"
+                value={filters.lockerId}
+                onChange={handleFilterChange}
+                placeholder="Enter Locker ID"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Date Range</label>
+              <input
+                type="date"
+                name="dateRange"
+                value={filters.dateRange}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-group">
+              <label>Retailer</label>
+              <input
+                type="text"
+                name="retailer"
+                value={filters.retailer}
+                onChange={handleFilterChange}
+                placeholder="Enter Retailer Name"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Location</label>
+              <input
+                type="text"
+                name="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+                placeholder="Enter Location"
+              />
+            </div>
           </div>
-          <div className="filter-group">
-            <label>Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Status</option>
-              <option value="dispatched">Dispatched</option>
-              <option value="in transit">In Transit</option>
-              <option value="delivered">Delivered</option>
-              <option value="failed">Failed</option>
-              <option value="ready for pickup">Ready for Pickup</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Locker ID</label>
-            <input
-              type="text"
-              name="lockerId"
-              value={filters.lockerId}
-              onChange={handleFilterChange}
-              placeholder="Enter Locker ID"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Date Range</label>
-            <input
-              type="date"
-              name="dateRange"
-              value={filters.dateRange}
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="filter-group">
-            <label>Retailer</label>
-            <input
-              type="text"
-              name="retailer"
-              value={filters.retailer}
-              onChange={handleFilterChange}
-              placeholder="Enter Retailer Name"
-            />
-          </div>
-          <div className="filter-group">
-            <label>Location</label>
-            <input
-              type="text"
-              name="location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              placeholder="Enter Location"
-            />
+          <div className="filter-actions">
+            <button className="reset-button" onClick={handleResetFilters}>
+              Reset Filters
+            </button>
+            <button className="apply-button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
           </div>
         </div>
-        <div className="filter-actions">
-          <button className="reset-button" onClick={handleResetFilters}>
-            Reset Filters
-          </button>
-          <button className="apply-button" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Table View */}
       <div className="view-content">
