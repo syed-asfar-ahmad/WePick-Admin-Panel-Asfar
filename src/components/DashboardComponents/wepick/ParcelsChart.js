@@ -67,12 +67,12 @@ const DispatchedParcelsChart = () => {
   //   }
   // };
 
-  // Prepare chart data
+  
   const labels = mockMonthlyData.map(item => item.month);
   const dataCounts = mockMonthlyData.map(item => item.count);
 
   const data = {
-    labels, // Months as x-axis labels
+    labels,
     datasets: [
       {
         label: "Dispatched Parcels",
