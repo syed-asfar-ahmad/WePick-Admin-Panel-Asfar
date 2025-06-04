@@ -496,7 +496,8 @@
     .delivery-card {
       flex: 1;
       min-width: 200px;
-      background: rgba(108, 173, 97, 0.1);
+      // background: rgba(108, 173, 97, 0.1);
+      background: #f8f9fa;
       border-radius: 10px;
       padding: 16px;
       display: flex;
@@ -527,6 +528,7 @@
       .delivery-content {
         display: flex;
         flex-direction: column;
+        // background: #f8f9fa;
         
 
         label {
