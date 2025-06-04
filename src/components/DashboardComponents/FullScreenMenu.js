@@ -236,6 +236,8 @@ const FullScreenMenu = () => {
     navigate(link);
   };
 
+  
+
   const menuData = [
     {
       id: 1,

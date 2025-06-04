@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import "./ReportParcels.scss";
+import Loading from '../../../components/common/Loading';
+
 
 const mockParcelReports = [
   {
@@ -316,11 +318,20 @@ const statusStyles = {
   },
 };
 
+
 const ReportParcels = () => {
   const [reports, setReports] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setReports(mockParcelReports);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   const columns = [
@@ -381,6 +392,10 @@ const ReportParcels = () => {
 
   return (
     <div className="row px-4 pt-3 my-2">
+      {isLoading ? (
+        <Loading />
+      ) : (
+       <>
       <div className="col-12 d-flex justify-content-between align-items-center">
         <p className="mt-2 appoinment-text" style={{ fontWeight: 600, fontSize: 18 }}>
           Report Detail
@@ -404,6 +419,8 @@ const ReportParcels = () => {
           className="custom-pagination"
         />
       </div>
+      </> 
+      )}
     </div>
   );
 };
