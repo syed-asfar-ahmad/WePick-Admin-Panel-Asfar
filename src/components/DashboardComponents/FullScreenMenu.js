@@ -209,6 +209,7 @@ const FullScreenMenu = () => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
+  const [selectedNestedSubMenu, setSelectedNestedSubMenu] = useState(null);
   const [activeNestedSubMenu, setActiveNestedSubMenu] = useState(null);
 
   const handleSubMenuToggle = (id) => {
@@ -226,10 +227,16 @@ const FullScreenMenu = () => {
     setSelectedSubMenu(null);
   };
 
-  const handleSubMenuClick = (menuId, subMenuId) => {
-    console.log('SubMenu clicked:', menuId, subMenuId);
+  const handleSubMenuClick = (menuId, subMenuId, isNested = false) => {
+    console.log('SubMenu clicked:', menuId, subMenuId, isNested);
     setSelectedMenu(menuId);
-    setSelectedSubMenu(subMenuId);
+    if (isNested) {
+      setSelectedNestedSubMenu(subMenuId);
+      setSelectedSubMenu(null);
+    } else {
+      setSelectedSubMenu(subMenuId);
+      setSelectedNestedSubMenu(null);
+    }
   };
 
   const handleNavigation = (link) => {
@@ -376,20 +383,69 @@ const FullScreenMenu = () => {
    
   ];
 
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sub-menu1-top-padding {
+      position: relative;
+      padding-left: 24px;
+      color: #666;
+    }
+
+    .sub-menu1-top-padding::before {
+      content: '';
+      position: absolute;
+      left: 65px;
+      top: 50%;
+      width: 5px;
+      height: 5px;
+      background: #666;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      opacity: 1;
+    }
+
+    .sub-menu1-top-padding.selected {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .sub-menu1-top-padding.selected::before {
+      opacity: 0.7;
+    }
+
+    .sub-menu1-top-padding:hover {
+      color: #666;
+    }
+  `;
+  document.head.appendChild(style);
+
   const renderSubMenu = (menuId, subMenu) => {
     return (
       <>
         {subMenu?.map((item) => (
           <div key={item.id}>
             <div
-              className="sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center"
+              className={`sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center ${
+                selectedSubMenu === item.id ? 'selected' : ''
+              }`}
               style={{
                 paddingLeft: "81px",
-                color: selectedSubMenu === item.id ? "black" : "black",
+                color: selectedSubMenu === item.id ? "#333" : "#666",
               }}
               onClick={(e) => {
                 e.preventDefault();
-                handleSubMenuClick(menuId, item.id);
+                handleSubMenuClick(menuId, item.id, false);
                 if (item.submenu) {
                   handleNestedSubMenuToggle(item.id);
                 } else {
@@ -417,40 +473,32 @@ const FullScreenMenu = () => {
                     src={DownIcon}
                     alt=""
                     style={{
-                      transform: activeNestedSubMenu === item.id ? "rotate(180deg)" : "rotate(0deg)",
-                      transition: "transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-                      width: "10px",
-                      height: "10px",
-                      cursor: "pointer",
-                      filter: "brightness(0.8)",
-                      animation: activeNestedSubMenu === item.id ? "bounceDown 0.4s ease" : "none"
+                      transform: activeNestedSubMenu === item.id ? "rotate(-90deg)" : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                      opacity: 0.85,
+                      width: '10px',
+                      height: '10px'
                     }}
                   />
                 </div>
               )}
             </div>
             {item.submenu && activeNestedSubMenu === item.id && (
-              <div 
-                style={{ 
-                  paddingLeft: "20px",
-                  animation: "slideDown 0.3s ease-out"
-                }}
-              >
-                {item.submenu.map((subItem, index) => (
+              <div style={{ paddingLeft: "20px" }}>
+                {item.submenu.map((subItem) => (
                   <NavLink
                     key={subItem.id}
                     to={subItem.link}
-                    className="sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center text-decoration-none"
+                    className={`sub-menu1-top-padding dashboard-main-hover py-3 my-1 left-drop-down d-flex align-items-center text-decoration-none ${
+                      selectedNestedSubMenu === subItem.id ? 'selected' : ''
+                    }`}
                     style={{
                       paddingLeft: "81px",
-                      color: "inherit",
-                      animation: `fadeIn 0.3s ease-out ${index * 0.1}s`,
-                      opacity: 0,
-                      animationFillMode: "forwards"
+                      color: selectedNestedSubMenu === subItem.id ? "#333" : "#666",
                     }}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleSubMenuClick(menuId, subItem.id);
+                      handleSubMenuClick(menuId, subItem.id, true);
                       if (!subItem.submenu) {
                         handleNavigation(subItem.link);
                       }
@@ -467,45 +515,6 @@ const FullScreenMenu = () => {
     );
   };
 
-  // Add keyframes for the animations
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes bounceDown {
-      0% {
-        transform: rotate(0deg) scale(1);
-      }
-      50% {
-        transform: rotate(90deg) scale(1.2);
-      }
-      100% {
-        transform: rotate(180deg) scale(1);
-      }
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateX(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-  `;
-  document.head.appendChild(style);
-
   return (
     <div className="hover-effect h-100 mt-2">
       {menuData.map((item) => (
@@ -516,8 +525,7 @@ const FullScreenMenu = () => {
         >
           {item?.submenu ? (
             <div
-              className={`d-flex align-items-center w-100 py-3 w-100 dashboard-main-hover cursor-pointer justify-content-center px-3 ${selectedMenu === item.id ? "selected-menu" : ""
-                }`}
+              className="d-flex align-items-center w-100 py-3 w-100 dashboard-main-hover cursor-pointer justify-content-center px-3"
               onClick={() => {
                 handleSubMenuToggle(item.id);
                 handleMenuClick(item.id);
@@ -529,13 +537,10 @@ const FullScreenMenu = () => {
               <div className="dashboard-left-icon">{item.icon}</div>
 
               <p
-                className={`mb-0 pl-lg-3 pl-1  w-100 ${selectedMenu === item.id
-                    ? "selected-menu"
-                    : "dashboard-left-icon-text"
-                  }`}
+                className="mb-0 pl-lg-3 pl-1 w-100 dashboard-left-icon-text"
                 style={{
-                  color: "#0D0D0D",
-                  userSelect: "none",
+                  color: "#666",
+                  userSelect: "none"
                 }}
               >
                 {item.name}
@@ -551,10 +556,12 @@ const FullScreenMenu = () => {
                     style={{
                       transform:
                         activeSubMenu === item.id
-                          ? "rotate(180deg)"
+                          ? "rotate(-90deg)"
                           : "rotate(0deg)",
-                      transition: "transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-                      animation: activeSubMenu === item.id ? "bounceDown 0.4s ease" : "none"
+                      transition: "transform 0.3s ease",
+                      opacity: 0.85,
+                      width: '10px',
+                      height: '10px'
                     }}
                   />
                 </div>
@@ -563,20 +570,16 @@ const FullScreenMenu = () => {
           ) : (
             <NavLink
               to={item.link}
-              className={`d-flex align-items-center py-3 w-100 dashboard-main-hover justify-content-center px-3 ${selectedMenu === item.id ? "selected-menu" : ""
-                }`}
+              className="d-flex align-items-center py-3 w-100 dashboard-main-hover justify-content-center px-3"
               onClick={() => handleMenuClick(item.id)}
             >
               <div className="dashboard-left-icon">{item.icon}</div>
 
               <p
-                className={`mb-0 pl-lg-3 pl-1  text-left w-100 ${selectedMenu === item.id
-                    ? "selected-menu"
-                    : "dashboard-left-icon-text"
-                  }`}
+                className="mb-0 pl-lg-3 pl-1 text-left w-100 dashboard-left-icon-text"
                 style={{
-                  color: "#0D0D0D",
-                  userSelect: "none",
+                  color: "#666",
+                  userSelect: "none"
                 }}
               >
                 {item.name}
