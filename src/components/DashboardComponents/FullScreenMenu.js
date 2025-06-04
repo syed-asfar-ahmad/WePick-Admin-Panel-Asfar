@@ -275,7 +275,7 @@ const FullScreenMenu = () => {
           submenu: [
             {
               id: 1,
-              name: "Customer List",
+              name: "Customers List",
               link: "/customers",
             },
             {
@@ -363,12 +363,12 @@ const FullScreenMenu = () => {
       submenu: [
         {
           id: 1,
-          name: "Change admin password",
+          name: "Change Admin Password",
           link: "/adminpassword",
         },
         {
           id: 2,
-          name: "Edit profile",
+          name: "Edit Profile",
           link: "/editprofile",
         },
       ]
