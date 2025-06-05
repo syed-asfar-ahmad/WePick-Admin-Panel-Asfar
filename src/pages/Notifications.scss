@@ -169,12 +169,15 @@
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
+      margin-top: 1rem;
 
       button {
         padding: 0.5rem 1rem;
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-size: 0.9rem;
+        font-weight: 500;
 
         &.reset-button {
           background: white;
@@ -185,6 +188,23 @@
             background: #dc3545;
             color: white;
             transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+
+        &.apply-button {
+          background: #6CAD61;
+          color: white;
+          border: none;
+
+          &:hover {
+            background: darken(#6CAD61, 10%);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           }
 
           &:active {

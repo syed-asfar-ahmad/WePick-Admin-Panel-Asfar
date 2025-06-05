@@ -86,4 +86,24 @@
   .header-logo-text {
     font-size: 20px;
   }
+}
+
+// Header icon animations
+.menu-button {
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.profile-trigger {
+  position: relative;
+  transition: all 0.3s ease;
+  display: inline-block;
+  
+  &:hover {
+    transform: translateY(-2px) scale(1.1);
+  }
 } 

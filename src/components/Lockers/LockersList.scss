@@ -282,9 +282,9 @@
     &.show {
       max-height: 500px;
       opacity: 1;
-      padding: 24px;
+      padding: 24px 24px 12px 24px;
       visibility: visible;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       animation: slideDown 0.3s ease-out;
     }
 
@@ -305,7 +305,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
 
       .filter-group {
         label {
@@ -370,34 +370,45 @@
       display: flex;
       justify-content: flex-end;
       gap: 12px;
+      margin-top: 0.5rem;
+      padding: 0.5rem 0;
 
-      button {
+      .reset-button,
+      .apply-button {
         padding: 10px 20px;
         border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
         font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
         transition: all 0.3s ease;
 
-        &.reset-button {
-          background-color: #fff;
-          border: 1px solid #e9ecef;
-          color: #495057;
-
-          &:hover {
-            background-color: #f8f9fa;
-          }
+        &:hover {
+          transform: translateY(-1px);
         }
+      }
 
-        &.apply-button {
-          background-color: #6CAD61;
-          border: none;
+      .reset-button {
+        background-color: #fff;
+        border: 1px solid #F44336;
+        color: #F44336;
+
+        &:hover {
+          background-color: #F44336;
           color: #fff;
+        }
+      }
 
-          &:hover {
-            background-color: #5a9c4f;
-            transform: translateY(-1px);
-          }
+      .apply-button {
+        background-color: #6CAD61;
+        border: none;
+        color: #fff;
+
+        &:hover {
+          background-color: #5a9c4f;
+          transform: translateY(-1px);
         }
       }
     }

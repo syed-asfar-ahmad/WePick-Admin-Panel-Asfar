@@ -362,6 +362,14 @@ const RetailersList = () => {
               />
             </div>
           </div>
+          <div className="filter-actions">
+            <button className="reset-button" onClick={handleResetFilters}>
+              Reset Filters
+            </button>
+            <button className="apply-button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
+          </div>
         </div>
       )}
 

@@ -666,7 +666,10 @@ const DispatchedParcels = () => {
                   <td>
                     <span 
                       className="status-badge"
-                      style={{ backgroundColor: getStatusColor(parcel.status) }}
+                      style={{ 
+                        backgroundColor: getStatusColor(parcel.status),
+                        whiteSpace: 'nowrap'
+                      }}
                     >
                       {parcel.status}
                     </span>

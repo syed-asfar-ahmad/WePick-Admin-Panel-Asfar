@@ -24,6 +24,11 @@ const Notifications = () => {
   const [userFilter, setUserFilter] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState('');
+  const [appliedFilters, setAppliedFilters] = useState({
+    type: 'All',
+    user: 'All',
+    date: ''
+  });
   const filtersRef = useRef(null);
 
   const handleFilterToggle = () => {
@@ -38,10 +43,18 @@ const Notifications = () => {
     }
   };
 
+  const handleApplyFilters = () => {
+    setAppliedFilters({
+      type: typeFilter,
+      user: userFilter,
+      date: dateFilter
+    });
+  };
+
   const filteredNotifications = notifications.filter((n) => {
-    const typeMatch = typeFilter === 'All' || n.type === typeFilter;
-    const userMatch = userFilter === 'All' || n.user === userFilter;
-    const dateMatch = !dateFilter || n.date === dateFilter;
+    const typeMatch = appliedFilters.type === 'All' || n.type === appliedFilters.type;
+    const userMatch = appliedFilters.user === 'All' || n.user === appliedFilters.user;
+    const dateMatch = !appliedFilters.date || n.date === appliedFilters.date;
     return typeMatch && userMatch && dateMatch;
   });
 
@@ -49,6 +62,11 @@ const Notifications = () => {
     setTypeFilter('All');
     setUserFilter('All');
     setDateFilter('');
+    setAppliedFilters({
+      type: 'All',
+      user: 'All',
+      date: ''
+    });
   };
 
   const handleViewNotification = (notification) => {
@@ -178,6 +196,12 @@ const Notifications = () => {
               onClick={handleResetFilters}
             >
               Reset Filters
+            </button>
+            <button 
+              className="apply-button"
+              onClick={handleApplyFilters}
+            >
+              Apply Filters
             </button>
           </div>
         </div>
