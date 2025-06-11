@@ -1,14 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import "../assets/css/Signin.scss";
-// import wepick_logo from '../assets/images/common/wepick_logo.svg'
+import { forgotPassword } from "../services/wepickApi";
+import ButtonLoader from "../atoms/buttonLoader";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const emailReference = useRef(null);
 
   const [empty, setEmpty] = useState(0);
   const [email, setEmail] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     if (!empty.email) {
@@ -23,20 +27,38 @@ const ForgotPassword = () => {
       ...empty,
       [event.target.name]: event.target.value,
     }));
-
-    // const { name, value } = event.target;
-    // setFormData({ ...formData, [name]: value });
+    setError("");
+    setSuccess("");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError("");
+    setSuccess("");
 
     if (!empty.email) {
-      // alert("please enter email")
       setEmail(1);
       emailReference.current.focus();
-    } else {
-      setEmail(0);
+      return;
+    }
+
+    if (!empty.email.match(/[@]/)) {
+      setError("Please enter a valid email address");
+      emailReference.current.focus();
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await forgotPassword({ email: empty.email });
+      setSuccess("Password reset instructions have been sent to your email");
+      setEmpty({ email: "" });
+      // Optionally navigate to verify OTP page
+      // navigate("/verify-otp");
+    } catch (error) {
+      setError(error.response?.data?.message || "Failed to send reset instructions. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,6 +83,18 @@ const ForgotPassword = () => {
                       to create a new password via email.
                     </div>
 
+                    {error && (
+                      <div className="col-12 mt-3">
+                        <p className="text-danger text-center">{error}</p>
+                      </div>
+                    )}
+
+                    {success && (
+                      <div className="col-12 mt-3">
+                        <p className="text-success text-center">{success}</p>
+                      </div>
+                    )}
+
                     <div className="col-12 mt-3 signup-input-label">
                       <p className="mb-2 ">
                         Email Address
@@ -72,6 +106,7 @@ const ForgotPassword = () => {
                         name="email"
                         value={empty.email}
                         ref={emailReference}
+                        disabled={isLoading}
                       />
                       {email ? (
                         <p className="mb-0 ">
@@ -85,18 +120,27 @@ const ForgotPassword = () => {
                     </div>
 
                     <div className="col-12 mt-4 resgister-button">
-                      <button onClick={handleSubmit} style={{ backgroundColor: "#1BC949" }}>Send</button>
+                      <button 
+                        onClick={handleSubmit} 
+                        disabled={isLoading}
+                        style={{ backgroundColor: "#1BC949" }}
+                      >
+                        {isLoading ? (
+                          <div className="">
+                            <ButtonLoader />
+                          </div>
+                        ) : (
+                          "Send"
+                        )}
+                      </button>
                     </div>
 
-                    <div className="col-12 mt-4 mb-4 signup-lower-text">
-                      <p className="mb-0"  style={{ fontSize: "13px" }}>
+                    <div className="col-12 mt-4 mb-4 text-center">
+                      <p className="mb-0">
                         Remember your password?{" "}
-                        <span>
-                          <Link className="wepick-link sign-text" to="/signin" style={{ color: "#1BC949", fontSize: "13px" }}>
-                            {" "}
-                            Sign In{" "}
-                          </Link>
-                        </span>
+                        <Link to="/signin" className="wepick-link sign-text" style={{ color: "#1BC949", fontSize: "14px" }}>
+                          Sign In
+                        </Link>
                       </p>
                     </div>
                   </div>

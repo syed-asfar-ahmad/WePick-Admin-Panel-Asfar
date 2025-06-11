@@ -13,6 +13,7 @@ import LogoutIcon from "../../assets/images/dashboard/LogoutIcon.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthentication } from "../../redux/feature/AuthSlice";
 import { useNavigate } from "react-router-dom";
+import { signout } from "../../services/wepickApi";
 
 const ProfileDropDown = () => {
   const { user } = useSelector((state) => state.auth);
@@ -20,11 +21,24 @@ const ProfileDropDown = () => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = () => {
-    dispatch(clearAuthentication());
-    localStorage.removeItem("token");
-    window.location.href = "/signin";
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await signout();
+      dispatch(clearAuthentication());
+      localStorage.removeItem("token");
+      window.location.href = "/signin";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear local state even if API call fails
+      dispatch(clearAuthentication());
+      localStorage.removeItem("token");
+      window.location.href = "/signin";
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -246,14 +260,17 @@ const ProfileDropDown = () => {
             }}
           >
             <div style={{ padding: '32px 24px 24px' }}>
-              <Logout style={{ 
-                width: '48px', 
-                height: '48px', 
-                color: '#dc3545',
-                display: 'block',
-                margin: '0 auto 28px',
-                animation: 'iconPop 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
-              }} />
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                marginBottom: '28px'
+              }}>
+                <Logout width="60" height="60" style={{ 
+                  color: '#dc3545',
+                  animation: 'iconPop 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+                }} />
+              </div>
 
               <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                 <h4 style={{ 

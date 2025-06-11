@@ -6,9 +6,8 @@ import { CustomToast } from "../atoms/toastMessage";
 import ButtonLoader from "../atoms/buttonLoader";
 import "./ProfileEdit.scss";
 import { useDispatch, useSelector } from "react-redux";
-import axios from 'axios';
+import { updateProfile } from "../services/wepickApi";
 import Loading from '../components/common/Loading';
-
 
 const ProfileEdit = () => {
   const navigate = useNavigate();
@@ -20,28 +19,25 @@ const ProfileEdit = () => {
   const { user } = useSelector((state) => state.auth || {});
 
   useEffect(() => {
-    if (user?.avatar) {
-      setAvatarPreview(user.avatar);
+    if (user?.profileImage) {
+      setAvatarPreview(user.profileImage);
     }
   }, [user]);
 
   const validationSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .required("First name is required")
-      .min(2, "First name must be at least 2 characters"),
-    lastName: Yup.string()
-      .required("Last name is required")
-      .min(2, "Last name must be at least 2 characters"),
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    phone: Yup.string()
+    name: Yup.string()
+      .required("Name is required")
+      .min(2, "Name must be at least 2 characters"),
+    phoneNumber: Yup.string()
       .matches(/^[0-9]+$/, "Phone number must contain only digits")
       .min(10, "Phone number must be at least 10 digits")
       .required("Phone number is required"),
-    address: Yup.string()
-      .required("Address is required")
-      .min(5, "Address must be at least 5 characters"),
+    businessName: Yup.string()
+      .required("Business name is required")
+      .min(2, "Business name must be at least 2 characters"),
+    businessAddress: Yup.string()
+      .required("Business address is required")
+      .min(5, "Business address must be at least 5 characters"),
   });
 
   const handleAvatarChange = (event) => {
@@ -102,22 +98,15 @@ const ProfileEdit = () => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      formData.append('firstName', values.firstName);
-      formData.append('lastName', values.lastName);
-      formData.append('email', values.email);
-      formData.append('phone', values.phone);
-      formData.append('address', values.address);
+      formData.append('name', values.name);
+      formData.append('phoneNumber', values.phoneNumber);
+      formData.append('businessName', values.businessName);
+      formData.append('businessAddress', values.businessAddress);
       if (avatar) {
-        formData.append('avatar', avatar);
+        formData.append('profileImage', avatar);
       }
 
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-
-      const response = await axios.put('/api/admin/profile', formData, config);
+      const response = await updateProfile(formData);
       
       CustomToast({
         type: "success",
@@ -199,154 +188,125 @@ const ProfileEdit = () => {
       </div>
 
       {isLoading ? (
-        <>
         <Loading />
-        </>
       ) : (
-        <>
-      <div className="profile-card">
-        <Formik
-          initialValues={{
-            firstName: user?.firstName || "",
-            lastName: user?.lastName || "",
-            email: user?.email || "",
-            phone: user?.phone || "",
-            address: user?.address || ""
-          }}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-          enableReinitialize
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <div className="form-section">
-                <h3>Personal Information</h3>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="firstName">
-                      <i className="fa fa-user"></i>
-                      First Name
-                    </label>
-                    <div className="input-group">
-                      <Field
-                        type="text"
-                        name="firstName"
-                        placeholder="Enter first name"
+        <div className="profile-card">
+          <Formik
+            initialValues={{
+              name: user?.name || "",
+              phoneNumber: user?.phoneNumber || "",
+              businessName: user?.businessName || "",
+              businessAddress: user?.businessAddress || ""
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            enableReinitialize
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                <div className="form-section">
+                  <h3>Personal Information</h3>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="name">
+                        <i className="fa fa-user"></i>
+                        Name
+                      </label>
+                      <div className="input-group">
+                        <Field
+                          type="text"
+                          name="name"
+                          placeholder="Enter your name"
+                        />
+                      </div>
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                        className="error-message"
                       />
                     </div>
-                    <ErrorMessage
-                      name="firstName"
-                      component="div"
-                      className="error-message"
-                    />
-                  </div>
 
-                  <div className="form-group">
-                    <label htmlFor="lastName">
-                      <i className="fa fa-user"></i>
-                      Last Name
-                    </label>
-                    <div className="input-group">
-                      <Field
-                        type="text"
-                        name="lastName"
-                        placeholder="Enter last name"
+                    <div className="form-group">
+                      <label htmlFor="phoneNumber">
+                        <i className="fa fa-phone"></i>
+                        Phone Number
+                      </label>
+                      <div className="input-group">
+                        <Field
+                          type="text"
+                          name="phoneNumber"
+                          placeholder="Enter phone number"
+                        />
+                      </div>
+                      <ErrorMessage
+                        name="phoneNumber"
+                        component="div"
+                        className="error-message"
                       />
                     </div>
-                    <ErrorMessage
-                      name="lastName"
-                      component="div"
-                      className="error-message"
-                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="businessName">
+                        <i className="fa fa-building"></i>
+                        Business Name
+                      </label>
+                      <div className="input-group">
+                        <Field
+                          type="text"
+                          name="businessName"
+                          placeholder="Enter business name"
+                        />
+                      </div>
+                      <ErrorMessage
+                        name="businessName"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="businessAddress">
+                        <i className="fa fa-map-marker"></i>
+                        Business Address
+                      </label>
+                      <div className="input-group">
+                        <Field
+                          type="text"
+                          name="businessAddress"
+                          placeholder="Enter business address"
+                        />
+                      </div>
+                      <ErrorMessage
+                        name="businessAddress"
+                        component="div"
+                        className="error-message"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="form-section">
-                <h3>Contact Information</h3>
-                <div className="form-group">
-                  <label htmlFor="email">
-                    <i className="fa fa-envelope"></i>
-                    Email Address
-                  </label>
-                  <div className="input-group">
-                    <Field
-                      type="email"
-                      name="email"
-                      placeholder="Enter email address"
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="error-message"
-                  />
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="cancel-button"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="save-button"
+                    disabled={isSubmitting || isLoading}
+                  >
+                    {isLoading ? <ButtonLoader /> : "Save Changes"}
+                  </button>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="phone">
-                    <i className="fa fa-phone"></i>
-                    Phone Number
-                  </label>
-                  <div className="input-group">
-                    <Field
-                      type="tel"
-                      name="phone"
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="phone"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-              </div>
-
-              <div className="form-section">
-                <h3>Location</h3>
-                <div className="form-group">
-                  <label htmlFor="address">
-                    <i className="fa fa-map-marker"></i>
-                    Address
-                  </label>
-                  <div className="input-group">
-                    <Field
-                      as="textarea"
-                      name="address"
-                      placeholder="Enter your address"
-                      rows="3"
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="address"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-              </div>
-
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="cancel-button"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="submit-button"
-                  disabled={isSubmitting || isLoading}
-                >
-                  {isLoading ? <ButtonLoader /> : "Save Changes"}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
-      </>
+              </Form>
+            )}
+          </Formik>
+        </div>
       )}
     </div>
   );

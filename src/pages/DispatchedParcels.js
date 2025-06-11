@@ -3,7 +3,7 @@ import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClo
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
 import Loading from '../components/common/Loading';
-
+import { getParcelReport, dispatchParcel, trackParcel, getParcelDetail } from '../services/wepickApi';
 
 const DispatchedParcels = () => {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ const DispatchedParcels = () => {
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [parcels, setParcels] = useState([]);
   const [filters, setFilters] = useState({
     dateRange: '',
     status: '',
@@ -28,9 +29,10 @@ const DispatchedParcels = () => {
     const fetchParcels = async () => {
       try {
         setIsLoading(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // In a real application, you would fetch data from your API here
+        const response = await getParcelReport();
+        if (response?.data) {
+          setParcels(response.data);
+        }
         setIsLoading(false);
       } catch (err) {
         setError('Failed to load parcels. Please try again.');
@@ -57,98 +59,6 @@ const DispatchedParcels = () => {
       failed: 5
     }
   };
-
-  // Mock data - In real application, this would come from an API
-  const parcels = [
-    {
-      id: 'P12345',
-      retailer: 'Tech Gadgets Store',
-      customer: 'John Doe',
-      date: '2024-03-15',
-      status: 'In Transit',
-      lockerId: 'L789',
-      size: 'Medium',
-      priority: 'Standard',
-      trackingNumber: 'TRK123456789'
-    },
-    {
-      id: 'P12346',
-      retailer: 'Fashion Boutique',
-      customer: 'Jane Smith',
-      date: '2024-03-14',
-      status: 'Delivered',
-      lockerId: 'L456',
-      size: 'Large',
-      priority: 'Express',
-      trackingNumber: 'TRK987654321'
-    },
-    {
-      id: 'P12347',
-      retailer: 'Home Essentials',
-      customer: 'Mike Wilson',
-      date: '2024-03-16',
-      status: 'Pending',
-      lockerId: 'L234',
-      size: 'Small',
-      priority: 'Standard',
-      trackingNumber: 'TRK456789123'
-    },
-    {
-      id: 'P12348',
-      retailer: 'Gourmet Delights',
-      customer: 'Sarah Brown',
-      date: '2024-03-15',
-      status: 'In Transit',
-      lockerId: 'L567',
-      size: 'Medium',
-      priority: 'Express',
-      trackingNumber: 'TRK789123456'
-    },
-    {
-      id: 'P12349',
-      retailer: 'Sports & Fitness',
-      customer: 'David Lee',
-      date: '2024-03-17',
-      status: 'Pending',
-      lockerId: 'L890',
-      size: 'Large',
-      priority: 'Urgent',
-      trackingNumber: 'TRK321654987'
-    },
-    {
-      id: 'P12350',
-      retailer: 'Tech Gadgets Store',
-      customer: 'Emily Chen',
-      date: '2024-03-16',
-      status: 'Delivered',
-      lockerId: 'L123',
-      size: 'Small',
-      priority: 'Standard',
-      trackingNumber: 'TRK147258369'
-    },
-    {
-      id: 'P12351',
-      retailer: 'Fashion Boutique',
-      customer: 'Robert Taylor',
-      date: '2024-03-17',
-      status: 'Failed',
-      lockerId: 'L345',
-      size: 'Medium',
-      priority: 'Express',
-      trackingNumber: 'TRK963852741'
-    },
-    {
-      id: 'P12352',
-      retailer: 'Home Essentials',
-      customer: 'Lisa Anderson',
-      date: '2024-03-15',
-      status: 'In Transit',
-      lockerId: 'L678',
-      size: 'Large',
-      priority: 'Standard',
-      trackingNumber: 'TRK852963741'
-    }
-  ];
 
   // Locker locations data
   const lockerLocations = [
@@ -299,12 +209,26 @@ const DispatchedParcels = () => {
     setShowEditModal(true);
   };
 
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
-    // Here you would typically make an API call to update the parcel
-    console.log('Saving changes for parcel:', selectedParcel);
-    setShowEditModal(false);
-    setSelectedParcel(null);
+    try {
+      setIsLoading(true);
+      const response = await dispatchParcel(selectedParcel);
+      if (response?.data) {
+        // Update the parcels list with the new data
+        setParcels(prevParcels => 
+          prevParcels.map(parcel => 
+            parcel.id === selectedParcel.id ? response.data : parcel
+          )
+        );
+      }
+      setShowEditModal(false);
+      setSelectedParcel(null);
+    } catch (err) {
+      setError('Failed to update parcel. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -315,8 +239,29 @@ const DispatchedParcels = () => {
     }));
   };
 
-  const handleViewParcel = (parcel) => {
-    navigate(`/viewdispatchedparcels/${parcel.id}`);
+  const handleViewParcel = async (parcel) => {
+    try {
+      setIsLoading(true);
+      // Get parcel details and tracking information
+      const [detailResponse, trackingResponse] = await Promise.all([
+        getParcelDetail(parcel.id),
+        trackParcel(parcel.trackingNumber)
+      ]);
+
+      if (detailResponse?.data && trackingResponse?.data) {
+        // Combine parcel details with tracking information
+        const parcelWithTracking = {
+          ...detailResponse.data,
+          tracking: trackingResponse.data
+        };
+        setSelectedParcel(parcelWithTracking);
+        navigate(`/viewdispatchedparcels/${parcel.id}`);
+      }
+    } catch (err) {
+      setError('Failed to load parcel details. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Mock tracking history data
@@ -385,21 +330,21 @@ const DispatchedParcels = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Today</h3>
-            <p>{isLoading ? "..." : analytics.totalToday}</p>
+            <p>{isLoading ? "..." : (parcels.length > 0 ? analytics.totalToday : 0)}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaClock />
           <div className="analytics-info">
             <h3>Avg. Delivery Time</h3>
-            <p>{isLoading ? "..." : analytics.avgDeliveryTime}</p>
+            <p>{isLoading ? "..." : (parcels.length > 0 ? analytics.avgDeliveryTime : "0 hours")}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaTruck />
           <div className="analytics-info">
             <h3>In Transit</h3>
-            <p>{isLoading ? "..." : analytics.statusBreakdown.inTransit}</p>
+            <p>{isLoading ? "..." : (parcels.length > 0 ? analytics.statusBreakdown.inTransit : 0)}</p>
           </div>
         </div>
       </div>
@@ -642,51 +587,63 @@ const DispatchedParcels = () => {
       {/* View Content */}
       <div className="view-content">
         <div className="table-container">
-          <table className="parcels-table">
-            <thead>
-              <tr>
-                <th>Parcel ID</th>
-                <th>Retailer</th>
-                <th>Customer</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Locker ID</th>
-                <th>Size</th>
-                <th>Priority</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {getFilteredParcels().map((parcel) => (
-                <tr key={parcel.id} className="clickable-row">
-                  <td>{parcel.id}</td>
-                  <td>{parcel.retailer}</td>
-                  <td>{parcel.customer}</td>
-                  <td>{parcel.date}</td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{ 
-                        backgroundColor: getStatusColor(parcel.status),
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      {parcel.status}
-                    </span>
-                  </td>
-                  <td>{parcel.lockerId}</td>
-                  <td>{parcel.size}</td>
-                  <td>{parcel.priority}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>
-                      <button className="edit-button" onClick={() => handleEditParcel(parcel)}>Edit</button>
-                    </div>
-                  </td>
+          {parcels.length === 0 ? (
+            <div className="no-data-container">
+              <p className="error-message">Failed to Load the Dispatched Parcels Data. Please try again later.</p>
+              <button 
+                className="retry-button"
+                onClick={() => window.location.reload()}
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <table className="parcels-table">
+              <thead>
+                <tr>
+                  <th>Parcel ID</th>
+                  <th>Retailer</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Locker ID</th>
+                  <th>Size</th>
+                  <th>Priority</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {getFilteredParcels().map((parcel) => (
+                  <tr key={parcel.id} className="clickable-row">
+                    <td>{parcel.id}</td>
+                    <td>{parcel.retailer}</td>
+                    <td>{parcel.customer}</td>
+                    <td>{parcel.date}</td>
+                    <td>
+                      <span 
+                        className="status-badge"
+                        style={{ 
+                          backgroundColor: getStatusColor(parcel.status),
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {parcel.status}
+                      </span>
+                    </td>
+                    <td>{parcel.lockerId}</td>
+                    <td>{parcel.size}</td>
+                    <td>{parcel.priority}</td>
+                    <td>
+                      <div className="action-buttons">
+                        <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>
+                        <button className="edit-button" onClick={() => handleEditParcel(parcel)}>Edit</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
       </>

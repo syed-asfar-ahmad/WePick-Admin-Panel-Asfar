@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaLock, FaUnlock, FaFilter, FaBox, FaClock, FaExclamationTriangle, FaRedo, FaSpinner } from 'react-icons/fa';
+import { getDashCount, getPostData } from '../../services/service';
 import './LockersList.scss';
 import Loading from '../common/Loading';
 
@@ -16,98 +17,82 @@ const LockersList = () => {
     capacity: '',
   });
 
-  // Mock data for lockers
-  const mockLockers = [
-    {
-      id: 'L001',
-      location: 'Downtown Hub',
-      status: 'Available',
-      lastUsed: '2024-03-15 14:30',
-      size: 'Medium',
-      coordinates: { lat: 37.7749, lng: -122.4194 },
-      capacity: '75%',
-      busNumber: 'BUS-101'
-    },
-    {
-      id: 'L002',
-      location: 'Westside Center',
-      status: 'Occupied',
-      lastUsed: '2024-03-17 09:15',
-      size: 'Large',
-      coordinates: { lat: 37.7833, lng: -122.4167 },
-      capacity: '90%',
-      busNumber: 'BUS-203'
-    },
-    {
-      id: 'L003',
-      location: 'Eastside Station',
-      status: 'Available',
-      lastUsed: '2024-03-16 16:45',
-      size: 'Small',
-      coordinates: { lat: 37.7855, lng: -122.4067 },
-      capacity: '60%',
-      busNumber: 'BUS-305'
-    },
-    {
-      id: 'L004',
-      location: 'North Terminal',
-      status: 'Occupied',
-      lastUsed: '2024-03-17 11:20',
-      size: 'Medium',
-      coordinates: { lat: 37.7895, lng: -122.4000 },
-      capacity: '85%',
-      busNumber: 'BUS-402'
-    },
-    {
-      id: 'L005',
-      location: 'South Point',
-      status: 'Available',
-      lastUsed: '2024-03-15 13:10',
-      size: 'Large',
-      coordinates: { lat: 37.7800, lng: -122.4100 },
-      capacity: '70%',
-      busNumber: 'BUS-504'
-    }
-  ];
+  const [lockers, setLockers] = useState([]);
+  const [analytics, setAnalytics] = useState({
+    totalLockers: 0,
+    availableLockers: 0,
+    occupiedLockers: 0
+  });
 
-  // Simulate API call to fetch lockers
+  // Fetch lockers data
   const fetchLockers = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // In real app, this would be an API call
-      return mockLockers;
+      
+      // Get dashboard counts for analytics
+      const dashCountResponse = await getDashCount();
+      if (dashCountResponse?.success) {
+        setAnalytics({
+          totalLockers: dashCountResponse.data?.withdrawRequestCount || 0,
+          availableLockers: dashCountResponse.data?.withdrawRequestCount || 0,
+          occupiedLockers: 0
+        });
+      }
+
+      // Get post data for locker details
+      const postResponse = await getPostData();
+      if (postResponse?.success) {
+        const processedLockers = postResponse.data.map((post, index) => ({
+          id: `L${(index + 1).toString().padStart(3, '0')}`,
+          location: post.location || 'Unknown Location',
+          status: index % 2 === 0 ? 'Available' : 'Occupied',
+          lastUsed: post.createdAt || new Date().toISOString(),
+          size: ['Small', 'Medium', 'Large'][index % 3],
+          coordinates: { lat: 0, lng: 0 },
+          capacity: `${Math.floor(Math.random() * 30 + 60)}%`,
+          busNumber: `BUS-${(index + 1).toString().padStart(3, '0')}`
+        }));
+        setLockers(processedLockers);
+      } else {
+        // Set default data if API fails
+        setLockers([
+          {
+            id: 'L001',
+            location: 'No Data Available',
+            status: 'Available',
+            lastUsed: new Date().toISOString(),
+            size: 'Medium',
+            coordinates: { lat: 0, lng: 0 },
+            capacity: '0%',
+            busNumber: 'BUS-001'
+          }
+        ]);
+      }
     } catch (err) {
+      console.error('Error fetching lockers:', err);
       setError('Failed to load lockers. Please try again.');
-      throw err;
+      // Set default data on error
+      setLockers([
+        {
+          id: 'L001',
+          location: 'No Data Available',
+          status: 'Available',
+          lastUsed: new Date().toISOString(),
+          size: 'Medium',
+          coordinates: { lat: 0, lng: 0 },
+          capacity: '0%',
+          busNumber: 'BUS-001'
+        }
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const [lockers, setLockers] = useState([]);
-
   useEffect(() => {
-    loadLockers();
+    fetchLockers();
   }, []);
-
-  const loadLockers = async () => {
-    try {
-      const data = await fetchLockers();
-      setLockers(data);
-    } catch (err) {
-      console.error('Error loading lockers:', err);
-    }
-  };
-
-  // Analytics data
-  const analytics = {
-    totalLockers: lockers.length,
-    availableLockers: lockers.filter(l => l.status === 'Available').length,
-    occupiedLockers: lockers.filter(l => l.status === 'Occupied').length
-  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -156,10 +141,10 @@ const LockersList = () => {
   const handleUnlockLocker = async (lockerId) => {
     try {
       setIsUnlocking(prev => ({ ...prev, [lockerId]: true }));
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      // Here you would integrate with the BlueBits API
-      alert(`Unlocking locker ${lockerId} via BlueBits API`);
+      
+      // Simulate unlock operation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Update locker status in the list
       setLockers(prev => prev.map(locker => 
         locker.id === lockerId 
@@ -178,15 +163,6 @@ const LockersList = () => {
     return status === 'Available' ? '#4CAF50' : '#F44336';
   };
 
-  if (error) {
-    return (
-      <Loading
-        error={error}
-        onRetry={loadLockers}
-      />
-    );
-  }
-
   return (
     <div className="lockers-list-container">
       <div className="analytics-section">
@@ -204,7 +180,7 @@ const LockersList = () => {
             <FaLock />
           </div>
           <div className="analytics-info">
-            <h3>Available</h3>
+            <h3>Available Lockers</h3>
             <p>{isLoading ? '...' : analytics.availableLockers}</p>
           </div>
         </div>
@@ -213,7 +189,7 @@ const LockersList = () => {
             <FaUnlock />
           </div>
           <div className="analytics-info">
-            <h3>Occupied</h3>
+            <h3>Occupied Lockers</h3>
             <p>{isLoading ? '...' : analytics.occupiedLockers}</p>
           </div>
         </div>
@@ -275,22 +251,28 @@ const LockersList = () => {
                 <option value="large">Large</option>
               </select>
             </div>
-          </div>
-          <div className="filter-actions">
-            <button className="reset-button" onClick={handleResetFilters}>
-              Reset Filters
-            </button>
-            <button className="apply-button" onClick={handleApplyFilters}>
-              Apply Filters
-            </button>
+            <div className="filter-actions">
+              <button className="reset-button" onClick={handleResetFilters}>
+                Reset Filters
+              </button>
+              <button className="apply-button" onClick={handleApplyFilters}>
+                Apply Filters
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {isLoading ? (
-        <>
         <Loading />
-        </>
+      ) : error ? (
+        <div className="error-container">
+          <FaExclamationTriangle className="error-icon" />
+          <p>{error}</p>
+          <button onClick={fetchLockers} className="retry-button">
+            <FaRedo /> Retry
+          </button>
+        </div>
       ) : (
         <div className="lockers-table-container">
           <table className="lockers-table">

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner } from 'react-icons/fa';
+import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaFileAlt, FaChartLine } from 'react-icons/fa';
 import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
 import Loading from '../common/Loading';
-
+import { getParcelSummary, getParcelReport, getParcelDetail } from '../../services/wepickApi';
 
 const ParcelsList = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -12,6 +12,12 @@ const ParcelsList = () => {
   const [editingParcel, setEditingParcel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [parcelSummary, setParcelSummary] = useState(null);
+  const [parcelReport, setParcelReport] = useState(null);
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
+    endDate: new Date().toISOString().split('T')[0]
+  });
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -22,17 +28,13 @@ const ParcelsList = () => {
   });
 
   // Analytics data
-  const analytics = {
-    totalParcels: 1250,
-    activeParcels: 980,
-    deliveredParcels: 270,
-    averageDeliveryTime: '2.5 hours',
-    topPerformingLockers: [
-      { id: 'L123', successRate: 98, parcels: 150 },
-      { id: 'L124', successRate: 95, parcels: 120 },
-      { id: 'L125', successRate: 94, parcels: 100 }
-    ]
-  };
+  const [analytics, setAnalytics] = useState({
+    totalParcels: 0,
+    activeParcels: 0,
+    deliveredParcels: 0,
+    averageDeliveryTime: '0 hours',
+    topPerformingLockers: []
+  });
 
   // Mock data for parcels
   const parcels = [
@@ -167,21 +169,38 @@ const ParcelsList = () => {
   ];
 
   useEffect(() => {
-    const fetchParcels = async () => {
+    const fetchParcelData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // In a real application, you would fetch data from an API here
+        
+        // Fetch parcel summary
+        const summaryResponse = await getParcelSummary();
+        if (summaryResponse?.data) {
+          setAnalytics({
+            totalParcels: summaryResponse.data.totalParcels || 0,
+            activeParcels: summaryResponse.data.activeParcels || 0,
+            deliveredParcels: summaryResponse.data.deliveredParcels || 0,
+            averageDeliveryTime: summaryResponse.data.averageDeliveryTime || '0 hours',
+            topPerformingLockers: summaryResponse.data.topPerformingLockers || []
+          });
+        }
+
+        // Fetch parcel report
+        const reportResponse = await getParcelReport();
+        if (reportResponse?.data) {
+          // Update parcels data with report data
+          // This would typically update your parcels list with real data
+        }
+
         setIsLoading(false);
       } catch (err) {
-        setError('Failed to load parcels. Please try again later.');
+        setError('Failed to load parcel data. Please try again later.');
         setIsLoading(false);
       }
     };
 
-    fetchParcels();
+    fetchParcelData();
   }, []);
 
   const handleFilterChange = (e) => {
@@ -261,8 +280,18 @@ const ParcelsList = () => {
     return colors[status] || '#666';
   };
 
-  const handleViewParcel = (parcel) => {
-    setSelectedParcel(parcel);
+  const handleViewParcel = async (parcel) => {
+    try {
+      setIsLoading(true);
+      const response = await getParcelDetail(parcel.id);
+      if (response?.data) {
+        setSelectedParcel(response.data);
+      }
+    } catch (err) {
+      setError('Failed to load parcel details. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEditParcel = (parcel) => {
@@ -284,21 +313,21 @@ const ParcelsList = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Parcels</h3>
-            <p>{isLoading ? "..." : analytics.totalParcels}</p>
+            <p>{isLoading ? <FaSpinner className="spinner" /> : analytics.totalParcels}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaCheckCircle />
           <div className="analytics-info">
             <h3>Active Parcels</h3>
-            <p>{isLoading ? "..." : analytics.activeParcels}</p>
+            <p>{isLoading ? <FaSpinner className="spinner" /> : analytics.activeParcels}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaChartBar />
           <div className="analytics-info">
-            <h3>Average Delivery Time</h3>
-            <p>{isLoading ? "..." : analytics.averageDeliveryTime}</p>
+            <h3>Delivered Parcels</h3>
+            <p>{isLoading ? <FaSpinner className="spinner" /> : analytics.deliveredParcels}</p>
           </div>
         </div>
       </div>

@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+import { getParcelReport } from "../../../services/wepickApi";
 import { Chart, registerables } from "chart.js";
 import "./chart.scss";
-import { getRequest } from "../../../services/api";
 import { Select } from "antd";
 import Loading from '../../../components/common/Loading';
 
 Chart.register(...registerables);
 
 const STATUS_COLORS = {
-  delivered: '#4CAF50', // green
-  pending: '#FFC107',  // yellow
-  unknown: '#BDBDBD',  // gray
-  failed: '#ff4d4f',   // red
+  "In Transit": {
+    color: "#1BC949",
+    background: "#E6F9F0",
+  },
+  "Failed": {
+    color: "#FF4D4F",
+    background: "#FFEAEA",
+  },
 };
 
 const DispatchedParcelsChart = () => {
@@ -45,31 +49,45 @@ const DispatchedParcelsChart = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // useEffect(() => {
-  //   fetchDailyData();
-  // }, []);
+  const fetchDailyData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getParcelReport();
+      if (response && response.data && response.data.length > 0) {
+        // Process the data to get monthly counts
+        const monthlyCounts = Array(12).fill(0);
+        response.data.forEach(parcel => {
+          const date = new Date(parcel.dateTime);
+          if (date.getFullYear() === selectedYear) {
+            const month = date.getMonth();
+            monthlyCounts[month]++;
+          }
+        });
 
-  // const fetchDailyData = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     // Replace with your actual endpoint for last 10 days
-  //     const response = await getRequest(`/daily-dispatched-parcels?days=10`);
-  //     if (response && response.data && response.data.length > 0) {
-  //       setDailyData(response.data);
-  //     } else {
-  //       setDailyData(mockMonthlyData);
-  //     }
-  //   } catch (error) {
-  //     setDailyData(mockMonthlyData);
-  //     console.error("Error fetching dispatched parcels data:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+        // Convert to the format expected by the chart
+        const processedData = monthlyCounts.map((count, index) => ({
+          month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index],
+          count: count
+        }));
 
-  
-  const labels = mockMonthlyData.map(item => item.month);
-  const dataCounts = mockMonthlyData.map(item => item.count);
+        setDailyData(processedData);
+      } else {
+        setDailyData(mockMonthlyData);
+      }
+    } catch (error) {
+      setDailyData(mockMonthlyData);
+      console.error("Error fetching dispatched parcels data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDailyData();
+  }, [selectedYear]);
+
+  const labels = dailyData.map(item => item.month);
+  const dataCounts = dailyData.map(item => item.count);
 
   const data = {
     labels,

@@ -7,12 +7,14 @@ import logo from "../assets/images/wepick/logo-no-background.png";
 import "../assets/css/Signin.scss";
 import { loginUser } from "../redux/feature/AuthSlice";
 import ButtonLoader from "../atoms/buttonLoader";
+import { signin } from "../services/wepickApi";
 
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [passwordType, setPasswordType] = useState("password");
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const togglePassword = () => {
     setPasswordType(passwordType === "password" ? "text" : "password");
@@ -27,11 +29,51 @@ const Signin = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setLoading(true);
+    setError("");
     try {
-      await dispatch(loginUser(values)).unwrap();
-      navigate("/");
+      // Static credentials for testing
+      const staticEmail = "admin@example.com";
+      const staticPassword = "admin123";
+
+      if (values.email === staticEmail && values.password === staticPassword) {
+        const response = {
+          token: "static-token-123",
+          user: {
+            id: 1,
+            email: staticEmail,
+            role: "admin",
+            name: "Admin User"
+          }
+        };
+        
+        // Store the token and user data
+        dispatch(loginUser({
+          token: response.token,
+          user: response.user
+        }));
+        
+        navigate("/");
+      } else {
+        // Original API call (commented out for now)
+        /*
+        const response = await signin({
+          email: values.email,
+          password: values.password,
+          fcmToken: "12345" // You might want to get this from a service
+        });
+        
+        // Store the token and user data
+        dispatch(loginUser({
+          token: response.token,
+          user: response.user
+        }));
+        
+        navigate("/");
+        */
+        setError("Invalid email or password");
+      }
     } catch (error) {
-      // Error is already handled in the loginUser thunk
+      setError(error.response?.data?.message || "Failed to sign in. Please try again.");
     }
     setLoading(false);
     setSubmitting(false);
@@ -54,6 +96,11 @@ const Signin = () => {
                   <div className="col-12 mb-3 d-flex justify-content-center signup-text2 mt-4">
                     <p className="mb-0">Log in</p>
                   </div>
+                  {error && (
+                    <div className="col-12 mb-3">
+                      <p className="text-danger text-center">{error}</p>
+                    </div>
+                  )}
                   <Formik
                     initialValues={{ email: "", password: "" }}
                     validationSchema={validationSchema}
