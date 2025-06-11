@@ -3,11 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import logo from "../assets/images/wepick/logo-no-background.png";
-import "../assets/css/Signin.scss";
-import { loginUser } from "../redux/feature/AuthSlice";
-import ButtonLoader from "../atoms/buttonLoader";
-import { signin } from "../services/wepickApi";
+import logo from "../../assets/images/wepick/logo-no-background.png";
+import "../../assets/css/Signin.scss";
+import { loginUser } from "../../redux/feature/AuthSlice";
+import ButtonLoader from "../../atoms/buttonLoader";
+import { signin } from "../../services/wepickApi";
 
 const Signin = () => {
   const navigate = useNavigate();

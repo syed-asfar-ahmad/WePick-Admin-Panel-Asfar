@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { CustomToast } from "../atoms/toastMessage";
-import ButtonLoader from "../atoms/buttonLoader";
+import { CustomToast } from "../../atoms/toastMessage";
+import ButtonLoader from "../../atoms/buttonLoader";
 import "./AdminPassword.scss";
-import Loading from '../components/common/Loading';
+import Loading from '../../components/common/Loading';
 
 
 const AdminPassword = () => {

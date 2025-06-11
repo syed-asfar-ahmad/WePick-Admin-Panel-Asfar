@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
-import Loading from '../components/common/Loading';
-import { getParcelReport, dispatchParcel, trackParcel, getParcelDetail } from '../services/wepickApi';
+import Loading from '../../components/common/Loading';
+import { getParcelReport, dispatchParcel, trackParcel, getParcelDetail } from '../../services/wepickApi';
 
 const DispatchedParcels = () => {
   const navigate = useNavigate();

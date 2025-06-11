@@ -8,29 +8,29 @@ import { useState, useEffect } from "react";
 
 // Components
 import AdminArea from "./customHook/AdminArea";
-import ForgotPassword from "./pages/ForgotPassword";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
+import ForgotPassword from "./features/auth/ForgotPassword";
+import Signin from "./features/auth/Signin";
+import Signup from "./features/auth/Signup";
 import Loading from "./components/common/Loading";
-import DashboardCom from "./components/DashboardComponents/DashboardCom";
-import CustomersList from "./components/DashboardComponents/CustomersList";
-import CustomersProfile from "./components/DashboardComponents/CustomersProfile";
-import ReceivedDetails from "./components/DashboardComponents/ReceivedDetails";
-import ReceivedParcels from "./components/DashboardComponents/ReceivedParcels";
+import DashboardCom from "./features/dashboard/DashboardCom";
+import CustomersList from "./features/users/customers/CustomersList";
+import CustomersProfile from "./features/users/customers/CustomersProfile";
+import ReceivedDetails from "./features/parcels/ReceivedDetails";
+import ReceivedParcels from "./features/parcels/ReceivedParcels";
 import UsersPage from "./pages/Users/Users";
 import UserViewPage from "./pages/Users/UserView";
 import UserFriends from "./pages/Users/UserFriends";
-import RetailersProfile from './pages/RetailersProfile';
-import RetailersList from './pages/RetailersList';
-import DispatchedParcels from './pages/DispatchedParcels';
-import ParcelDetails from './pages/ParcelDetails';
-import ParcelsList from './components/Parcels/ParcelsList';
-import LockersList from './components/Lockers/LockersList';
-import Notifications from './pages/Notifications';
+import RetailersProfile from './features/users/retailers/RetailersProfile';
+import RetailersList from './features/users/retailers/RetailersList';
+import DispatchedParcels from './features/parcels/DispatchedParcels';
+import ParcelDetails from './features/parcels/ParcelDetails';
+import ParcelsList from './features/parcels/ParcelsList';
+import LockersList from './features/Lockers/LockersList';
+import Notifications from './features/notifications/Notifications';
 import { NotificationsProvider } from './context/NotificationsContext';
-import AdminPassword from './pages/AdminPassword';
-import ProfileEdit from "./pages/ProfileEdit";
-import ReportParcels from './components/DashboardComponents/wepick/ReportParcels';
+import AdminPassword from './features/auth/AdminPassword';
+import ProfileEdit from "./features/auth/ProfileEdit";
+import ReportParcels from './features/dashboard/reportdetails/ReportParcels';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);

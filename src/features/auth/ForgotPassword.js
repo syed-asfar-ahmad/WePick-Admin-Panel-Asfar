@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../assets/css/Signin.scss";
-import { forgotPassword } from "../services/wepickApi";
-import ButtonLoader from "../atoms/buttonLoader";
+// import "../assets/css/Signin.scss";
+import "../../assets/css/Signin.scss";
+import { forgotPassword } from "../../services/wepickApi";
+import ButtonLoader from "../../atoms/buttonLoader";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();

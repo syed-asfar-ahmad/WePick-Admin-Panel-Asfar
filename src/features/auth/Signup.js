@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "../assets/css/Signin.scss";
+import "../../assets/css/Signin.scss";
 // import wepick_logo from '../assets/images/common/wepick_logo.svg'
 
 // Image
 // import wepick_logo from "../assets/images/wepick/logo-no-background.png";
-import CustomCheckbox from "../components/common/CustomCheckbox";
-import { signup } from "../services/wepickApi";
-import ButtonLoader from "../atoms/buttonLoader";
+import CustomCheckbox from "../../components/common/CustomCheckbox";
+import { signup } from "../../services/wepickApi";
+import ButtonLoader from "../../atoms/buttonLoader";
 
 const Signup = () => {
   let navigate = useNavigate();

@@ -11,8 +11,8 @@ import {
 import { PostSvg, UserSvg, EventSvg, LockerSvg, ParcelSvg } from "../../assets/icons";
 
 // Components
-import ParcelsChart from "./wepick/ParcelsChart";
-import ReportParcels from "./wepick/ReportParcels";
+import ParcelsChart from './dispatchedparcelschart/ParcelsChart';
+import ReportParcels from './reportdetails/ReportParcels';
 
 // Styles
 import "./dashboard.scss";

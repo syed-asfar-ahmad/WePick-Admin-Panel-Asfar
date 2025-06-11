@@ -3,7 +3,7 @@ import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaFileA
 import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
-import Loading from '../common/Loading';
+import Loading from '../../components/common/Loading';
 import { getParcelSummary, getParcelReport, getParcelDetail } from '../../services/wepickApi';
 
 const ParcelsList = () => {

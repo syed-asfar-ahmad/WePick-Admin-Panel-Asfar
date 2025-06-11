@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './CustomersList.scss';
-import Loading from '../common/Loading';
+import Loading from '../../../components/common/Loading';
 
 const CustomersList = () => {
   const navigate = useNavigate();

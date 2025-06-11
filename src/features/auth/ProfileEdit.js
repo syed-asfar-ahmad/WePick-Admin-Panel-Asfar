@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { CustomToast } from "../atoms/toastMessage";
-import ButtonLoader from "../atoms/buttonLoader";
+import { CustomToast } from "../../atoms/toastMessage";
+import ButtonLoader from "../../atoms/buttonLoader";
 import "./ProfileEdit.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProfile } from "../services/wepickApi";
-import Loading from '../components/common/Loading';
+import { updateProfile } from "../../services/wepickApi";
+import Loading from '../../components/common/Loading';
 
 const ProfileEdit = () => {
   const navigate = useNavigate();

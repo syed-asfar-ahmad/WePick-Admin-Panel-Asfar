@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaExclamationTriangle, FaRedo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './RetailersList.scss';
-import Loading from '../components/common/Loading';
+import Loading from '../../../components/common/Loading';
 
 
 const RetailersList = () => {

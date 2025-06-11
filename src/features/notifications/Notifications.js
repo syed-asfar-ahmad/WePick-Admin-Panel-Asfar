@@ -1,9 +1,9 @@
 import React, { useState, useRef,useEffect } from 'react';
 import { FaBell, FaFilter } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { useNotifications } from '../context/NotificationsContext';
+import { useNotifications } from '../../context/NotificationsContext';
 import './Notifications.scss';
-import Loading from '../components/common/Loading';
+import Loading from '../../components/common/Loading';
 
 
 const notificationTypes = [

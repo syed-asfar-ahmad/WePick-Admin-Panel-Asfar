@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaLock, FaUnlock, FaFilter, FaBox, FaClock, FaExclamationTriangle, FaRedo, FaSpinner } from 'react-icons/fa';
 import { getDashCount, getPostData } from '../../services/service';
 import './LockersList.scss';
-import Loading from '../common/Loading';
+import Loading from '../../components/common/Loading';
 
 const LockersList = () => {
   const [showFilters, setShowFilters] = useState(false);
