@@ -35,7 +35,21 @@ const Signin = () => {
       const staticEmail = "admin@example.com";
       const staticPassword = "admin123";
 
-      if (values.email === staticEmail && values.password === staticPassword) {
+      // Trim any whitespace from inputs
+      const enteredEmail = values.email.trim();
+      const enteredPassword = values.password.trim();
+
+      console.log("Login attempt details:", {
+        enteredEmail,
+        enteredPassword,
+        staticEmail,
+        staticPassword,
+        emailMatch: enteredEmail === staticEmail,
+        passwordMatch: enteredPassword === staticPassword
+      });
+
+      if (enteredEmail === staticEmail && enteredPassword === staticPassword) {
+        console.log("Credentials matched, proceeding with login");
         const response = {
           token: "static-token-123",
           user: {
@@ -46,33 +60,21 @@ const Signin = () => {
           }
         };
         
+        console.log("Dispatching login action");
         // Store the token and user data
         dispatch(loginUser({
-          token: response.token,
-          user: response.user
+          email: enteredEmail,
+          password: enteredPassword
         }));
         
+        console.log("Navigating to home page");
         navigate("/");
       } else {
-        // Original API call (commented out for now)
-        /*
-        const response = await signin({
-          email: values.email,
-          password: values.password,
-          fcmToken: "12345" // You might want to get this from a service
-        });
-        
-        // Store the token and user data
-        dispatch(loginUser({
-          token: response.token,
-          user: response.user
-        }));
-        
-        navigate("/");
-        */
+        console.log("Credentials did not match");
         setError("Invalid email or password");
       }
     } catch (error) {
+      console.error("Login error:", error);
       setError(error.response?.data?.message || "Failed to sign in. Please try again.");
     }
     setLoading(false);
