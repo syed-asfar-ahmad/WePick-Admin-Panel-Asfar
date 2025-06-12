@@ -223,14 +223,14 @@ const LockersList = () => {
                 <option value="large">Large</option>
               </select>
             </div>
-            <div className="filter-actions">
-              <button className="reset-button" onClick={handleResetFilters}>
-                Reset Filters
-              </button>
-              <button className="apply-button" onClick={handleApplyFilters}>
-                Apply Filters
-              </button>
-            </div>
+          </div>
+          <div className="filter-actions">
+            <button className="reset-button" onClick={handleResetFilters}>
+              Reset Filters
+            </button>
+            <button className="apply-button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
           </div>
         </div>
       )}
@@ -244,7 +244,7 @@ const LockersList = () => {
             <p className="error-message">{error || 'No lockers available'}</p>
             <button className="retry-button" onClick={fetchLockers}>
               {/* <FaRedo /> */}
-               Retry
+              Retry
             </button>
           </div>
         </div>
