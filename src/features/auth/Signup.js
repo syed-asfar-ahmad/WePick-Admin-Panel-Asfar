@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../assets/css/Signin.scss";
-// import wepick_logo from '../assets/images/common/wepick_logo.svg'
-
-// Image
-// import wepick_logo from "../assets/images/wepick/logo-no-background.png";
 import CustomCheckbox from "../../components/common/CustomCheckbox";
 import { signup } from "../../services/wepickApi";
 import ButtonLoader from "../../atoms/buttonLoader";
@@ -131,11 +127,10 @@ const Signup = () => {
         email: empty.email,
         password: empty.password,
         confirmPassword: empty.password,
-        phoneNumber: "", // You might want to add phone number field
+        phoneNumber: "",
         userType: "admin"
       });
 
-      // Reset form
       setEmpty({
         firstname: "",
         lastname: "",
@@ -148,7 +143,6 @@ const Signup = () => {
       setFirstName(0);
       setLastName(0);
 
-      // Navigate to sign in
       navigate("/signin");
     } catch (error) {
       setError(error.response?.data?.message || "Failed to sign up. Please try again.");
@@ -276,10 +270,7 @@ const Signup = () => {
                       <p className="mb-2 ">
                         Password<span className="signup-staric-color">*</span>
                       </p>
-                      <div
-                        className="d-flex position-relative"
-                        style={{ height: "54px", borderRadius: "8px" }}
-                      >
+                      <div className="password-input-wrapper">
                         <input
                           type={passwordType}
                           onChange={handleInput}
@@ -288,44 +279,20 @@ const Signup = () => {
                           ref={passwordReference}
                           disabled={isLoading}
                         />
-                        <div className="loginPasswordPositionBottom input-group-btn">
-                          <h1
-                            className="eyeBtn pr-4"
-                            onMouseUp={togglePassword}
-                            onMouseDown={togglePassword}
-                            onTouchStart={togglePassword}
-                            onTouchEnd={togglePassword}
-                            onClick={togglePassword}
-                            style={{ 
-                              pointerEvents: isLoading ? "none" : "auto",
-                              opacity: isLoading ? 0.6 : 1
-                            }}
-                          >
-                            <p
-                              style={{
-                                width: "10px",
-                                height: "5px",
-                                color: "Black",
-                                border: "none",
-                                marginTop: "-13px",
-                              }}
-                            >
-                              {passwordType === "password" ? (
-                                <i
-                                  className="fa fa-eye-slash"
-                                  aria-hidden="true"
-                                  style={{ cursor: isLoading ? "default" : "pointer" }}
-                                ></i>
-                              ) : (
-                                <i
-                                  className="fa fa-eye"
-                                  aria-hidden="true"
-                                  style={{ cursor: isLoading ? "default" : "pointer" }}
-                                ></i>
-                              )}
-                            </p>
-                          </h1>
-                        </div>
+                        <span
+                          className="eye-icon"
+                          onClick={togglePassword}
+                          style={{ 
+                            pointerEvents: isLoading ? "none" : "auto",
+                            opacity: isLoading ? 0.6 : 1
+                          }}
+                        >
+                          {passwordType === "password" ? (
+                            <i className="fa fa-eye-slash" aria-hidden="true"></i>
+                          ) : (
+                            <i className="fa fa-eye" aria-hidden="true"></i>
+                          )}
+                        </span>
                       </div>
                       {password ? (
                         <p className="mb-0 ">

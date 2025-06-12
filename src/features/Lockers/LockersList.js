@@ -24,13 +24,11 @@ const LockersList = () => {
     occupiedLockers: 0
   });
 
-  // Fetch lockers data
   const fetchLockers = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Get dashboard counts for analytics
       const dashCountResponse = await getDashCount();
       if (dashCountResponse?.success) {
         setAnalytics({
@@ -40,7 +38,6 @@ const LockersList = () => {
         });
       }
 
-      // Get post data for locker details
       const postResponse = await getPostData();
       if (postResponse?.success) {
         const processedLockers = postResponse.data.map((post, index) => ({
@@ -55,36 +52,13 @@ const LockersList = () => {
         }));
         setLockers(processedLockers);
       } else {
-        // Set default data if API fails
-        setLockers([
-          {
-            id: 'L001',
-            location: 'No Data Available',
-            status: 'Available',
-            lastUsed: new Date().toISOString(),
-            size: 'Medium',
-            coordinates: { lat: 0, lng: 0 },
-            capacity: '0%',
-            busNumber: 'BUS-001'
-          }
-        ]);
+        setLockers([]);
+        setError('Failed to load data from server');
       }
     } catch (err) {
       console.error('Error fetching lockers:', err);
       setError('Failed to load lockers. Please try again.');
-      // Set default data on error
-      setLockers([
-        {
-          id: 'L001',
-          location: 'No Data Available',
-          status: 'Available',
-          lastUsed: new Date().toISOString(),
-          size: 'Medium',
-          coordinates: { lat: 0, lng: 0 },
-          capacity: '0%',
-          busNumber: 'BUS-001'
-        }
-      ]);
+      setLockers([]);
     } finally {
       setIsLoading(false);
     }
@@ -142,10 +116,8 @@ const LockersList = () => {
     try {
       setIsUnlocking(prev => ({ ...prev, [lockerId]: true }));
       
-      // Simulate unlock operation
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Update locker status in the list
       setLockers(prev => prev.map(locker => 
         locker.id === lockerId 
           ? { ...locker, status: 'Available' }
@@ -265,13 +237,16 @@ const LockersList = () => {
 
       {isLoading ? (
         <Loading />
-      ) : error ? (
-        <div className="error-container">
-          <FaExclamationTriangle className="error-icon" />
-          <p>{error}</p>
-          <button onClick={fetchLockers} className="retry-button">
-            <FaRedo /> Retry
-          </button>
+      ) : error || lockers.length === 0 ? (
+        <div className="no-data-container">
+          <div className="no-data-content">
+            {/* <FaExclamationTriangle className="error-icon" /> */}
+            <p className="error-message">{error || 'No lockers available'}</p>
+            <button className="retry-button" onClick={fetchLockers}>
+              {/* <FaRedo /> */}
+               Retry
+            </button>
+          </div>
         </div>
       ) : (
         <div className="lockers-table-container">
@@ -316,7 +291,7 @@ const LockersList = () => {
                   <td>
                     <div className="time-cell">
                       <FaClock className="icon" />
-                      <span>{locker.lastUsed}</span>
+                      <span>{new Date(locker.lastUsed).toLocaleString()}</span>
                     </div>
                   </td>
                   <td>
@@ -364,4 +339,4 @@ const LockersList = () => {
   );
 };
 
-export default LockersList; 
+export default LockersList;

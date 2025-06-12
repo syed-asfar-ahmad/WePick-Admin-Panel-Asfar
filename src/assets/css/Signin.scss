@@ -232,3 +232,41 @@
     font-size: 12px;
   }
 }
+
+// Password input wrapper (key fix)
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+
+  input[type="password"],
+  input[type="text"] {
+    width: 100%;
+    height: 54px;
+    padding: 0 40px 0 15px;
+    border: 1px solid $primary-color;
+    border-radius: 8px;
+    &:focus {
+      outline: none;
+    }
+  }
+
+// Eye icon styling
+.eye-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+    z-index: 2;
+    i {
+      font-size: 15px;
+    }
+  }
+}
+
+// Ensure other inputs match the same height/border
+.signup-input-label input[type="text"] {
+  height: 54px;
+  border-radius: 8px;
+}
