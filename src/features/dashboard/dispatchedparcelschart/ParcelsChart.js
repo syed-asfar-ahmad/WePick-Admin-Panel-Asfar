@@ -22,6 +22,7 @@ const STATUS_COLORS = {
 const DispatchedParcelsChart = () => {
   const [dailyData, setDailyData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadershown, setLoaderShown] = useState(true);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2020 + 1 }, (_, i) => currentYear - i).filter(year => year >= 2020);
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -41,13 +42,6 @@ const DispatchedParcelsChart = () => {
     { month: 'Nov', count: 1020 },
     { month: 'Dec', count: 1300 },
   ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const fetchDailyData = async () => {
     try {
@@ -81,6 +75,13 @@ const DispatchedParcelsChart = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoaderShown(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     fetchDailyData();
@@ -175,7 +176,7 @@ const DispatchedParcelsChart = () => {
   return (
     <div className="col-12 my-lg-4 pt-lg-2 pb-5">
       <div className="bar-chart pb-4" style={{ borderRadius: 16, background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        {isLoading ? (
+        {loadershown ? (
           <Loading />
         ) : (
           <>

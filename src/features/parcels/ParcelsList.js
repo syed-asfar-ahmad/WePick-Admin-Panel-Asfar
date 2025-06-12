@@ -168,41 +168,6 @@ const ParcelsList = () => {
     }
   ];
 
-  useEffect(() => {
-    const fetchParcelData = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        // Fetch parcel summary
-        const summaryResponse = await getParcelSummary();
-        if (summaryResponse?.data) {
-          setAnalytics({
-            totalParcels: summaryResponse.data.totalParcels || 0,
-            activeParcels: summaryResponse.data.activeParcels || 0,
-            deliveredParcels: summaryResponse.data.deliveredParcels || 0,
-            averageDeliveryTime: summaryResponse.data.averageDeliveryTime || '0 hours',
-            topPerformingLockers: summaryResponse.data.topPerformingLockers || []
-          });
-        }
-
-        // Fetch parcel report
-        const reportResponse = await getParcelReport();
-        if (reportResponse?.data) {
-          // Update parcels data with report data
-          // This would typically update your parcels list with real data
-        }
-
-        setIsLoading(false);
-      } catch (err) {
-        setError('Failed to load parcel data. Please try again later.');
-        setIsLoading(false);
-      }
-    };
-
-    fetchParcelData();
-  }, []);
-
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({
@@ -210,13 +175,7 @@ const ParcelsList = () => {
       [name]: value
     }));
   };
-
-  useEffect(() => {
-        const timer = setTimeout(() => {
-          setIsLoading(false);
-        }, 1500);
-        return () => clearTimeout(timer);
-  }, []);
+ 
 
   const handleResetFilters = () => {
     setFilters({
@@ -228,6 +187,38 @@ const ParcelsList = () => {
       location: ''
     });
   };
+
+  useEffect(() => {
+  const loaderTimer = setTimeout(() => {
+    setIsLoading(false);
+  }, 1500);
+
+  const fetchParcelData = async () => {
+    try {
+      // Your existing data fetching logic
+      const summaryResponse = await getParcelSummary();
+      if (summaryResponse?.data) {
+        setAnalytics({
+          totalParcels: summaryResponse.data.totalParcels || 0,
+          activeParcels: summaryResponse.data.activeParcels || 0,
+          deliveredParcels: summaryResponse.data.deliveredParcels || 0,
+          averageDeliveryTime: summaryResponse.data.averageDeliveryTime || '0 hours',
+          topPerformingLockers: summaryResponse.data.topPerformingLockers || []
+        });
+      }
+
+      await getParcelReport();
+    } catch (err) {
+      setError('Failed to load parcel data. Please try again later.');
+    }
+  };
+
+  fetchParcelData();
+
+  return () => {
+    clearTimeout(loaderTimer);
+  };
+}, []);
 
   const handleApplyFilters = () => {
     const filteredCount = getFilteredParcels().length;

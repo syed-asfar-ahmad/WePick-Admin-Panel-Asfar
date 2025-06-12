@@ -24,49 +24,102 @@ const LockersList = () => {
     occupiedLockers: 0
   });
 
-  const fetchLockers = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // const fetchLockers = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     setError(null);
       
-      const dashCountResponse = await getDashCount();
-      if (dashCountResponse?.success) {
-        setAnalytics({
-          totalLockers: dashCountResponse.data?.withdrawRequestCount || 0,
-          availableLockers: dashCountResponse.data?.withdrawRequestCount || 0,
-          occupiedLockers: 0
-        });
-      }
+  //     const dashCountResponse = await getDashCount();
+  //     if (dashCountResponse?.success) {
+  //       setAnalytics({
+  //         totalLockers: dashCountResponse.data?.withdrawRequestCount || 0,
+  //         availableLockers: dashCountResponse.data?.withdrawRequestCount || 0,
+  //         occupiedLockers: 0
+  //       });
+  //     }
 
-      const postResponse = await getPostData();
-      if (postResponse?.success) {
-        const processedLockers = postResponse.data.map((post, index) => ({
-          id: `L${(index + 1).toString().padStart(3, '0')}`,
-          location: post.location || 'Unknown Location',
-          status: index % 2 === 0 ? 'Available' : 'Occupied',
-          lastUsed: post.createdAt || new Date().toISOString(),
-          size: ['Small', 'Medium', 'Large'][index % 3],
-          coordinates: { lat: 0, lng: 0 },
-          capacity: `${Math.floor(Math.random() * 30 + 60)}%`,
-          busNumber: `BUS-${(index + 1).toString().padStart(3, '0')}`
-        }));
-        setLockers(processedLockers);
-      } else {
-        setLockers([]);
-        setError('Failed to load data from server');
-      }
-    } catch (err) {
-      console.error('Error fetching lockers:', err);
-      setError('Failed to load lockers. Please try again.');
-      setLockers([]);
-    } finally {
-      setIsLoading(false);
+  //     const postResponse = await getPostData();
+  //     if (postResponse?.success) {
+  //       const processedLockers = postResponse.data.map((post, index) => ({
+  //         id: `L${(index + 1).toString().padStart(3, '0')}`,
+  //         location: post.location || 'Unknown Location',
+  //         status: index % 2 === 0 ? 'Available' : 'Occupied',
+  //         lastUsed: post.createdAt || new Date().toISOString(),
+  //         size: ['Small', 'Medium', 'Large'][index % 3],
+  //         coordinates: { lat: 0, lng: 0 },
+  //         capacity: `${Math.floor(Math.random() * 30 + 60)}%`,
+  //         busNumber: `BUS-${(index + 1).toString().padStart(3, '0')}`
+  //       }));
+  //       setLockers(processedLockers);
+  //     } else {
+  //       setLockers([]);
+  //       setError('Failed to load data from server');
+  //     }
+  //   } catch (err) {
+  //     console.error('Error fetching lockers:', err);
+  //     setError('Failed to load lockers. Please try again.');
+  //     setLockers([]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const fetchLockers = async () => {
+  try {
+    setIsLoading(true);
+    setError(null);
+    
+    // Add artificial delay only when triggered by retry button
+    const isRetry = !lockers.length || error;
+    if (isRetry) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
     }
-  };
+    
+    const dashCountResponse = await getDashCount();
+    if (dashCountResponse?.success) {
+      setAnalytics({
+        totalLockers: dashCountResponse.data?.withdrawRequestCount || 0,
+        availableLockers: dashCountResponse.data?.withdrawRequestCount || 0,
+        occupiedLockers: 0
+      });
+    }
+
+    const postResponse = await getPostData();
+    if (postResponse?.success) {
+      const processedLockers = postResponse.data.map((post, index) => ({
+        id: `L${(index + 1).toString().padStart(3, '0')}`,
+        location: post.location || 'Unknown Location',
+        status: index % 2 === 0 ? 'Available' : 'Occupied',
+        lastUsed: post.createdAt || new Date().toISOString(),
+        size: ['Small', 'Medium', 'Large'][index % 3],
+        coordinates: { lat: 0, lng: 0 },
+        capacity: `${Math.floor(Math.random() * 30 + 60)}%`,
+        busNumber: `BUS-${(index + 1).toString().padStart(3, '0')}`
+      }));
+      setLockers(processedLockers);
+    } else {
+      setLockers([]);
+      setError('Failed to load data from server');
+    }
+  } catch (err) {
+    console.error('Error fetching lockers:', err);
+    setError('Failed to load lockers. Please try again.');
+    setLockers([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+  // useEffect(() => {
+  //   fetchLockers();
+  // }, []);
 
   useEffect(() => {
-    fetchLockers();
-  }, []);
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+  }, [])
+
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -130,6 +183,8 @@ const LockersList = () => {
       setIsUnlocking(prev => ({ ...prev, [lockerId]: false }));
     }
   };
+
+  
 
   const getStatusColor = (status) => {
     return status === 'Available' ? '#4CAF50' : '#F44336';

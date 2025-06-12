@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
-import Loading from '../../components/common/Loading';
-import { getParcelReport, dispatchParcel, trackParcel, getParcelDetail } from '../../services/wepickApi';
+import Loading from '../../../components/common/Loading';
+import { getParcelReport, dispatchParcel, trackParcel, getParcelDetail } from '../../../services/wepickApi';
 
 const DispatchedParcels = () => {
   const navigate = useNavigate();
@@ -25,23 +25,23 @@ const DispatchedParcels = () => {
     timeRange: ''
   });
 
-  useEffect(() => {
-    const fetchParcels = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getParcelReport();
-        if (response?.data) {
-          setParcels(response.data);
-        }
-        setIsLoading(false);
-      } catch (err) {
-        setError('Failed to load parcels. Please try again.');
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchParcels = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const response = await getParcelReport();
+  //       if (response?.data) {
+  //         setParcels(response.data);
+  //       }
+  //       setIsLoading(false);
+  //     } catch (err) {
+  //       setError('Failed to load parcels. Please try again.');
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchParcels();
-  }, []);
+  //   fetchParcels();
+  // }, []);
 
   // Analytics data
   const analytics = {
@@ -580,9 +580,6 @@ const DispatchedParcels = () => {
         </>
       ) : (
         <>
-        
-        {/* </>
-      )} */}
 
       {/* View Content */}
       <div className="view-content">

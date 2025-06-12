@@ -42,6 +42,7 @@ const statusStyles = {
 const ReportParcels = () => {
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadershown, setLoaderShown] = useState(true);
 
   useEffect(() => {
     setReports(mockParcelReports);
@@ -49,7 +50,7 @@ const ReportParcels = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setLoaderShown(false);
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
@@ -133,7 +134,7 @@ const ReportParcels = () => {
 
   return (
     <div className="row px-4 pt-3 my-2">
-      {isLoading ? (
+      {loadershown ? (
         <Loading />
       ) : (
         <>
