@@ -304,21 +304,21 @@ const ParcelsList = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Parcels</h3>
-            <p>{isLoading ? <FaSpinner className="spinner" /> : analytics.totalParcels}</p>
+            <p>{isLoading ? "..." : analytics.totalParcels}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaCheckCircle />
           <div className="analytics-info">
             <h3>Active Parcels</h3>
-            <p>{isLoading ? <FaSpinner className="spinner" /> : analytics.activeParcels}</p>
+            <p>{isLoading ? "..." : analytics.activeParcels}</p>
           </div>
         </div>
         <div className="analytics-card">
           <FaChartBar />
           <div className="analytics-info">
             <h3>Delivered Parcels</h3>
-            <p>{isLoading ? <FaSpinner className="spinner" /> : analytics.deliveredParcels}</p>
+            <p>{isLoading ? "..." : analytics.deliveredParcels}</p>
           </div>
         </div>
       </div>
