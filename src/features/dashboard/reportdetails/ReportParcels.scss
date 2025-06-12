@@ -9,6 +9,7 @@
         border-color: #1BC949;
         a {
           color: #1BC949;
+          opacity: 1;
         }
       }
     }
@@ -19,6 +20,13 @@
       
       a {
         color: #ffffff;
+      }
+
+      &:hover {
+        a {
+          color: #ffffff;
+          opacity: 1;
+        }
       }
     }
 
@@ -32,6 +40,7 @@
         .ant-pagination-item-link {
           border-color: #1BC949;
           color: #1BC949;
+          opacity: 1;
         }
       }
     }
