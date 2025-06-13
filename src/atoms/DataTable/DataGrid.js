@@ -1610,48 +1610,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
       sortable: false,
       flex: 1.5,
     },
-    // {
-    //   field: "host",
-    //   headerName: "Host",
-    //   sortable: true,
-    //   flex: 1.5,
-    // },
-    // {
-    //   field: "followers",
-    //   headerName: "Followers",
-    //   align: "center",
-    //   flex: 1.5,
-    //   sortable: true,
-    // },
-    // {
-    //   field: "likes",
-    //   headerName: "Likes",
-    //   flex: 1.5,
-    //   align: "center",
-    //   sortable: true,
-    // },
-    // {
-    //   field: "ranking",
-    //   headerName: "Ranking",
-    //   sortable: false,
-    //   flex: 1.5,
-    //   renderCell: (params) => {
-    //     return (
-    //       <span
-    //         style={{
-    //           padding: "5px 10px",
-    //           borderRadius: "15px",
-    //           backgroundColor: params.value ? "#3BAF2A1A" : "#9999991A",
-    //           color: params.value ? "#6CAD61" : "#999999",
-    //           textAlign: "center",
-    //           display: "inline-block",
-    //         }}
-    //       >
-    //         {params.value ? "Active" : "Expired"}
-    //       </span>
-    //     );
-    //   },
-    // },
     {
       field: "reports",
       headerName: "Reports",
