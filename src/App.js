@@ -17,9 +17,6 @@ import CustomersList from "./features/users/customers/CustomersList";
 import CustomersProfile from "./features/users/customers/CustomersProfile";
 import ReceivedDetails from "./features/parcels/ReceivedDetails";
 import ReceivedParcels from "./features/users/customers/ReceivedParcels";
-import UsersPage from "./pages/Users/Users";
-import UserViewPage from "./pages/Users/UserView";
-import UserFriends from "./pages/Users/UserFriends";
 import RetailersProfile from './features/users/retailers/RetailersProfile';
 import RetailersList from './features/users/retailers/RetailersList';
 import DispatchedParcels from './features/users/retailers/DispatchedParcels';
@@ -43,13 +40,10 @@ function App() {
   const adminRoutes = [
     { path: "/dashboard", Comp: DashboardCom },
     { path: "/loading", Comp: Loading },
-    { path: "/users", Comp: UsersPage },
     { path: "/customers", Comp: CustomersList },
     { path: "/customers/:id", Comp: CustomersProfile },
     { path: "/receivedparcels", Comp: ReceivedParcels },
     { path: "/receivedparcels/:parcelId", Comp: ReceivedDetails },
-    { path: "/users/detail/:id", Comp: UserViewPage },
-    { path: "/userfriends/:id", Comp: UserFriends },
     { path: "/viewprofile/:id", Comp: RetailersProfile },
     { path: "/viewdispatchedparcels", Comp: DispatchedParcels },
     { path: "/viewdispatchedparcels/:parcelId", Comp: ParcelDetails },
@@ -57,7 +51,6 @@ function App() {
     { path: "/retailers/:id", Comp: RetailersProfile },
     { path: "/parcelslist", Comp: ParcelsList },
     { path: "/parcels/listallparcels", Comp: ParcelsList },
-    { path: "/customerslist", Comp: UsersPage },
     { path: "/viewreceivedparcels", Comp: ParcelsList },
     { path: "/listoflockers", Comp: LockersList },
     { path: "/location", Comp: LockersList },

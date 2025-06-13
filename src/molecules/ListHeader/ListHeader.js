@@ -33,7 +33,6 @@ const ListHeader = ({
   DropDown,
   breadCrumbItems,
   showlikeWiseFilter,
-  boostsLikeWiseOption,
   filterLikeWiseOption,
   likeWiseFilterChangeSelect
 }) => {
@@ -60,7 +59,7 @@ const ListHeader = ({
         {searchShow && (
           <div className="search-input-field d-flex align-items-center mr-2">
             <i
-              class="fas fa-search pl-2"
+              className="fas fa-search pl-2"
               style={{ color: "#6D7482", fontSize: "14.5px" }}
             ></i>
             <input
@@ -91,13 +90,13 @@ const ListHeader = ({
             />
           </div>
         )}
-         {showlikeWiseFilter && (
+        {showlikeWiseFilter && (
           <div className="ml-2" style={{ width: "200px" }}>
             <CustomDropDown
               value={filterLikeWiseOption}
               selectLabel="Select"
               handleChangeSelect={likeWiseFilterChangeSelect}
-              option={boostsLikeWiseOption}
+              option={filterOptionData}
             />
           </div>
         )}
@@ -115,7 +114,7 @@ const ListHeader = ({
           true || btnShow === true ? (
             <Link to={linkbtn}>
               <button className="list-header-btn2 ml-2  d-flex align-items-center mr-2">
-                <i class="fa-solid fa-circle-plus pr-2 pt-0"></i>
+                <i className="fa-solid fa-circle-plus pr-2 pt-0"></i>
                 {btnText}
               </button>
             </Link>
