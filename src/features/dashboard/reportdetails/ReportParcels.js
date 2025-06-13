@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
-import { getPostData } from "../../../services/service";
 import "./ReportParcels.scss";
 import Loading from '../../../components/common/Loading';
 
@@ -53,27 +52,6 @@ const ReportParcels = () => {
       setLoaderShown(false);
     }, 1500);
     return () => clearTimeout(timer);
-  }, []);
-
-  const fetchReportData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getPostData();
-      if (response && response.data && response.data.length > 0) {
-        setReports(response.data);
-      } else {
-        setReports(mockParcelReports);
-      }
-    } catch (error) {
-      setReports(mockParcelReports);
-      console.error("Error fetching report data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchReportData();
   }, []);
 
   const columns = [

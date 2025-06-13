@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./eventHost.scss";
 import { DeleteIcon } from "../../assets/icons";
 import crossIcon from "../../assets/images/Frame 48.png";
-import { deleteEventHost } from "../../services/service";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../ConfirmationModal";
 
@@ -18,18 +17,6 @@ const EventHostModal = ({ show, handleClose, data, hostedBy, getData }) => {
       eventId: data?.id,
       hostId: hostId,
     };
-
-    deleteEventHost(payload)
-      .then((response) => {
-        // Handle success
-        toast.success("Host deleted successfully:", response);
-        getData();
-        handleClose();
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error deleting host:", error);
-      });
   };
 
   return (

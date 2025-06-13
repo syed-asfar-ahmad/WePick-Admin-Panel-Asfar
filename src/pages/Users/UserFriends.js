@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ListHeader from "../../molecules/ListHeader/ListHeader";
-import { getFriends } from "../../services/service";
+// import { getFriends } from "../../services/service";
 import "../../assets/css/post.scss";
 import { useParams } from "react-router-dom";
 import "./user.scss";
@@ -12,24 +12,6 @@ const UserFriends = () => {
   const { id } = useParams();
   const [friends, setFriends] = useState([]);
   const [loader, setLoader] = useState(false);
-
-  const handlegetPostsData = async (id) => {
-    setLoader(true);
-    try {
-      const response = await getFriends(id);
-      if (response.success) {
-        setFriends(response?.friends);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  useEffect(() => {
-    handlegetPostsData(id);
-  }, [id]);
 
   if (loader) {
     return <PageLoader />;

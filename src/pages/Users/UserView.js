@@ -5,11 +5,6 @@ import TextArea from "antd/es/input/TextArea";
 import QuestionCard from "./QuestionCard";
 import CustomButton from "../../atoms/CustomButton/CustomButton";
 import ConfirmationModal from "../../atoms/ConfirmationModal";
-import {
-  deleteQuestion,
-  getUserProfile,
-  updateUserProfile,
-} from "../../services/service";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import { useFormik, FormikProvider, useFormikContext } from "formik";
@@ -48,108 +43,17 @@ const UserViewPage = () => {
       universityName: Yup.string().required("University name is required"),
       bio: Yup.string().required("Bio is required"),
     }),
-    onSubmit: async (values) => {
-      const data = {
-        Name: values?.Name,
-        email: values?.email,
-        userName: values?.userName,
-        universityName: values?.universityName,
-        university: values?.universityId,
-        bio: values?.bio,
-        id: values?._id,
-      };
-      setButtonLoading(true);
-      try {
-        const response = await updateUserProfile(data);
-        if (response) {
-          CustomToast({
-            type: "success",
-            message: `User updated successfully`,
-          });
-        }
-        navigate(-1); // Navigate back
-      } catch (error) {
-        console.error("Error updating status", error);
-        CustomToast({
-          type: "error",
-          message: `Error updating status`,
-        });
-      } finally {
-        setButtonLoading(false);
-      }
-    },
   });
 
-  const handleGetUserProfile = async () => {
-    setLoader(true);
-    try {
-      const response = await getUserProfile(id);
-      if (response) {
-        const userData = response?.data?.user[0] || [];
-        const questions = response?.data?.questions;
-        formik.setValues({
-          Name: userData?.Name || "",
-          userName: userData?.userName || "",
-          email: userData?.email || "",
-          universityName: userData?.university?.universityName || "",
-          universityId: userData?.university?._id || "",
-          bio: userData?.bio || "",
-          _id: userData?._id || "",
-        });
-        setQuestions(questions);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const handleDeleteQuestion = async (questionId) => {
-    setConfimationLoading(true);
-    try {
-      const response = await deleteQuestion(questionId);
-      if (response) {
-        setQuestions(
-          questions.filter((question) => question._id !== questionId)
-        );
-        CustomToast({
-          type: "success",
-          message: "Question deleted successfully!",
-        });
-      }
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error deleting question:", error.message);
-      CustomToast({
-        type: "error",
-        message: "Failed to delete question. Please try again later.",
-      });
-    } finally {
-      setConfimationLoading(false);
-    }
-  };
 
   const handleClose = () => {
     setShowModal(false);
-  };
-
-  const handleConfirm = () => {
-    if (questionToDelete) {
-      handleDeleteQuestion(questionToDelete);
-    }
   };
 
   const handleDeleteClick = (questionId) => {
     setQuestionToDelete(questionId);
     setShowModal(true);
   };
-
-  useEffect(() => {
-    if (id) {
-      handleGetUserProfile();
-    }
-  }, [id]);
 
   if (loader) {
     return <PageLoader />;
@@ -311,21 +215,9 @@ const UserViewPage = () => {
           </FormikProvider>
         </div>
 
-        {/* <div className="col-12 p-0 px-2">
-          <CustomButton
-            text={"Save"}
-            backgroundColor={"#0D0D0D"}
-            textColor={"white"}
-            padding={"8px 7.5rem"}
-            onClick={formik.handleSubmit}
-            loading={buttonLoading}
-          />
-        </div> */}
-
         <ConfirmationModal
           show={showModal}
           handleClose={handleClose}
-          handleConfirm={handleConfirm}
           loading={confimationLoading}
         />
       </div>

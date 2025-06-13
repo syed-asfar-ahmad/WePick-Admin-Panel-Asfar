@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
-import {
-  deleteEvent,
-  deletePost,
-  // getStories,
-  deleteBPost,
-  deleteBEvent,
-  deleteStory,
-  deleteCommunity,
-  userChangeStatus,
-  deleteUniversity,
-  deleteQuestion,
-  deleteComment,
-  deleteModerationPost,
-  deleteModerationStories,
-  deleteModerationQuestion,
-  deleteModerationComment,
-  deleteModerationEvent,
-  deleteModerationUser,
-  deleteModerationCommunity,
-} from "../../services/service.js";
+// import {
+//   deleteEvent,
+//   deletePost,
+//   // getStories,
+//   deleteBPost,
+//   deleteBEvent,
+//   deleteStory,
+//   deleteCommunity,
+//   userChangeStatus,
+//   deleteUniversity,
+//   deleteQuestion,
+//   deleteComment,
+//   deleteModerationPost,
+//   deleteModerationStories,
+//   deleteModerationQuestion,
+//   deleteModerationComment,
+//   deleteModerationEvent,
+//   deleteModerationUser,
+//   deleteModerationCommunity,
+// } from "../../services/service.js";
 import { CustomToast } from "../../atoms/toastMessage";
 // import { GrFormView } from "react-icons/gr";
 import CardHeader from "@mui/material/CardHeader";
@@ -115,258 +115,258 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
   };
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleChange = debounce(async (id) => {
-      setIsUpdating(true);
-      try {
-        const response = await userChangeStatus(id);
-        if (response) {
-          CustomToast({
-            type: "success",
-            message: `Status updated successfully`,
-          });
-          await getData(); // Refresh data
-        }
-      } catch (error) {
-        console.error("Error updating status", error);
-        CustomToast({
-          type: "error",
-          message: `Error updating status`,
-        });
-      } finally {
-        setIsUpdating(false);
-      }
-    }, 500);
+  // const handleChange = debounce(async (id) => {
+  //     setIsUpdating(true);
+  //     try {
+  //       const response = await userChangeStatus(id);
+  //       if (response) {
+  //         CustomToast({
+  //           type: "success",
+  //           message: `Status updated successfully`,
+  //         });
+  //         await getData(); // Refresh data
+  //       }
+  //     } catch (error) {
+  //       console.error("Error updating status", error);
+  //       CustomToast({
+  //         type: "error",
+  //         message: `Error updating status`,
+  //       });
+  //     } finally {
+  //       setIsUpdating(false);
+  //     }
+  //   }, 500);
   const navigate = useNavigate();
 
-  const handleDelete = async () => {
-    try {
-      switch (index) {
-        case 1:
-          setIsLoading(true);
-          const deleteUniversityPromise = await deleteUniversity({
-            id: deleteState,
-          });
-          if (deleteUniversityPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 2:
-          setIsLoading(true);
-          const deletePostPromise = await deletePost({ id: deleteState });
-          if (deletePostPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 3:
-          setIsLoading(true);
-          const deleteBPostPromise = await deleteBPost({ id: deleteState });
-          if (deleteBPostPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 4:
-          setIsLoading(true);
-          const deletePromise = await deleteEvent({ id: deleteState });
-          if (deletePromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 5:
-          setIsLoading(true);
-          const deleteBEventPromise = await deleteBEvent({ id: deleteState });
-          if (deleteBEventPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 6:
-          setIsLoading(true);
-          const deleteCCommunityPromise = await deleteCommunity({
-            id: deleteState,
-          });
-          if (deleteCCommunityPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 7:
-          setIsLoading(true);
-          const deleteCommunityPromise = await deleteCommunity({
-            id: deleteState,
-          });
-          if (deleteCommunityPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 16:
-          setIsLoading(true);
-          const deleteMCommunity = await deleteModerationCommunity({
-            id: deleteState,
-          });
-          if (deleteModerationCommunity?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 8:
-          setIsLoading(true);
-          const deleteStoryPromise = await deleteStory({ id: deleteState });
-          if (deleteStoryPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 9:
-          setIsLoading(true);
-          const deleteBStoryPromise = await deleteStory({ id: deleteState });
-          if (deleteBStoryPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
+  // const handleDelete = async () => {
+  //   try {
+  //     switch (index) {
+  //       case 1:
+  //         setIsLoading(true);
+  //         const deleteUniversityPromise = await deleteUniversity({
+  //           id: deleteState,
+  //         });
+  //         if (deleteUniversityPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 2:
+  //         setIsLoading(true);
+  //         const deletePostPromise = await deletePost({ id: deleteState });
+  //         if (deletePostPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 3:
+  //         setIsLoading(true);
+  //         const deleteBPostPromise = await deleteBPost({ id: deleteState });
+  //         if (deleteBPostPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 4:
+  //         setIsLoading(true);
+  //         const deletePromise = await deleteEvent({ id: deleteState });
+  //         if (deletePromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 5:
+  //         setIsLoading(true);
+  //         const deleteBEventPromise = await deleteBEvent({ id: deleteState });
+  //         if (deleteBEventPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 6:
+  //         setIsLoading(true);
+  //         const deleteCCommunityPromise = await deleteCommunity({
+  //           id: deleteState,
+  //         });
+  //         if (deleteCCommunityPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 7:
+  //         setIsLoading(true);
+  //         const deleteCommunityPromise = await deleteCommunity({
+  //           id: deleteState,
+  //         });
+  //         if (deleteCommunityPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 16:
+  //         setIsLoading(true);
+  //         const deleteMCommunity = await deleteModerationCommunity({
+  //           id: deleteState,
+  //         });
+  //         if (deleteModerationCommunity?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 8:
+  //         setIsLoading(true);
+  //         const deleteStoryPromise = await deleteStory({ id: deleteState });
+  //         if (deleteStoryPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 9:
+  //         setIsLoading(true);
+  //         const deleteBStoryPromise = await deleteStory({ id: deleteState });
+  //         if (deleteBStoryPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
 
-        case 15:
-          setIsLoading(true);
-          const deleteQuestionPromise = await deleteModerationQuestion({
-            id: deleteState,
-          });
-          if (deleteQuestionPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 17:
-          setIsLoading(true);
-          const deleteCommentPromise = await deleteModerationComment({
-            id: deleteState,
-          });
-          if (deleteCommentPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 14:
-          setIsLoading(true);
-          const deleteUserPromise = await deleteModerationUser({
-            id: deleteState,
-          });
-          if (deleteUserPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 11:
-          setIsLoading(true);
-          const deletePostReportPromise = await deleteModerationPost({
-            id: deleteState,
-          });
-          if (deletePostReportPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-        case 12:
-          setIsLoading(true);
-          const deleteEventPromise = await deleteModerationEvent({
-            id: deleteState,
-          });
-          if (deleteEventPromise?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
+  //       case 15:
+  //         setIsLoading(true);
+  //         const deleteQuestionPromise = await deleteModerationQuestion({
+  //           id: deleteState,
+  //         });
+  //         if (deleteQuestionPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 17:
+  //         setIsLoading(true);
+  //         const deleteCommentPromise = await deleteModerationComment({
+  //           id: deleteState,
+  //         });
+  //         if (deleteCommentPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 14:
+  //         setIsLoading(true);
+  //         const deleteUserPromise = await deleteModerationUser({
+  //           id: deleteState,
+  //         });
+  //         if (deleteUserPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 11:
+  //         setIsLoading(true);
+  //         const deletePostReportPromise = await deleteModerationPost({
+  //           id: deleteState,
+  //         });
+  //         if (deletePostReportPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //       case 12:
+  //         setIsLoading(true);
+  //         const deleteEventPromise = await deleteModerationEvent({
+  //           id: deleteState,
+  //         });
+  //         if (deleteEventPromise?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
 
-        case 13:
-          setIsLoading(true);
-          const deleteModerationStory = await deleteModerationStories({
-            id: deleteState,
-          });
-          if (deleteModerationStory?.success) {
-            getData();
-            setDeleteModal(false);
-            CustomToast({
-              type: "success",
-              message: `Deleted successfully`,
-            });
-          }
-          break;
-      }
-    } catch (error) {
-      console.error("Error deleting item", error);
-      CustomToast({
-        type: "error",
-        message: `Error deleting item`,
-      });
-    } finally {
-      setDeleteModal(false);
-      setIsLoading(false);
-    }
-  };
+  //       case 13:
+  //         setIsLoading(true);
+  //         const deleteModerationStory = await deleteModerationStories({
+  //           id: deleteState,
+  //         });
+  //         if (deleteModerationStory?.success) {
+  //           getData();
+  //           setDeleteModal(false);
+  //           CustomToast({
+  //             type: "success",
+  //             message: `Deleted successfully`,
+  //           });
+  //         }
+  //         break;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting item", error);
+  //     CustomToast({
+  //       type: "error",
+  //       message: `Error deleting item`,
+  //     });
+  //   } finally {
+  //     setDeleteModal(false);
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const getInitials = (name) => {
     if (typeof name !== "string" || name?.trim()?.length === 0) {
@@ -534,9 +534,9 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
           <Switch
             disabled={isUpdating}
             checked={!isActive}
-            onChange={() => {
-              handleChange(params?.row?.id);
-            }}
+            // onChange={() => {
+            //   handleChange(params?.row?.id);
+            // }}
           />
         );
       },
@@ -2518,7 +2518,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
       <ConfirmationModal
         show={deleteModal}
         handleClose={() => setDeleteModal(false)}
-        handleConfirm={handleDelete}
         loading={isLoading}
         message={getDeleteMessage()}
       />

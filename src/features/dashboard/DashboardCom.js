@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  getDashCount, 
-  getDashCommunity, 
-  getParcelSummary, 
-  getParcelReport,
-  getReportStats,
-  getWithdrawalRequests 
-} from "../../services/service";
 import { PostSvg, UserSvg, EventSvg, LockerSvg, ParcelSvg } from "../../assets/icons";
 
 // Components
@@ -33,35 +25,6 @@ const DashboardCom = () => {
   const handlegetData = async () => {
     try {
       setIsLoading(true);
-      // Get dashboard counts
-      const dashCountResponse = await getDashCount();
-      if (dashCountResponse?.success) {
-        setCardData(dashCountResponse?.data || {
-          userCount: 0,
-          postCount: 0,
-          eventCount: 0,
-          withdrawRequestCount: 0
-        });
-      }
-
-      // Get community data
-      const communityResponse = await getDashCommunity();
-      if (communityResponse?.success) {
-        setCommunityData(communityResponse?.data || []);
-      }
-
-      // Get report statistics
-      const reportStatsResponse = await getReportStats();
-      if (reportStatsResponse?.success) {
-        setReportStats(reportStatsResponse?.data || {});
-      }
-
-      // Get withdrawal requests
-      const withdrawalResponse = await getWithdrawalRequests(1, 10, '');
-      if (withdrawalResponse?.success) {
-        setWithdrawalRequests(withdrawalResponse?.data || []);
-      }
-
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {

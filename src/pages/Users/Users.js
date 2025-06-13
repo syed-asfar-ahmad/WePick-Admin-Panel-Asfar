@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getUser, seacrhUser } from "../../services/service.js";
 import "./user.scss";
 import ListHeader from "../../molecules/ListHeader/ListHeader";
 import DG from "../../atoms/DataTable/DataGrid";
@@ -20,49 +19,15 @@ const UsersPage = () => {
   const handleChangeSelect = (value) => {
     setFilterOption(value);
     setCurrentPage(1);
-    handleSearchUser(value.trim(), 1, itemsPerPage, true);
-  };
-  const handlegetUserData = async (limit, page) => {
-    setLoader(true);
-    try {
-      const response = await getUser(page, limit);
-      if (response) {
-        setUser(response?.data);
-        setTotalUsers(response?.pagination.totalCount);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const handleSearchUser = async (query, page, limit, isPublic = false) => {
-    setLoader(true);
-    try {
-      const response = await seacrhUser(query, page, limit, isPublic);
-      if (response) {
-        console.log("search response", response?.data);
-        setUser(response?.data);
-        setTotalUsers(response?.pagination.totalCount);
-      }
-    } catch (error) {
-      console.error("Error searching user data:", error);
-    } finally {
-      setLoader(false);
-    }
   };
 
   useEffect(() => {
     if (searchQuery) {
       const debounceTimer = setTimeout(() => {
         const isPublic = filterOption === "Public";
-        handleSearchUser(searchQuery, currentPage, itemsPerPage, isPublic);
       }, 500);
 
       return () => clearTimeout(debounceTimer);
-    } else {
-      handlegetUserData(itemsPerPage, currentPage);
     }
   }, [searchQuery, itemsPerPage, currentPage]);
 
@@ -101,7 +66,6 @@ const UsersPage = () => {
               <DG
                 index={0}
                 loader={loader}
-                getData={() => handlegetUserData(itemsPerPage, currentPage)}
                 data={user}
               />
               <CustomPagination

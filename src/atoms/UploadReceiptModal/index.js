@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import crossIcon from "../../assets/images/Frame 48.png";
 import { Upload } from "antd";
 import { postRequest } from "../../services/api";
-import { UPLOAD_WITHDRAWAL_REQUEST_RECEIPT } from "../../services/endpoint";
 import ButtonLoader from "../buttonLoader";
 import { toast } from "react-toastify";
 
@@ -35,16 +34,6 @@ const UploadImageModal = ({ showModal, handleClose, onFileUpload, setFilterState
     formData?.append('requestId', showModal);
     formData?.append('receiptFile', file);
     formData?.append('status', 'completed');
-
-    const response = await postRequest(UPLOAD_WITHDRAWAL_REQUEST_RECEIPT, formData);
-    
-    if(response?.success){
-      setIsLoading(false);
-      handleClose();
-      setFile(null);
-      toast?.success(response?.message);
-      setFilterState(prev => ({...prev, actionOnTable: !prev?.actionOnTable}));
-    }
     
   };
 
