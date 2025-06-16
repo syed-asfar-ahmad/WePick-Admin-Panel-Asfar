@@ -249,10 +249,23 @@
         gap: 1rem;
         padding: 2rem;
         text-align: center;
-
+        // new styles added
+        border-radius: 18px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 28px 16px 20px;
+        max-width: 400px;
+        min-height: 80px;
+        
+          
         .error-message {
-          color: #dc3545;
-          font-size: 1.1rem;
+          // color: #dc3545;
+          color: #4d4d4d !important;
+          font-weight: 600;
+          // font-size: 1.1rem;
+          font-size: 14px !important;
           margin: 0;
         }
 

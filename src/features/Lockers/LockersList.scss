@@ -18,6 +18,15 @@
       align-items: center;
       padding: 40px;
       text-align: center;
+      // new styles added
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      margin-top: -300px !important;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px 28px 16px 20px;
+      width: 400px;
+      min-height: 80px;
 
       // .error-icon {
       //   font-size: 48px;
@@ -26,9 +35,12 @@
       // }
 
       .error-message {
-        color: #F44336;
+        // color: #F44336;
+        color: #4d4d4d !important;
+        font-weight: 600;
         font-size: 18px;
-        margin-top: -220px !important;
+        font-size: 14px !important;
+        // margin-top: -220px !important;
       }
 
       .retry-button {
