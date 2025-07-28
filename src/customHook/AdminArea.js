@@ -17,10 +17,10 @@ const AdminArea = ({ children }) => {
 
   // Redirect to signin if user is not authenticated or not an admin
   useEffect(() => {
-    if (!user || user.role !== "admin") {
+    if ((!user || user.role !== "admin") && location.pathname !== "/signin") {
       navigate("/signin");
     }
-  }, [user, navigate]);
+  }, [user, navigate, location.pathname]);
 
   useEffect(() => {
     const handleResize = () => {

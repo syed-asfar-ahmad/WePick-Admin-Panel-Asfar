@@ -27,59 +27,28 @@ const Signin = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    setLoading(true);
-    setError("");
-    try {
-      // Static credentials for testing
-      const staticEmail = "admin@example.com";
-      const staticPassword = "admin123";
+const handleSubmit = async (values, { setSubmitting }) => {
+  setLoading(true);
+  setError("");
+  try {
+    const resultAction = await dispatch(loginUser(values));
 
-      // Trim any whitespace from inputs
-      const enteredEmail = values.email.trim();
-      const enteredPassword = values.password.trim();
-
-      console.log("Login attempt details:", {
-        enteredEmail,
-        enteredPassword,
-        staticEmail,
-        staticPassword,
-        emailMatch: enteredEmail === staticEmail,
-        passwordMatch: enteredPassword === staticPassword
-      });
-
-      if (enteredEmail === staticEmail && enteredPassword === staticPassword) {
-        console.log("Credentials matched, proceeding with login");
-        const response = {
-          token: "static-token-123",
-          user: {
-            id: 1,
-            email: staticEmail,
-            role: "admin",
-            name: "Admin User"
-          }
-        };
-        
-        console.log("Dispatching login action");
-        // Store the token and user data
-        dispatch(loginUser({
-          email: enteredEmail,
-          password: enteredPassword
-        }));
-        
-        console.log("Navigating to home page");
-        navigate("/");
-      } else {
-        console.log("Credentials did not match");
-        setError("Invalid email or password");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError(error.response?.data?.message || "Failed to sign in. Please try again.");
+    if (loginUser.fulfilled.match(resultAction)) {
+      // Navigate directly to dashboard
+      navigate("/dashboard");
+    } else {
+      setError(resultAction.payload || "Invalid credentials.");
     }
-    setLoading(false);
-    setSubmitting(false);
-  };
+  } catch (error) {
+    console.error("Login error:", error);
+    setError("Something went wrong. Please try again.");
+  }
+
+  setLoading(false);
+  setSubmitting(false);
+};
+
+
 
   return (
     <div className="fluid-container ">

@@ -14,13 +14,12 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Provider store={store}>
-  <PersistGate loading={null} persistor={persistor}>
-  <QueryClientProvider client={new QueryClient()}>
-  <App />
-    </QueryClientProvider>
- 
-  </PersistGate>
-</Provider>
+    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <QueryClientProvider client={new QueryClient()}>
+        <App />
+      </QueryClientProvider>
+    </PersistGate>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

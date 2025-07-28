@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { PostSvg, UserSvg, EventSvg, LockerSvg, ParcelSvg } from "../../assets/icons";
-
+import { PostSvg, UserSvg, EventSvg, ParcelSvg } from "../../assets/icons";
 // Components
 import ParcelsChart from './dispatchedparcelschart/ParcelsChart';
 import ReportParcels from './reportdetails/ReportParcels';
-
 // Styles
 import "./dashboard.scss";
 import "../../assets/css/dashboard.scss";
+import { getAdminDashboard } from '../../services/wepickApi';
 
 const DashboardCom = () => {
   const [cardData, setCardData] = useState({
-    userCount: 0,
-    postCount: 0,
-    eventCount: 0,
-    withdrawRequestCount: 0
+    retailerCount: 0,
+    customerCount: 0,
+    parcelCount: 0,
   });
-  const [communityData, setCommunityData] = useState([]);
-  const [reportStats, setReportStats] = useState({});
-  const [withdrawalRequests, setWithdrawalRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const handlegetData = async () => {
     try {
       setIsLoading(true);
+      const response = await getAdminDashboard();
+      const data = response?.data || {};
+      setCardData({
+        retailerCount: data.retailerCount || 0,
+        customerCount: data.customerCount || 0,
+        parcelCount: data.parcelCount || 0,
+      });
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -40,31 +42,25 @@ const DashboardCom = () => {
     {
       id: 1,
       text: "Total Retailers",
-      total: cardData?.userCount || 0,
+      total: cardData?.retailerCount || 0,
       icon: UserSvg,
       route: "/users",
     },
     {
       id: 2,
       text: "Total Customers",
-      total: cardData?.postCount || 0,
+      total: cardData?.customerCount || 0,
       icon: UserSvg,
       route: "/allpost",
     },
     {
       id: 3,
       text: "Total Parcels",
-      total: cardData?.eventCount || 0,
+      total: cardData?.parcelCount || 0,
       icon: ParcelSvg,
       route: "/parcels",
     },
-    {
-      id: 4,
-      text: "Locker availability",
-      total: cardData?.withdrawRequestCount || 0,
-      icon: LockerSvg,
-      route: "/withdrawalrequests",
-    },
+    
   ];
 
   const [dropdownValueChange, setDropdownValueChange] = useState("");

@@ -2,97 +2,46 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaStore, FaPhone, FaEnvelope, FaMapMarkerAlt, FaIdCard, FaBox, FaTruck, FaStar, FaFileAlt, FaEdit, FaCheckCircle, FaTimesCircle, FaUser, FaCamera } from 'react-icons/fa';
 import './RetailersProfile.scss';
+import { getRetailerById } from '../../../services/wepickApi';
 
 const RetailersProfile = () => {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     storeName: '',
-    ownerName: '',
-    email: '',
-    phone: '',
-    address: '',
-    businessLicense: '',
+    owner: '',
+    businessEmail: '',
+    businessAddress: '',
+    businessRegistrationNumber: '',
+    totalParcels: 0,
     profileImage: null
   });
-
-  // Mock data - In real application, this would come from an API
-  const retailerData = {
-    status: 'Active',
-    recentActivity: [
-      { type: 'delivery', status: 'completed', date: '2024-03-15', details: 'Parcel #12345 delivered successfully' },
-      { type: 'pickup', status: 'pending', date: '2024-03-14', details: 'New pickup request for Parcel #12346' },
-      { type: 'delivery', status: 'failed', date: '2024-03-13', details: 'Failed delivery attempt for Parcel #12344' }
-    ],
-    documents: [
-      { name: 'Business License', url: '#', status: 'verified' },
-      { name: 'Tax Certificate', url: '#', status: 'verified' },
-      { name: 'Insurance Policy', url: '#', status: 'pending' }
-    ]
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // In a real application, fetch retailer data based on ID
     const fetchRetailerData = async () => {
       try {
-        // Replace this with your actual API call
-        // const response = await fetch(`/api/retailers/${id}`);
-        // const data = await response.json();
-        
-        // For now, using mock data based on ID
-        const mockData = {
-          '1': {
-            storeName: 'Tech Gadgets Store',
-            ownerName: 'John Smith',
-            email: 'john.smith@techgadgets.com',
-            phone: '+1 234 567 8900',
-            address: '123 Tech Street, Silicon Valley, CA 94043',
-            businessLicense: 'BL-2023-001'
-          },
-          '2': {
-            storeName: 'Fashion Boutique',
-            ownerName: 'Sarah Johnson',
-            email: 'sarah@fashionboutique.com',
-            phone: '+1 234 567 8901',
-            address: '456 Fashion Ave, New York, NY 10001',
-            businessLicense: 'BL-2023-002'
-          },
-          '3': {
-            storeName: 'Home Essentials',
-            ownerName: 'Mike Brown',
-            email: 'mike@homeessentials.com',
-            phone: '+1 234 567 8902',
-            address: '789 Home St, Chicago, IL 60601',
-            businessLicense: 'BL-2023-003'
-          },
-          '4': {
-            storeName: 'Gourmet Delights',
-            ownerName: 'Emma Wilson',
-            email: 'emma@gourmetdelights.com',
-            phone: '+1 234 567 8903',
-            address: '321 Food Court, San Francisco, CA 94105',
-            businessLicense: 'BL-2023-004'
-          },
-          '5': {
-            storeName: 'Sports & Fitness',
-            ownerName: 'David Chen',
-            email: 'david@sportsfitness.com',
-            phone: '+1 234 567 8904',
-            address: '555 Athletic Blvd, Boston, MA 02108',
-            businessLicense: 'BL-2023-005'
-          }
-        };
-
-        const storeData = mockData[id] || mockData['1']; // Fallback to first store if ID not found
+        setLoading(true);
+        setError(null);
+        const response = await getRetailerById(id);
+        // API response: { success, message, data: { ...retailer } }
+        const retailer = response.data || {};
         setFormData({
-          ...storeData,
-          profileImage: null
+          storeName: retailer.storeName || '',
+          owner: retailer.owner || '',
+          businessEmail: retailer.businessEmail || '',
+          businessAddress: retailer.businessAddress || '',
+          businessRegistrationNumber: retailer.businessRegistrationNumber || '',
+          totalParcels: retailer.totalParcels || 0,
+          profileImage: null // If you have image URL, set it here
         });
-      } catch (error) {
-        console.error('Error fetching retailer data:', error);
+      } catch (err) {
+        setError('Failed to load retailer profile.');
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchRetailerData();
   }, [id]);
 
@@ -126,69 +75,8 @@ const RetailersProfile = () => {
   };
 
   const handleCancel = () => {
-    // Reset form data to original values
-    const fetchRetailerData = async () => {
-      try {
-        // Replace this with your actual API call
-        // const response = await fetch(`/api/retailers/${id}`);
-        // const data = await response.json();
-        
-        // For now, using mock data based on ID
-        const mockData = {
-          '1': {
-            storeName: 'Tech Gadgets Store',
-            ownerName: 'John Smith',
-            email: 'john.smith@techgadgets.com',
-            phone: '+1 234 567 8900',
-            address: '123 Tech Street, Silicon Valley, CA 94043',
-            businessLicense: 'BL-2023-001'
-          },
-          '2': {
-            storeName: 'Fashion Boutique',
-            ownerName: 'Sarah Johnson',
-            email: 'sarah@fashionboutique.com',
-            phone: '+1 234 567 8901',
-            address: '456 Fashion Ave, New York, NY 10001',
-            businessLicense: 'BL-2023-002'
-          },
-          '3': {
-            storeName: 'Home Essentials',
-            ownerName: 'Mike Brown',
-            email: 'mike@homeessentials.com',
-            phone: '+1 234 567 8902',
-            address: '789 Home St, Chicago, IL 60601',
-            businessLicense: 'BL-2023-003'
-          },
-          '4': {
-            storeName: 'Gourmet Delights',
-            ownerName: 'Emma Wilson',
-            email: 'emma@gourmetdelights.com',
-            phone: '+1 234 567 8903',
-            address: '321 Food Court, San Francisco, CA 94105',
-            businessLicense: 'BL-2023-004'
-          },
-          '5': {
-            storeName: 'Sports & Fitness',
-            ownerName: 'David Chen',
-            email: 'david@sportsfitness.com',
-            phone: '+1 234 567 8904',
-            address: '555 Athletic Blvd, Boston, MA 02108',
-            businessLicense: 'BL-2023-005'
-          }
-        };
-
-        const storeData = mockData[id] || mockData['1']; // Fallback to first store if ID not found
-        setFormData({
-          ...storeData,
-          profileImage: null
-        });
-      } catch (error) {
-        console.error('Error fetching retailer data:', error);
-      }
-    };
-
-    fetchRetailerData();
     setIsEditing(false);
+    // Optionally, re-fetch data to reset form
   };
 
   const renderProfileImage = () => {
@@ -208,38 +96,19 @@ const RetailersProfile = () => {
     );
   };
 
-  const getStatusColor = (status) => {
-    switch(status.toLowerCase()) {
-      case 'completed':
-        return '#4CAF50';
-      case 'pending':
-        return '#FFC107';
-      case 'failed':
-        return '#F44336';
-      default:
-        return '#757575';
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch(status.toLowerCase()) {
-      case 'completed':
-        return <FaCheckCircle />;
-      case 'pending':
-        return <FaTimesCircle />;
-      case 'failed':
-        return <FaTimesCircle />;
-      default:
-        return null;
-    }
-  };
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div className="view-profile-container">
       <div className="profile-header">
         <div className="header-left">
           <h1>Retailer Profile</h1>
-          <span className="status-badge active">{retailerData.status}</span>
+          {/* You can add status badge if available in API */}
         </div>
         <div className="edit-buttons">
           {isEditing ? (
@@ -297,11 +166,11 @@ const RetailersProfile = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Owner Name</label>
+                  <label>Owner</label>
                   <input
                     type="text"
-                    name="ownerName"
-                    value={formData.ownerName}
+                    name="owner"
+                    value={formData.owner}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -309,34 +178,25 @@ const RetailersProfile = () => {
                   <label>Email</label>
                   <input
                     type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="businessEmail"
+                    value={formData.businessEmail}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-group">
                   <label>Address</label>
                   <textarea
-                    name="address"
-                    value={formData.address}
+                    name="businessAddress"
+                    value={formData.businessAddress}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Business License</label>
+                  <label>Business Registration Number</label>
                   <input
                     type="text"
-                    name="businessLicense"
-                    value={formData.businessLicense}
+                    name="businessRegistrationNumber"
+                    value={formData.businessRegistrationNumber}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -344,48 +204,15 @@ const RetailersProfile = () => {
             ) : (
               <>
                 <h2><FaStore /> {formData.storeName}</h2>
-                <p className="owner-name">Owner: {formData.ownerName}</p>
+                <p className="owner-name">Owner: {formData.owner}</p>
                 <div className="contact-info">
-                  <p><FaEnvelope /> {formData.email}</p>
-                  <p><FaPhone /> {formData.phone}</p>
-                  <p><FaMapMarkerAlt /> {formData.address}</p>
+                  <p><FaEnvelope /> {formData.businessEmail}</p>
+                  <p><FaMapMarkerAlt /> {formData.businessAddress}</p>
+                  <p>Total Parcels: {formData.totalParcels}</p>
+                  <p>Business Registration #: {formData.businessRegistrationNumber}</p>
                 </div>
               </>
             )}
-          </div>
-        </div>
-
-        <div className="profile-card recent-activity">
-          <h3>Recent Activity</h3>
-          <div className="activity-list">
-            {retailerData.recentActivity.map((activity, index) => (
-              <div key={index} className="activity-item">
-                <div className="activity-icon" style={{ color: getStatusColor(activity.status) }}>
-                  {getStatusIcon(activity.status)}
-                </div>
-                <div className="activity-details">
-                  <p className="activity-text">{activity.details}</p>
-                  <span className="activity-date">{activity.date}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="profile-card documents">
-          <h3><FaFileAlt /> Documents</h3>
-          <div className="documents-list">
-            {retailerData.documents.map((doc, index) => (
-              <div key={index} className="document-item">
-                <div className="document-info">
-                  <span className="document-name">{doc.name}</span>
-                  <span className={`document-status ${doc.status}`}>{doc.status}</span>
-                </div>
-                <a href={doc.url} target="_blank" rel="noopener noreferrer" className="view-document">
-                  View Document
-                </a>
-              </div>
-            ))}
           </div>
         </div>
       </div>

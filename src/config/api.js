@@ -2,8 +2,11 @@
 // export const BASE_URL = "http://16.171.111.244/api";
 // export const BASE_URL = "http://16.170.217.59/api";
 // export const BASE_URL = "https://api.wepickapp.com/api";
-export const BASE_URL = "YOUR_NEW_BACKEND_API_URL";
+// export const BASE_URL = "YOUR_NEW_BACKEND_API_URL";
 
 // export const BASE_URL = "http://51.21.116.59/api";
 // export const BASE_URL = "https://api.testing.winwithwits.com/api";
   
+export const BASE_URL = "http://51.20.35.1/api/v1/admin";
+
+

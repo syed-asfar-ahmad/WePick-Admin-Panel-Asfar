@@ -2,30 +2,7 @@ import { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import "./ReportParcels.scss";
 import Loading from '../../../components/common/Loading';
-
-const mockParcelReports = [
-  {
-    key: 1,
-    parcelId: "#ELEC23456",
-    trackingId: "#H1234567812",
-    from: "Sheffield",
-    destination: "Manchester",
-    dateTime: "11Sep, 2025 at 5:00pm",
-    weight: "2.40 KG",
-    status: "In Transit",
-  },
-  {
-    key: 2,
-    parcelId: "#ELEC23457",
-    trackingId: "#H1234567813",
-    from: "London",
-    destination: "Birmingham",
-    dateTime: "12Sep, 2025 at 3:00pm",
-    weight: "1.80 KG",
-    status: "Failed",
-  },
-  // ... rest of the mock data ...
-];
+import { getAdminDashboard } from '../../../services/wepickApi';
 
 const statusStyles = {
   "In Transit": {
@@ -42,9 +19,19 @@ const ReportParcels = () => {
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadershown, setLoaderShown] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setReports(mockParcelReports);
+    setIsLoading(true);
+    getAdminDashboard()
+      .then(response => {
+        setReports(response?.data?.reportDetails || []);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to fetch data');
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -112,8 +99,10 @@ const ReportParcels = () => {
 
   return (
     <div className="row px-4 pt-3 my-2">
-      {loadershown ? (
+      {loadershown || isLoading ? (
         <Loading />
+      ) : error ? (
+        <div style={{ color: 'red', padding: 20 }}>{error}</div>
       ) : (
         <>
           <div className="col-12 d-flex justify-content-between align-items-center">

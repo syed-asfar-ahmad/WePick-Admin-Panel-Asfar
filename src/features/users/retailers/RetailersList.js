@@ -3,7 +3,8 @@ import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes, FaSpin
 import { useNavigate } from 'react-router-dom';
 import './RetailersList.scss';
 import Loading from '../../../components/common/Loading';
-
+import { getRetailers } from '../../../services/wepickApi';
+import { getRetailerById, updateRetailerById } from '../../../services/wepickApi';
 
 const RetailersList = () => {
   const navigate = useNavigate();
@@ -21,144 +22,53 @@ const RetailersList = () => {
     location: ''
   });
 
-  // Analytics data
-  const analytics = {
-    totalRetailers: 156,
-    activeRetailers: 142,
-    inactiveRetailers: 14,
-    averageSuccessRate: 92,
-    topPerformingRetailers: [
-      { name: 'Tech Gadgets Store', successRate: 98, parcels: 450 },
-      { name: 'Fashion Boutique', successRate: 95, parcels: 380 },
-      { name: 'Home Essentials', successRate: 94, parcels: 320 }
-    ]
-  };
+  // Analytics data (from API)
+  const [analytics, setAnalytics] = useState({
+    totalRetailers: 0,
+    activeRetailers: 0,
+    inactiveRetailers: 0,
+    averageSuccessRate: 0,
+    topPerformingRetailers: []
+  });
 
-  // Mock data for retailers
-  const mockRetailers = [
-    {
-      id: 1,
-      name: 'Tech Gadgets Store',
-      owner: 'John Smith',
-      email: 'john@techgadgets.com',
-      phone: '+1 234-567-8901',
-      address: '123 Tech Street, San Francisco, CA',
-      businessType: 'Electronics',
-      status: 'Active',
-      registrationDate: '2023-01-15',
-      performance: {
-        successRate: 98,
-        avgDeliveryTime: '2.3 hours',
-        totalParcels: 450,
-        customerRating: 4.8,
-        revenue: '$45,000'
-      }
-    },
-    {
-      id: 2,
-      name: 'Fashion Boutique',
-      owner: 'Sarah Johnson',
-      email: 'sarah@fashionboutique.com',
-      phone: '+1 234-567-8902',
-      address: '456 Style Avenue, San Francisco, CA',
-      businessType: 'Fashion',
-      status: 'Active',
-      registrationDate: '2023-02-20',
-      performance: {
-        successRate: 95,
-        avgDeliveryTime: '2.5 hours',
-        totalParcels: 380,
-        customerRating: 4.7,
-        revenue: '$38,000'
-      }
-    },
-    {
-      id: 3,
-      name: 'Home Essentials',
-      owner: 'Mike Brown',
-      email: 'mike@homeessentials.com',
-      phone: '+1 234-567-8903',
-      address: '789 Home Road, San Francisco, CA',
-      businessType: 'Home Goods',
-      status: 'Active',
-      registrationDate: '2023-03-10',
-      performance: {
-        successRate: 94,
-        avgDeliveryTime: '2.7 hours',
-        totalParcels: 320,
-        customerRating: 4.6,
-        revenue: '$32,000'
-      }
-    },
-    {
-      id: 4,
-      name: 'Gourmet Delights',
-      owner: 'Emma Wilson',
-      email: 'emma@gourmetdelights.com',
-      phone: '+1 234-567-8904',
-      address: '321 Food Street, San Francisco, CA',
-      businessType: 'Food & Beverage',
-      status: 'Active',
-      registrationDate: '2023-04-05',
-      performance: {
-        successRate: 93,
-        avgDeliveryTime: '2.4 hours',
-        totalParcels: 280,
-        customerRating: 4.9,
-        revenue: '$28,000'
-      }
-    },
-    {
-      id: 5,
-      name: 'Sports & Fitness',
-      owner: 'David Chen',
-      email: 'david@sportsfitness.com',
-      phone: '+1 234-567-8905',
-      address: '654 Sport Lane, San Francisco, CA',
-      businessType: 'Sports',
-      status: 'Active',
-      registrationDate: '2023-05-15',
-      performance: {
-        successRate: 91,
-        avgDeliveryTime: '2.6 hours',
-        totalParcels: 250,
-        customerRating: 4.5,
-        revenue: '$25,000'
-      }
-    }
-  ];
+  // Retailers data from API
+  const [retailers, setRetailers] = useState([]);
 
-  // Simulate API call to fetch retailers
+  // Fetch retailers from API
   const fetchRetailers = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // In real app, this would be an API call
-      return mockRetailers;
+      const response = await getRetailers();
+      // Assume response.data is an array of retailers
+      setRetailers(response.data || []);
+      // Calculate analytics
+      const total = (response.data || []).length;
+      const active = (response.data || []).filter(r => r.status && r.status.toLowerCase() === 'active').length;
+      const inactive = total - active;
+      const avgSuccess = total > 0 ? Math.round((response.data.reduce((sum, r) => sum + (r.performance?.successRate || 0), 0) / total)) : 0;
+      // Top performing retailers (by successRate)
+      const topPerforming = [...(response.data || [])]
+        .sort((a, b) => (b.performance?.successRate || 0) - (a.performance?.successRate || 0))
+        .slice(0, 3);
+      setAnalytics({
+        totalRetailers: total,
+        activeRetailers: active,
+        inactiveRetailers: inactive,
+        averageSuccessRate: avgSuccess,
+        topPerformingRetailers: topPerforming
+      });
     } catch (err) {
       setError('Failed to load retailers. Please try again.');
-      throw err;
+      setRetailers([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const [retailers, setRetailers] = useState([]);
-
   useEffect(() => {
-    loadRetailers();
+    fetchRetailers();
   }, []);
-
-  const loadRetailers = async () => {
-    try {
-      const data = await fetchRetailers();
-      setRetailers(data);
-    } catch (err) {
-      console.error('Error loading retailers:', err);
-    }
-  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -254,17 +164,32 @@ const RetailersList = () => {
     navigate(`/retailers/${retailerId}`);
   };
 
-  const handleEditRetailer = (retailer) => {
-    setSelectedRetailer(retailer);
-    setShowEditModal(true);
+  const handleEditRetailer = async (retailer) => {
+    try {
+      setIsLoading(true);
+      const response = await getRetailerById(retailer.id);
+      setSelectedRetailer(response.data || retailer);
+      setShowEditModal(true);
+    } catch (err) {
+      setError('Failed to load retailer details for editing.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
-    // Here you would typically make an API call to update the retailer
-    console.log('Saving changes for retailer:', selectedRetailer);
-    setShowEditModal(false);
-    setSelectedRetailer(null);
+    try {
+      setIsLoading(true);
+      await updateRetailerById(selectedRetailer.id, selectedRetailer);
+      setShowEditModal(false);
+      setSelectedRetailer(null);
+      fetchRetailers(); // Refresh list after edit
+    } catch (err) {
+      setError('Failed to update retailer.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -299,13 +224,6 @@ const RetailersList = () => {
           <div className="analytics-info">
             <h3>Total Retailers</h3>
             <p>{isLoading ? '...' : analytics.totalRetailers}</p>
-          </div>
-        </div>
-        <div className="analytics-card">
-          <FaCheckCircle />
-          <div className="analytics-info">
-            <h3>Active Retailers</h3>
-            <p>{isLoading ? '...' : analytics.activeRetailers}</p>
           </div>
         </div>
       </div>

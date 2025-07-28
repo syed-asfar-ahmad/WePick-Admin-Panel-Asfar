@@ -3,7 +3,7 @@ import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClo
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
 import Loading from '../../../components/common/Loading';
-import { getParcelReport, dispatchParcel, trackParcel, getParcelDetail } from '../../../services/wepickApi';
+import { getDispatchedParcels, getDispatchedParcelById, updateDispatchedParcelById } from '../../../services/wepickApi';
 
 const DispatchedParcels = () => {
   const navigate = useNavigate();
@@ -25,23 +25,31 @@ const DispatchedParcels = () => {
     timeRange: ''
   });
 
-  // useEffect(() => {
-  //   const fetchParcels = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const response = await getParcelReport();
-  //       if (response?.data) {
-  //         setParcels(response.data);
-  //       }
-  //       setIsLoading(false);
-  //     } catch (err) {
-  //       setError('Failed to load parcels. Please try again.');
-  //       setIsLoading(false);
-  //     }
-  //   };
+  // Fetch dispatched parcels from API
+  const fetchParcels = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getDispatchedParcels();
+      setParcels(response.data?.data || []);
+    } catch (err) {
+      setError('Failed to load dispatched parcels. Please try again.');
+      setParcels([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  //   fetchParcels();
-  // }, []);
+  useEffect(() => {
+    fetchParcels();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Analytics data
   const analytics = {
@@ -98,13 +106,6 @@ const DispatchedParcels = () => {
       [name]: value
     }));
   };
-
-  useEffect(() => {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }, []);
 
   const handleResetFilters = () => {
     setFilters({
@@ -204,28 +205,29 @@ const DispatchedParcels = () => {
     }
   };
 
-  const handleEditParcel = (parcel) => {
-    setSelectedParcel(parcel);
-    setShowEditModal(true);
+  const handleEditParcel = async (parcel) => {
+    try {
+      setIsLoading(true);
+      const response = await getDispatchedParcelById(parcel.id);
+      setSelectedParcel(response.data || parcel);
+      setShowEditModal(true);
+    } catch (err) {
+      setError('Failed to load parcel details for editing.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      const response = await dispatchParcel(selectedParcel);
-      if (response?.data) {
-        // Update the parcels list with the new data
-        setParcels(prevParcels => 
-          prevParcels.map(parcel => 
-            parcel.id === selectedParcel.id ? response.data : parcel
-          )
-        );
-      }
+      await updateDispatchedParcelById(selectedParcel.id, selectedParcel);
       setShowEditModal(false);
       setSelectedParcel(null);
+      fetchParcels(); // Refresh list after edit
     } catch (err) {
-      setError('Failed to update parcel. Please try again.');
+      setError('Failed to update parcel.');
     } finally {
       setIsLoading(false);
     }
@@ -244,8 +246,8 @@ const DispatchedParcels = () => {
       setIsLoading(true);
       // Get parcel details and tracking information
       const [detailResponse, trackingResponse] = await Promise.all([
-        getParcelDetail(parcel.id),
-        trackParcel(parcel.trackingNumber)
+        getDispatchedParcelById(parcel.id),
+        // trackParcel(parcel.trackingNumber) // This line was removed as per the new_code
       ]);
 
       if (detailResponse?.data && trackingResponse?.data) {

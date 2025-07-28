@@ -17,8 +17,18 @@ export const GET_USER_PROFILE = 'user/profile';
 export const TRACK_PARCEL = 'parcel/track';
 export const DISPATCH_PARCEL = 'parcel/dispatch';
 export const GET_PARCEL_SUMMARY = 'parcel/summary';
-export const GET_PARCEL_REPORT = 'parcel';
-export const GET_PARCEL_DETAIL = 'parcel';
+export const GET_PARCEL_REPORT = 'parcels';
+export const GET_PARCEL_DETAIL = 'parcels';
+
+// Dashboard endpoints
+export const ADMIN_DASHBOARD = '/dashboard';
+
+// Retailers endpoint
+export const RETAILERS = '/retailers';
+
+// Dispatched Parcels endpoints
+export const DISPATCHED = '/dispatched';
+
 
 // Auth services
 export const signup = (data) => postRequest(SIGNUP, data);
@@ -41,3 +51,18 @@ export const getParcelSummary = (startDate, endDate) =>
 export const getParcelReport = (startDate, endDate) => 
   getRequest(GET_PARCEL_REPORT, { start: startDate, end: endDate });
 export const getParcelDetail = (parcelId) => getRequest(`${GET_PARCEL_DETAIL}/${parcelId}`); 
+
+// Admin Services
+export const getAdminDashboard = () => getRequest(ADMIN_DASHBOARD);
+
+// Retailer services
+export const getRetailers = () => getRequest(RETAILERS);
+export const getRetailerById = (id) => getRequest(`/retailers/${id}`);
+export const updateRetailerById = (id, data) => patchRequest(`/retailers/${id}`, data);
+
+// Dispatched Parcels services
+export const getDispatchedParcels = () => getRequest(DISPATCHED);
+export const getDispatchedParcelById = (id) => getRequest(`${DISPATCHED}/${id}`);
+export const updateDispatchedParcelById = (id, data) => patchRequest(`${DISPATCHED}/${id}`, data);
+
+

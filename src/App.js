@@ -31,11 +31,6 @@ import ReportParcels from './features/dashboard/reportdetails/ReportParcels';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
-
-  useEffect(() => {
-    setIsLoggedIn(isAuthenticated);
-  }, [isAuthenticated]);
 
   const adminRoutes = [
     { path: "/dashboard", Comp: DashboardCom },
@@ -72,11 +67,11 @@ function App() {
       <SkeletonTheme baseColor="#D8D8D8" highlightColor="#c9c9c9">
         <BrowserRouter>
           <Routes>
-            <Route path="/signin" element={!isLoggedIn ? <Signin /> : <Navigate to="/" />} />
+            <Route path="/signin" element={!isAuthenticated ? <Signin /> : <Navigate to="/" />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/signup" element={<Signup />} />
             
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <>
                 {adminRoutes.map(({ path, Comp, name }) => (
                   <Route

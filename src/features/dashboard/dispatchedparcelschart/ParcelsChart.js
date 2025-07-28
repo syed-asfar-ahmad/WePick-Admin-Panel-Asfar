@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-import { getParcelReport } from "../../../services/wepickApi";
+import { getAdminDashboard } from "../../../services/wepickApi";
 import { Chart, registerables } from "chart.js";
 import "./chart.scss";
 import { Select } from "antd";
@@ -27,49 +27,28 @@ const DispatchedParcelsChart = () => {
   const years = Array.from({ length: currentYear - 2020 + 1 }, (_, i) => currentYear - i).filter(year => year >= 2020);
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
-  // Mock monthly data for 12 months
-  const mockMonthlyData = [
-    { month: 'Jan', count: 1000 },
-    { month: 'Feb', count: 800 },
-    { month: 'Mar', count: 950 },
-    { month: 'Apr', count: 700 },
-    { month: 'May', count: 1200 },
-    { month: 'Jun', count: 1100 },
-    { month: 'Jul', count: 900 },
-    { month: 'Aug', count: 1050 },
-    { month: 'Sep', count: 980 },
-    { month: 'Oct', count: 1150 },
-    { month: 'Nov', count: 1020 },
-    { month: 'Dec', count: 1300 },
-  ];
-
   const fetchDailyData = async () => {
     try {
       setIsLoading(true);
-      const response = await getParcelReport();
-      if (response && response.data && response.data.length > 0) {
-        // Process the data to get monthly counts
-        const monthlyCounts = Array(12).fill(0);
-        response.data.forEach(parcel => {
-          const date = new Date(parcel.dateTime);
-          if (date.getFullYear() === selectedYear) {
-            const month = date.getMonth();
-            monthlyCounts[month]++;
-          }
-        });
-
-        // Convert to the format expected by the chart
-        const processedData = monthlyCounts.map((count, index) => ({
-          month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index],
-          count: count
-        }));
-
-        setDailyData(processedData);
-      } else {
-        setDailyData(mockMonthlyData);
-      }
+      const response = await getAdminDashboard();
+      const reportDetails = response?.data?.reportDetails || [];
+      // Process the data to get monthly counts for the selected year
+      const monthlyCounts = Array(12).fill(0);
+      reportDetails.forEach(parcel => {
+        const date = new Date(parcel.dateTime);
+        if (date.getFullYear() === selectedYear) {
+          const month = date.getMonth();
+          monthlyCounts[month]++;
+        }
+      });
+      // Convert to the format expected by the chart
+      const processedData = monthlyCounts.map((count, index) => ({
+        month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index],
+        count: count
+      }));
+      setDailyData(processedData);
     } catch (error) {
-      setDailyData(mockMonthlyData);
+      setDailyData([]);
       console.error("Error fetching dispatched parcels data:", error);
     } finally {
       setIsLoading(false);
