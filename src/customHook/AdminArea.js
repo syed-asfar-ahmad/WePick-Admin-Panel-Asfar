@@ -4,7 +4,6 @@ import FullScreenMenu from "../components/DashboardComponents/FullScreenMenu";
 import Header from "../organisms/Header/Header";
 import Footer from "../organisms/Footer/Footer";
 import { useSelector } from "react-redux";
-
 const AdminArea = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the current location
@@ -14,14 +13,6 @@ const AdminArea = ({ children }) => {
   });
   const divRef = useRef(null);
   const { user } = useSelector((state) => state.auth);
-
-  // Redirect to signin if user is not authenticated or not an admin
-  useEffect(() => {
-    if ((!user || user.role !== "admin") && location.pathname !== "/signin") {
-      navigate("/signin");
-    }
-  }, [user, navigate, location.pathname]);
-
   useEffect(() => {
     const handleResize = () => {
       setState((prevState) => ({
@@ -29,18 +20,15 @@ const AdminArea = ({ children }) => {
         isLargeScreen: window.innerWidth > 991,
       }));
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   const toggleMobileMenu = () => {
     setState((prevState) => ({
       ...prevState,
       MobileMenu1: !prevState.MobileMenu1,
     }));
   };
-
   useEffect(() => {
     setTimeout(() => {
       // Scroll to the top of the div whenever the route changes
@@ -49,7 +37,6 @@ const AdminArea = ({ children }) => {
       }
     }, 500);
   }, [location.pathname]); // This effect runs when the path changes
-
   return (
     <div className="fluid-container">
       <div className="d-flex flex-column m-0 pr-0" style={{ height: "100vh" }}>
@@ -76,13 +63,11 @@ const AdminArea = ({ children }) => {
             <FullScreenMenu />
           </div>
         </div>
-
         <Header
           isLargeScreen={state.isLargeScreen}
           setMobileMenu1={toggleMobileMenu}
           MobileMenu1={state.MobileMenu1}
         />
-
         <div className="overflow-auto d-flex flex-grow-1">
           {state.isLargeScreen && (
             <div
@@ -107,5 +92,15 @@ const AdminArea = ({ children }) => {
     </div>
   );
 };
-
 export default AdminArea;
+
+
+
+
+
+
+
+
+
+
+

@@ -48,11 +48,6 @@ const ReportParcels = () => {
       key: "parcelId",
     },
     {
-      title: "Tracking ID",
-      dataIndex: "trackingId",
-      key: "trackingId",
-    },
-    {
       title: "From",
       dataIndex: "from",
       key: "from",

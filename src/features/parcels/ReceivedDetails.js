@@ -1,87 +1,85 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { FaBox, FaStore, FaUser, FaMapMarkerAlt, FaArrowLeft } from 'react-icons/fa';
+import { FaBox, FaStore, FaUser, FaMapMarkerAlt, FaArrowLeft, FaWeightHanging, FaCalendarAlt, FaUserFriends } from 'react-icons/fa';
 import './ReceivedDetails.scss';
+import Loading from '../../components/common/Loading';
+import { getReceivedParcelById } from '../../services/wepickApi';
+import { CustomToast } from '../../atoms/toastMessage';
 
 const ReceivedDetails = () => {
   const { parcelId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const [parcel, setParcel] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock data - In real application, this would come from an API
-  // const parcel = {
-  //   id: parcelId,
-  //   retailer: 'Tech Gadgets Store',
-  //   customer: 'John Doe',
-  //   date: '2024-03-15',
-  //   status: 'In Transit',
-  //   lockerId: 'L789',
-  //   size: 'Medium',
-  //   priority: 'Standard',
-  //   trackingNumber: 'TRK123456789'
-  // };
-
-  const parcel = location.state?.parcel || {
-    id: parcelId,
-    retailer: 'Unknown Retailer',
-    customer: 'Unknown Customer',
-    date: 'N/A',
-    status: 'Unknown',
-    lockerId: 'N/A',
-    size: 'N/A',
-    priority: 'N/A',
-    trackingNumber: 'N/A'
-  };
-
-  // Mock locker locations data
-  const lockerLocations = [
-    { id: 'L789', name: 'Downtown Hub', lat: 37.7749, lng: -122.4194, parcels: 12 },
-    { id: 'L456', name: 'Westside Center', lat: 37.7833, lng: -122.4167, parcels: 8 },
-    { id: 'L234', name: 'Eastside Station', lat: 37.7855, lng: -122.4067, parcels: 15 }
-  ];
-
-  // Mock tracking history data
-  const trackingHistory = [
-    {
-      timestamp: '2024-03-17 14:30:00',
-      status: 'Delivered',
-      location: 'Customer Location',
-      description: 'Package delivered to customer'
-    },
-    {
-      timestamp: '2024-03-17 13:15:00',
-      status: 'In Transit',
-      location: 'Downtown Hub',
-      description: 'Package out for delivery'
-    },
-    {
-      timestamp: '2024-03-17 10:00:00',
-      status: 'In Transit',
-      location: 'Westside Center',
-      description: 'Package arrived at sorting facility'
-    },
-    {
-      timestamp: '2024-03-16 16:45:00',
-      status: 'Pending',
-      location: 'Eastside Station',
-      description: 'Package received at locker'
-    }
-  ];
-
-  const getStatusColor = (status) => {
-    switch(status.toLowerCase()) {
-      case 'delivered':
-        return '#4CAF50';
-      case 'in transit':
-        return '#2196F3';
-      case 'pending':
-        return '#FFC107';
-      case 'failed':
-        return '#F44336';
-      default:
-        return '#757575';
+  // Fetch parcel details from API
+  const fetchParcelDetails = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // If we have parcel data from navigation state, use it
+      if (location.state?.parcel) {
+        setParcel(location.state.parcel);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Otherwise fetch from API using parcelId
+      const response = await getReceivedParcelById(parcelId);
+      
+      const { success, message, data } = response;
+      
+      if (success) {
+        setParcel(data || {});
+      } else {
+        setError(message || 'Failed to fetch parcel details');
+        CustomToast({
+          type: "error",
+          message: message || 'Failed to fetch parcel details'
+        });
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || error.message || 'Failed to fetch parcel details');
+      CustomToast({
+        type: "error",
+        message: error.response?.data?.message || error.message || 'Failed to fetch parcel details'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchParcelDetails();
+  }, [parcelId]);
+
+  if (isLoading) {
+    return (
+      <div className="parcel-details-container">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error || !parcel) {
+    return (
+      <div className="parcel-details-container">
+        <div className="page-header">
+          <button className="back-button" onClick={() => navigate('/receivedparcels')}>
+            <FaArrowLeft /> Back to Parcels
+          </button>
+          <h1>Parcel Details</h1>
+        </div>
+        <div className="error-message">
+          <p>{error || 'Parcel not found'}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="parcel-details-container">
@@ -100,83 +98,64 @@ const ReceivedDetails = () => {
               <FaBox className="icon" />
               <div className="info-content">
                 <label>Parcel ID</label>
-                <span>{parcel.id}</span>
+                <span>{parcel.parcelId || parcel.id || 'N/A'}</span>
               </div>
             </div>
             <div className="info-item">
               <FaStore className="icon" />
               <div className="info-content">
-                <label>Retailer</label>
-                <span>{parcel.retailer}</span>
+                <label>Parcel Name</label>
+                <span>{parcel.parcelName || 'N/A'}</span>
+              </div>
+            </div>
+            <div className="info-item">
+              <FaUserFriends className="icon" />
+              <div className="info-content">
+                <label>Sender Name</label>
+                <span>{parcel.senderName || 'N/A'}</span>
               </div>
             </div>
             <div className="info-item">
               <FaUser className="icon" />
               <div className="info-content">
-                <label>Customer</label>
-                <span>{parcel.customer}</span>
-              </div>
-            </div>
-            <div className="info-item">
-              <FaMapMarkerAlt className="icon" />
-              <div className="info-content">
-                <label>Current Location</label>
-                <span>{lockerLocations.find(l => l.id === parcel.lockerId)?.name || parcel.lockerId}</span>
+                <label>Recipient Name</label>
+                <span>{parcel.recipientName || 'N/A'}</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="info-section">
-          <h3>Delivery Details</h3>
+          <h3>Location & Details</h3>
           <div className="info-grid">
             <div className="info-item">
+              <FaMapMarkerAlt className="icon" />
               <div className="info-content">
-                <label>Status</label>
-                <span className="status-badge" style={{ backgroundColor: getStatusColor(parcel.status) }}>
-                  {parcel.status}
-                </span>
+                <label>From</label>
+                <span>{parcel.from || 'N/A'}</span>
               </div>
             </div>
             <div className="info-item">
+              <FaMapMarkerAlt className="icon" />
               <div className="info-content">
-                <label>Size</label>
-                <span>{parcel.size}</span>
+                <label>To</label>
+                <span>{parcel.to || 'N/A'}</span>
               </div>
             </div>
             <div className="info-item">
+              <FaWeightHanging className="icon" />
               <div className="info-content">
-                <label>Priority</label>
-                <span>{parcel.priority}</span>
+                <label>Weight</label>
+                <span>{parcel.weight ? `${parcel.weight} kg` : 'N/A'}</span>
               </div>
             </div>
             <div className="info-item">
+              <FaCalendarAlt className="icon" />
               <div className="info-content">
-                <label>Tracking Number</label>
-                <span>{parcel.trackingNumber}</span>
+                <label>Date</label>
+                <span>{parcel.Date || (parcel.createdAt ? new Date(parcel.createdAt).toLocaleDateString() : 'N/A')}</span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="info-section full-width">
-          <h3>Tracking History</h3>
-          <div className="tracking-timeline">
-            {trackingHistory.map((event, index) => (
-              <div key={index} className="timeline-item">
-                <div className="timeline-dot" style={{ backgroundColor: getStatusColor(event.status) }}></div>
-                <div className="timeline-content">
-                  <div className="timeline-header">
-                    <span className="status">{event.status}</span>
-                    <span className="time">{event.timestamp}</span>
-                  </div>
-                  <div className="timeline-details">
-                    <p className="location">{event.location}</p>
-                    <p className="description">{event.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {  FaFilter, FaBox, FaTruck,  FaClock, FaTimes,  } from 'react-icons/fa';
+import {  FaFilter, FaBox, FaTruck,  FaClock, FaTimes, FaUser, FaMapMarkerAlt, FaWeight, FaCalendarAlt, FaIdCard, FaHistory } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './ReceivedParcels.scss';
 import Loading from '../../../components/common/Loading';
+import { getReceivedParcels, updateReceivedParcelById } from '../../../services/wepickApi';
+import { CustomToast } from '../../../atoms/toastMessage';
 
 
 const ReceivedParcels = () => {
@@ -11,127 +13,62 @@ const ReceivedParcels = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [parcels, setParcels] = useState([]);
   const [filteredParcels, setFilteredParcels] = useState([]);
+  const [error, setError] = useState(null);
+  const [totalParcelCount, setTotalParcelCount] = useState(0);
   const [filters, setFilters] = useState({
     dateRange: '',
-    status: '',
     parcelId: '',
-    retailer: '',
-    customer: '',
-    lockerId: '',
-    size: '',
-    priority: '',
+    senderName: '',
+    recipientName: '',
+    from: '',
+    to: '',
+    weight: '',
     timeRange: '24h'
   });
 
   // Analytics data
-  const analytics = {
-    totalToday: 156,
-    avgDeliveryTime: '2.5 hours',
-    topRetailers: [
-      { name: 'Tech Gadgets Store', count: 45 },
-      { name: 'Fashion Boutique', count: 38 },
-      { name: 'Home Essentials', count: 32 }
-    ],
-    statusBreakdown: {
-      delivered: 65,
-      inTransit: 25,
-      pending: 15,
-      failed: 5
+  const [analytics, setAnalytics] = useState({
+    totalParcels: 0
+  });
+
+  // Fetch received parcels from API
+  const fetchReceivedParcels = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await getReceivedParcels();
+      
+      const { success, message, data } = response;
+      
+      if (success) {
+        setParcels(data.parcels || []);
+        setFilteredParcels(data.parcels || []);
+        setTotalParcelCount(data.totalParcelCount || 0);
+        
+        // Update analytics with total parcels count
+        setAnalytics({
+          totalParcels: data.totalParcelCount || 0
+        });
+      } else {
+        setError(message || 'Failed to fetch received parcels');
+        CustomToast({
+          type: "error",
+          message: message || 'Failed to fetch received parcels'
+        });
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || error.message || 'Failed to fetch received parcels');
+      CustomToast({
+        type: "error",
+        message: error.response?.data?.message || error.message || 'Failed to fetch received parcels'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  // Mock data - In real application, this would come from an API
-  const parcels = [
-    {
-      id: 'P12345',
-      retailer: 'Tech Gadgets Store',
-      customer: 'John Doe',
-      date: '2024-03-15',
-      status: 'In Transit',
-      lockerId: 'L789',
-      size: 'Medium',
-      priority: 'Standard',
-      trackingNumber: 'TRK123456789'
-    },
-    {
-      id: 'P12346',
-      retailer: 'Fashion Boutique',
-      customer: 'Jane Smith',
-      date: '2024-03-14',
-      status: 'Delivered',
-      lockerId: 'L456',
-      size: 'Large',
-      priority: 'Express',
-      trackingNumber: 'TRK987654321'
-    },
-    {
-      id: 'P12347',
-      retailer: 'Home Essentials',
-      customer: 'Mike Wilson',
-      date: '2024-03-16',
-      status: 'Pending',
-      lockerId: 'L234',
-      size: 'Small',
-      priority: 'Standard',
-      trackingNumber: 'TRK456789123'
-    },
-    {
-      id: 'P12348',
-      retailer: 'Gourmet Delights',
-      customer: 'Sarah Brown',
-      date: '2024-03-15',
-      status: 'In Transit',
-      lockerId: 'L567',
-      size: 'Medium',
-      priority: 'Express',
-      trackingNumber: 'TRK789123456'
-    },
-    {
-      id: 'P12349',
-      retailer: 'Sports & Fitness',
-      customer: 'David Lee',
-      date: '2024-03-17',
-      status: 'Pending',
-      lockerId: 'L890',
-      size: 'Large',
-      priority: 'Urgent',
-      trackingNumber: 'TRK321654987'
-    },
-    {
-      id: 'P12350',
-      retailer: 'Tech Gadgets Store',
-      customer: 'Emily Chen',
-      date: '2024-03-16',
-      status: 'Delivered',
-      lockerId: 'L123',
-      size: 'Small',
-      priority: 'Standard',
-      trackingNumber: 'TRK147258369'
-    },
-    {
-      id: 'P12351',
-      retailer: 'Fashion Boutique',
-      customer: 'Robert Taylor',
-      date: '2024-03-17',
-      status: 'Failed',
-      lockerId: 'L345',
-      size: 'Medium',
-      priority: 'Express',
-      trackingNumber: 'TRK963852741'
-    },
-    {
-      id: 'P12352',
-      retailer: 'Home Essentials',
-      customer: 'Lisa Anderson',
-      date: '2024-03-15',
-      status: 'In Transit',
-      lockerId: 'L678',
-      size: 'Large',
-      priority: 'Standard',
-      trackingNumber: 'TRK852963741'
-    }
-  ];
 
   // Locker locations data
   const lockerLocations = [
@@ -142,11 +79,9 @@ const ReceivedParcels = () => {
     { id: 'L890', name: 'South Point', lat: 37.7800, lng: -122.4100, parcels: 7 }
   ];
 
+  // Fetch data when component mounts
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    fetchReceivedParcels();
   }, []);
 
 
@@ -171,15 +106,10 @@ const ReceivedParcels = () => {
     }
   };
 
-  // Apply filters whenever filters state changes
+  // Apply filters whenever filters state changes or parcels change
   useEffect(() => {
     applyFilters();
-  }, [filters]);
-
-  // Initialize filtered parcels with all parcels
-  useEffect(() => {
-    setFilteredParcels(parcels);
-  }, []);
+  }, [filters, parcels]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -192,74 +122,75 @@ const ReceivedParcels = () => {
   const handleResetFilters = () => {
     setFilters({
       dateRange: '',
-      status: '',
       parcelId: '',
-      retailer: '',
-      customer: '',
-      lockerId: '',
-      size: '',
-      priority: '',
+      senderName: '',
+      recipientName: '',
+      from: '',
+      to: '',
+      weight: '',
       timeRange: '24h'
     });
     setFilteredParcels(parcels);
   };
 
   const applyFilters = () => {
+    if (!parcels || parcels.length === 0) {
+      setFilteredParcels([]);
+      return;
+    }
+    
     let result = [...parcels];
     
     // Apply parcel ID filter
     if (filters.parcelId) {
       result = result.filter(parcel => 
-        parcel.id.toLowerCase().includes(filters.parcelId.toLowerCase())
+        parcel.parcelId && parcel.parcelId.toLowerCase().includes(filters.parcelId.toLowerCase())
       );
     }
     
-    // Apply retailer filter
-    if (filters.retailer) {
+    // Apply sender name filter
+    if (filters.senderName) {
       result = result.filter(parcel => 
-        parcel.retailer.toLowerCase().includes(filters.retailer.toLowerCase())
+        parcel.senderName && parcel.senderName.toLowerCase().includes(filters.senderName.toLowerCase())
       );
     }
     
-    // Apply customer filter
-    if (filters.customer) {
+    // Apply recipient name filter
+    if (filters.recipientName) {
       result = result.filter(parcel => 
-        parcel.customer.toLowerCase().includes(filters.customer.toLowerCase())
+        parcel.recipientName && parcel.recipientName.toLowerCase().includes(filters.recipientName.toLowerCase())
       );
     }
     
-    // Apply locker ID filter
-    if (filters.lockerId) {
+    // Apply from location filter
+    if (filters.from) {
       result = result.filter(parcel => 
-        parcel.lockerId.toLowerCase().includes(filters.lockerId.toLowerCase())
+        parcel.from && parcel.from.toLowerCase().includes(filters.from.toLowerCase())
       );
     }
     
-    // Apply status filter
-    if (filters.status) {
+    // Apply to location filter
+    if (filters.to) {
       result = result.filter(parcel => 
-        parcel.status.toLowerCase() === filters.status.toLowerCase()
+        parcel.to && parcel.to.toLowerCase().includes(filters.to.toLowerCase())
       );
     }
     
-    // Apply size filter
-    if (filters.size) {
-      result = result.filter(parcel => 
-        parcel.size.toLowerCase() === filters.size.toLowerCase()
-      );
-    }
-    
-    // Apply priority filter
-    if (filters.priority) {
-      result = result.filter(parcel => 
-        parcel.priority.toLowerCase() === filters.priority.toLowerCase()
-      );
+    // Apply weight filter
+    if (filters.weight) {
+      const weightValue = parseFloat(filters.weight);
+      if (!isNaN(weightValue)) {
+        result = result.filter(parcel => 
+          parcel.weight === weightValue
+        );
+      }
     }
     
     // Apply date range filter
     if (filters.dateRange) {
       result = result.filter(parcel => 
-        parcel.date === filters.dateRange
+        parcel.Date === filters.dateRange || 
+        (parcel.createdAt && new Date(parcel.createdAt).toISOString().split('T')[0] === filters.dateRange)
       );
     }
     
@@ -286,19 +217,101 @@ const ReceivedParcels = () => {
     setShowEditModal(true);
   };
 
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
-    // Here you would typically make an API call to update the parcel
-    console.log('Saving changes for parcel:', selectedParcel);
     
-    // Update the parcel in the local state
-    const updatedParcels = parcels.map(p => 
-      p.id === selectedParcel.id ? selectedParcel : p
-    );
-    setFilteredParcels(updatedParcels);
-    
-    setShowEditModal(false);
-    setSelectedParcel(null);
+    try {
+      setIsLoading(true);
+      
+      // Validate required fields
+      if (!selectedParcel.parcelName?.trim()) {
+        CustomToast({
+          type: "error",
+          message: "Parcel Name is required"
+        });
+        return;
+      }
+      
+      if (!selectedParcel.senderName?.trim()) {
+        CustomToast({
+          type: "error",
+          message: "Sender Name is required"
+        });
+        return;
+      }
+      
+      if (!selectedParcel.recipientName?.trim()) {
+        CustomToast({
+          type: "error",
+          message: "Recipient Name is required"
+        });
+        return;
+      }
+      
+      if (!selectedParcel.from?.trim()) {
+        CustomToast({
+          type: "error",
+          message: "From location is required"
+        });
+        return;
+      }
+      
+      if (!selectedParcel.to?.trim()) {
+        CustomToast({
+          type: "error",
+          message: "To location is required"
+        });
+        return;
+      }
+      
+      // Validate weight
+      if (selectedParcel.weight && (isNaN(selectedParcel.weight) || selectedParcel.weight <= 0)) {
+        CustomToast({
+          type: "error",
+          message: "Weight must be a positive number"
+        });
+        return;
+      }
+      
+      // Make API call to update the parcel
+      const response = await updateReceivedParcelById(selectedParcel.id, selectedParcel);
+      
+      const { success, message } = response;
+      
+      if (success) {
+        // Update the parcel in the local state
+        const updatedParcels = parcels.map(p => 
+          p.id === selectedParcel.id ? selectedParcel : p
+        );
+        
+        setParcels(updatedParcels);
+        setFilteredParcels(
+          filteredParcels.map(p => p.id === selectedParcel.id ? selectedParcel : p)
+        );
+        
+        CustomToast({
+          type: "success",
+          message: message || "Parcel updated successfully"
+        });
+        
+        // Close modal after successful update
+        setShowEditModal(false);
+        setSelectedParcel(null);
+      } else {
+        CustomToast({
+          type: "error",
+          message: message || "Failed to update parcel"
+        });
+      }
+    } catch (error) {
+      console.error('❌ Update error:', error);
+      CustomToast({
+        type: "error",
+        message: error.response?.data?.message || error.message || "Failed to update parcel"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -315,30 +328,16 @@ const ReceivedParcels = () => {
 
   return (
     <div className="dispatched-parcels-container">
-      {/* Analytics Dashboard */}
-      <div className="analytics-dashboard">
-        <div className="analytics-card">
-          <FaBox />
-          <div className="analytics-info">
-            <h3>Total Today</h3>
-            <p>{isLoading ? "..." : analytics.totalToday}</p>
-          </div>
-        </div>
-        <div className="analytics-card">
-          <FaClock />
-          <div className="analytics-info">
-            <h3>Avg. Delivery Time</h3>
-            <p>{isLoading ? "..." : analytics.avgDeliveryTime}</p>
-          </div>
-        </div>
-        <div className="analytics-card">
-          <FaTruck />
-          <div className="analytics-info">
-            <h3>In Transit</h3>
-            <p>{isLoading ? "..." : analytics.statusBreakdown.inTransit}</p>
-          </div>
-        </div>
-      </div>
+             {/* Analytics Dashboard */}
+       <div className="analytics-dashboard">
+         <div className="analytics-card">
+           <FaBox />
+           <div className="analytics-info">
+             <h3>Total Parcels</h3>
+             <p>{isLoading ? "..." : analytics.totalParcels}</p>
+           </div>
+         </div>
+       </div>
 
       <div className="page-header">
         <h1>Received Parcels</h1>
@@ -352,7 +351,7 @@ const ReceivedParcels = () => {
       {/* Filters Section */}
       {showFilters && (
         <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
-          <div className="filters-grid">
+                        <div className="filters-grid">
             <div className="filter-group">
               <label>Time Range</label>
               <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
@@ -362,23 +361,13 @@ const ReceivedParcels = () => {
               </select>
             </div>
             <div className="filter-group">
-              <label>Date Range</label>
+              <label>Date</label>
               <input
                 type="date"
                 name="dateRange"
                 value={filters.dateRange}
                 onChange={handleFilterChange}
               />
-            </div>
-            <div className="filter-group">
-              <label>Status</label>
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All Status</option>
-                <option value="delivered">Delivered</option>
-                <option value="in transit">In Transit</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-              </select>
             </div>
             <div className="filter-group">
               <label>Parcel ID</label>
@@ -391,52 +380,55 @@ const ReceivedParcels = () => {
               />
             </div>
             <div className="filter-group">
-              <label>Retailer</label>
+              <label>Sender Name</label>
               <input
                 type="text"
-                name="retailer"
-                value={filters.retailer}
+                name="senderName"
+                value={filters.senderName}
                 onChange={handleFilterChange}
-                placeholder="Enter Retailer Name"
+                placeholder="Enter Sender Name"
               />
             </div>
             <div className="filter-group">
-              <label>Customer</label>
+              <label>Recipient Name</label>
               <input
                 type="text"
-                name="customer"
-                value={filters.customer}
+                name="recipientName"
+                value={filters.recipientName}
                 onChange={handleFilterChange}
-                placeholder="Enter Customer Name"
+                placeholder="Enter Recipient Name"
               />
             </div>
             <div className="filter-group">
-              <label>Locker ID</label>
+              <label>From</label>
               <input
                 type="text"
-                name="lockerId"
-                value={filters.lockerId}
+                name="from"
+                value={filters.from}
                 onChange={handleFilterChange}
-                placeholder="Enter Locker ID"
+                placeholder="From Location"
               />
             </div>
             <div className="filter-group">
-              <label>Size</label>
-              <select name="size" value={filters.size} onChange={handleFilterChange}>
-                <option value="">All Sizes</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
+              <label>To</label>
+              <input
+                type="text"
+                name="to"
+                value={filters.to}
+                onChange={handleFilterChange}
+                placeholder="To Location"
+              />
             </div>
             <div className="filter-group">
-              <label>Priority</label>
-              <select name="priority" value={filters.priority} onChange={handleFilterChange}>
-                <option value="">All Priorities</option>
-                <option value="standard">Standard</option>
-                <option value="express">Express</option>
-                <option value="urgent">Urgent</option>
-              </select>
+              <label>Weight</label>
+              <input
+                type="number"
+                step="0.1"
+                name="weight"
+                value={filters.weight}
+                onChange={handleFilterChange}
+                placeholder="Enter Weight"
+              />
             </div>
           </div>
           <div className="filter-actions">
@@ -461,109 +453,198 @@ const ReceivedParcels = () => {
               </button>
             </div>
             <form onSubmit={handleSaveEdit}>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Parcel ID</label>
-                  <input
-                    type="text"
-                    name="id"
-                    value={selectedParcel.id}
-                    onChange={handleInputChange}
-                    disabled
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Tracking Number</label>
-                  <input
-                    type="text"
-                    name="trackingNumber"
-                    value={selectedParcel.trackingNumber}
-                    onChange={handleInputChange}
-                    disabled
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Retailer</label>
-                  <input
-                    type="text"
-                    name="retailer"
-                    value={selectedParcel.retailer}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Customer</label>
-                  <input
-                    type="text"
-                    name="customer"
-                    value={selectedParcel.customer}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Status</label>
-                  <select
-                    name="status"
-                    value={selectedParcel.status}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="In Transit">In Transit</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Failed">Failed</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Locker ID</label>
-                  <select
-                    name="lockerId"
-                    value={selectedParcel.lockerId}
-                    onChange={handleInputChange}
-                  >
-                    {lockerLocations.map(locker => (
-                      <option key={locker.id} value={locker.id}>
-                        {locker.name} ({locker.id})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Size</label>
-                  <select
-                    name="size"
-                    value={selectedParcel.size}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Small">Small</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Large">Large</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Priority</label>
-                  <select
-                    name="priority"
-                    value={selectedParcel.priority}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Standard">Standard</option>
-                    <option value="Express">Express</option>
-                    <option value="Urgent">Urgent</option>
-                  </select>
-                </div>
-              </div>
-              <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="save-button">
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+              <div className="modal-content">
+                 
+                 {/* Parcel Information Section */}
+                 <div className="form-section">
+                   <div className="section-header">
+                     <div className="section-icon-wrapper">
+                       <FaBox className="section-icon" />
+                     </div>
+                     <h3>Parcel Information</h3>
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaIdCard className="input-icon" />
+                       Parcel ID
+                     </label>
+                     <input
+                       type="text"
+                       name="parcelId"
+                       value={selectedParcel.parcelId || selectedParcel.id || ''}
+                       onChange={handleInputChange}
+                       disabled
+                       className="disabled-field"
+                     />
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaBox className="input-icon" />
+                       Parcel Name
+                     </label>
+                     <input
+                       type="text"
+                       name="parcelName"
+                       value={selectedParcel.parcelName || ''}
+                       onChange={handleInputChange}
+                       placeholder="Enter parcel name"
+                       required
+                     />
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaWeight className="input-icon" />
+                       Weight (kg)
+                     </label>
+                     <input
+                       type="number"
+                       step="0.1"
+                       min="0"
+                       name="weight"
+                       value={selectedParcel.weight || ''}
+                       onChange={handleInputChange}
+                       placeholder="Enter weight in kg"
+                     />
+                   </div>
+                 </div>
+
+                 {/* Sender & Recipient Information Section */}
+                 <div className="form-section">
+                   <div className="section-header">
+                     <div className="section-icon-wrapper">
+                       <FaUser className="section-icon" />
+                     </div>
+                     <h3>Sender & Recipient Information</h3>
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaUser className="input-icon" />
+                       Sender Name
+                     </label>
+                     <input
+                       type="text"
+                       name="senderName"
+                       value={selectedParcel.senderName || ''}
+                       onChange={handleInputChange}
+                       placeholder="Enter sender name"
+                       required
+                     />
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaUser className="input-icon" />
+                       Recipient Name
+                     </label>
+                     <input
+                       type="text"
+                       name="recipientName"
+                       value={selectedParcel.recipientName || ''}
+                       onChange={handleInputChange}
+                       placeholder="Enter recipient name"
+                       required
+                     />
+                   </div>
+                 </div>
+
+                 {/* Location Information Section */}
+                 <div className="form-section">
+                   <div className="section-header">
+                     <div className="section-icon-wrapper">
+                       <FaMapMarkerAlt className="section-icon" />
+                     </div>
+                     <h3>Location Information</h3>
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaMapMarkerAlt className="input-icon" />
+                       From Location
+                     </label>
+                     <input
+                       type="text"
+                       name="from"
+                       value={selectedParcel.from || ''}
+                       onChange={handleInputChange}
+                       placeholder="Enter source location"
+                       required
+                     />
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaMapMarkerAlt className="input-icon" />
+                       To Location
+                     </label>
+                     <input
+                       type="text"
+                       name="to"
+                       value={selectedParcel.to || ''}
+                       onChange={handleInputChange}
+                       placeholder="Enter destination location"
+                       required
+                     />
+                   </div>
+                 </div>
+
+                 {/* Timestamps Section */}
+                 <div className="form-section">
+                   <div className="section-header">
+                     <div className="section-icon-wrapper">
+                       <FaHistory className="section-icon" />
+                     </div>
+                     <h3>Timestamps</h3>
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaCalendarAlt className="input-icon" />
+                       Date
+                     </label>
+                     <input
+                       type="text"
+                       value={selectedParcel.Date || new Date(selectedParcel.createdAt).toLocaleDateString() || 'N/A'}
+                       disabled
+                       className="disabled-field"
+                     />
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaClock className="input-icon" />
+                       Created At
+                     </label>
+                     <input
+                       type="text"
+                       value={selectedParcel.createdAt ? new Date(selectedParcel.createdAt).toLocaleString() : 'N/A'}
+                       disabled
+                       className="disabled-field"
+                     />
+                   </div>
+                   <div className="form-group">
+                     <label>
+                       <FaClock className="input-icon" />
+                       Updated At
+                     </label>
+                     <input
+                       type="text"
+                       value={selectedParcel.updatedAt ? new Date(selectedParcel.updatedAt).toLocaleString() : 'N/A'}
+                       disabled
+                       className="disabled-field"
+                     />
+                   </div>
+                 </div>
+               </div>
+               <div className="modal-actions">
+                 <button type="button" className="cancel-button" onClick={() => {
+                   setShowEditModal(false);
+                   setSelectedParcel(null);
+                 }}>
+                   Cancel
+                 </button>
+                 <button type="submit" className="save-button" disabled={isLoading}>
+                   {isLoading ? 'Saving...' : 'Save Changes'}
+                 </button>
+               </div>
+             </form>
+           </div>
+         </div>
+       )}
 
       {isLoading ? (
         <>
@@ -579,13 +660,13 @@ const ReceivedParcels = () => {
             <thead>
               <tr>
                 <th>Parcel ID</th>
-                <th>Retailer</th>
-                <th>Customer</th>
+                <th>Parcel Name</th>
+                <th>Sender Name</th>
+                <th>Recipient Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Weight</th>
                 <th>Date</th>
-                <th>Status</th>
-                <th>Locker ID</th>
-                <th>Size</th>
-                <th>Priority</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -593,24 +674,14 @@ const ReceivedParcels = () => {
               {filteredParcels.length > 0 ? (
                 filteredParcels.map((parcel) => (
                   <tr key={parcel.id} className="clickable-row">
-                    <td>{parcel.id}</td>
-                    <td>{parcel.retailer}</td>
-                    <td>{parcel.customer}</td>
-                    <td>{parcel.date}</td>
-                    <td>
-                      <span
-                        className="status-badge"
-                        style={{ 
-                          backgroundColor: getStatusColor(parcel.status),
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        {parcel.status}
-                      </span>
-                    </td>
-                    <td>{parcel.lockerId}</td>
-                    <td>{parcel.size}</td>
-                    <td>{parcel.priority}</td>
+                    <td>{parcel.parcelId || parcel.id}</td>
+                    <td>{parcel.parcelName || 'N/A'}</td>
+                    <td>{parcel.senderName || 'N/A'}</td>
+                    <td>{parcel.recipientName || 'N/A'}</td>
+                    <td>{parcel.from || 'N/A'}</td>
+                    <td>{parcel.to || 'N/A'}</td>
+                    <td>{parcel.weight || 'N/A'}</td>
+                    <td>{parcel.Date || new Date(parcel.createdAt).toLocaleDateString() || 'N/A'}</td>
                     <td>
                       <div className="action-buttons">
                         <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>

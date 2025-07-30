@@ -270,8 +270,13 @@
       display: flex;
       justify-content: flex-end;
       gap: 16px;
-      padding: 14px 0;
-      margin-top: 345px;
+      padding: 20px 0;
+      margin-top: auto;
+      border-top: 1px solid #eee;
+      background: white;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
 
       button {
         width: 80px;

@@ -8,32 +8,28 @@ import "../../assets/css/Signin.scss";
 import { loginUser } from "../../redux/feature/AuthSlice";
 import ButtonLoader from "../../atoms/buttonLoader";
 import { signin } from "../../services/wepickApi";
-
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [passwordType, setPasswordType] = useState("password");
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const togglePassword = () => {
     setPasswordType(passwordType === "password" ? "text" : "password");
   };
-
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
-
 const handleSubmit = async (values, { setSubmitting }) => {
   setLoading(true);
   setError("");
   try {
     const resultAction = await dispatch(loginUser(values));
-
-    if (loginUser.fulfilled.match(resultAction)) {
+    // if (loginUser.fulfilled.match(resultAction)) {
+if(resultAction?.payload && resultAction?.payload?.user?.userType==="admin"){
       // Navigate directly to dashboard
       navigate("/dashboard");
     } else {
@@ -43,13 +39,9 @@ const handleSubmit = async (values, { setSubmitting }) => {
     console.error("Login error:", error);
     setError("Something went wrong. Please try again.");
   }
-
   setLoading(false);
   setSubmitting(false);
 };
-
-
-
   return (
     <div className="fluid-container ">
       <div className="sign-page">
@@ -117,7 +109,7 @@ const handleSubmit = async (values, { setSubmitting }) => {
                                 onTouchStart={togglePassword}
                                 onTouchEnd={togglePassword}
                                 onClick={togglePassword}
-                                style={{ 
+                                style={{
                                   pointerEvents: isLoading ? "none" : "auto",
                                   opacity: isLoading ? 0.6 : 1
                                 }}
@@ -194,5 +186,4 @@ const handleSubmit = async (values, { setSubmitting }) => {
     </div>
   );
 };
-
 export default Signin;

@@ -70,7 +70,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
               </span>
               <div className="status-info">
                 <p className="status-label">Current Status</p>
-                <p className="last-update">Last updated: {parcel.lastUpdate}</p>
+                <p className="last-update">Last updated: {parcel.updatedAt || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="section-icon-wrapper">
                   <FaTruck className="section-icon" />
                 </div>
-                <h3>Tracking Information</h3>
+                <h3>Parcel Information</h3>
               </div>
               <div className="info-item">
                 <div className="info-icon-wrapper">
@@ -89,7 +89,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 </div>
                 <div className="info-content">
                   <label>Parcel ID</label>
-                  <p>{parcel.id}</p>
+                  <p>{parcel.parcelId || 'N/A'}</p>
                 </div>
               </div>
               <div className="info-item">
@@ -97,8 +97,8 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                   <FaBarcode className="info-icon" />
                 </div>
                 <div className="info-content">
-                  <label>Tracking Number</label>
-                  <p className="tracking-number">{parcel.trackingNumber}</p>
+                  <label>Parcel Name</label>
+                  <p>{parcel.parcelName || 'N/A'}</p>
                 </div>
               </div>
               <div className="info-item">
@@ -107,7 +107,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 </div>
                 <div className="info-content">
                   <label>Created Date</label>
-                  <p>{parcel.createdAt}</p>
+                  <p>{parcel.createdAt || 'N/A'}</p>
                 </div>
               </div>
             </div>
@@ -117,22 +117,61 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="section-icon-wrapper">
                   <FaUserFriends className="section-icon" />
                 </div>
-                <h3>Contact Information</h3>
+                <h3>Sender Information</h3>
               </div>
-              <div className="contact-grid">
-                <div className="contact-card sender">
-                  <div className="contact-icon-wrapper">
-                    <FaUserCircle className="contact-icon" />
+              <div className="contact-details">
+                <div className="detail-row">
+                  <div className="detail-label">
+                    <FaUserCircle className="detail-icon" />
+                    <span>Name</span>
                   </div>
-                  <h4>Sender</h4>
-                  <p>{parcel.sender}</p>
+                  <div className="detail-value">{parcel.senderName || 'N/A'}</div>
                 </div>
-                <div className="contact-card recipient">
-                  <div className="contact-icon-wrapper">
-                    <FaUser className="contact-icon" />
+                <div className="detail-row">
+                  <div className="detail-label">
+                    <FaStore className="detail-icon" />
+                    <span>Business</span>
                   </div>
-                  <h4>Recipient</h4>
-                  <p>{parcel.recipient}</p>
+                  <div className="detail-value">{parcel.senderInfo?.businessName || 'N/A'}</div>
+                </div>
+                <div className="detail-row">
+                  <div className="detail-label">
+                    <FaIdCard className="detail-icon" />
+                    <span>Phone</span>
+                  </div>
+                  <div className="detail-value">{parcel.senderInfo?.phoneNumber || 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="info-section contact-section">
+              <div className="section-header">
+                <div className="section-icon-wrapper">
+                  <FaUser className="section-icon" />
+                </div>
+                <h3>Recipient Information</h3>
+              </div>
+              <div className="contact-details">
+                <div className="detail-row">
+                  <div className="detail-label">
+                    <FaUserCircle className="detail-icon" />
+                    <span>Name</span>
+                  </div>
+                  <div className="detail-value">{parcel.recipientName || 'N/A'}</div>
+                </div>
+                <div className="detail-row">
+                  <div className="detail-label">
+                    <FaUser className="detail-icon" />
+                    <span>Email</span>
+                  </div>
+                  <div className="detail-value">{parcel.recipientEmail || 'N/A'}</div>
+                </div>
+                <div className="detail-row">
+                  <div className="detail-label">
+                    <FaIdCard className="detail-icon" />
+                    <span>Phone</span>
+                  </div>
+                  <div className="detail-value">{parcel.recipientPhone || 'N/A'}</div>
                 </div>
               </div>
             </div>
@@ -148,11 +187,11 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                 <div className="location-info">
                   <div className="info-item">
                     <div className="info-icon-wrapper">
-                      <FaIdCard className="info-icon" />
+                      <FaLocationArrow className="info-icon" />
                     </div>
                     <div>
-                      <label>Locker ID</label>
-                      <p>{parcel.lockerId}</p>
+                      <label>From</label>
+                      <p>{parcel.from || 'N/A'}</p>
                     </div>
                   </div>
                   <div className="info-item">
@@ -160,8 +199,8 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                       <FaLocationArrow className="info-icon" />
                     </div>
                     <div>
-                      <label>Location</label>
-                      <p>{parcel.location}</p>
+                      <label>To</label>
+                      <p>{parcel.to || 'N/A'}</p>
                     </div>
                   </div>
                 </div>
@@ -178,20 +217,11 @@ const ParcelViewModal = ({ parcel, onClose }) => {
               <div className="specs-grid">
                 <div className="spec-card">
                   <div className="spec-icon-wrapper">
-                    <FaRuler className="spec-icon" />
-                  </div>
-                  <div>
-                    <label>Dimensions</label>
-                    <p>{parcel.dimensions}</p>
-                  </div>
-                </div>
-                <div className="spec-card">
-                  <div className="spec-icon-wrapper">
                     <FaWeightHanging className="spec-icon" />
                   </div>
                   <div>
                     <label>Weight</label>
-                    <p>{parcel.weight}</p>
+                    <p>{parcel.weight ? `${parcel.weight}kg` : 'N/A'}</p>
                   </div>
                 </div>
               </div>
@@ -203,7 +233,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
               <div className="section-icon-wrapper">
                 <FaTruckLoading className="section-icon" />
               </div>
-              <h3>Delivery Information</h3>
+              <h3>Timeline Information</h3>
             </div>
             <div className="delivery-grid">
               <div className="delivery-card">
@@ -211,8 +241,8 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                   <FaCalendarAlt className="delivery-icon" />
                 </div>
                 <div className="delivery-content">
-                  <label>Estimated Delivery</label>
-                  <p>{parcel.estimatedDelivery}</p>
+                  <label>Created Date</label>
+                  <p>{parcel.createdAt || 'N/A'}</p>
                 </div>
               </div>
               <div className="delivery-card">
@@ -220,17 +250,8 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                   <FaHistory className="delivery-icon" />
                 </div>
                 <div className="delivery-content">
-                  <label>Delivery Attempts</label>
-                  <p>{parcel.deliveryAttempts}</p>
-                </div>
-              </div>
-              <div className="delivery-card">
-                <div className="delivery-icon-wrapper">
-                  <FaStoreAlt className="delivery-icon" />
-                </div>
-                <div className="delivery-content">
-                  <label>Retailer</label>
-                  <p>{parcel.retailer}</p>
+                  <label>Last Updated</label>
+                  <p>{parcel.updatedAt || 'N/A'}</p>
                 </div>
               </div>
             </div>

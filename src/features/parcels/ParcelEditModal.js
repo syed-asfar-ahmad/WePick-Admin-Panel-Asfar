@@ -27,30 +27,68 @@ import './ParcelEditModal.scss';
 
 const ParcelEditModal = ({ parcel, onClose, onSave }) => {
   const [formData, setFormData] = useState({
-    status: parcel.status,
-    trackingNumber: parcel.trackingNumber,
-    sender: parcel.sender,
-    recipient: parcel.recipient,
-    lockerId: parcel.lockerId,
-    location: parcel.location,
-    dimensions: parcel.dimensions,
-    weight: parcel.weight,
-    estimatedDelivery: parcel.estimatedDelivery,
-    deliveryAttempts: parcel.deliveryAttempts,
-    retailer: parcel.retailer
+    // Parcel Information
+    parcelName: parcel.parcelName || '',
+    weight: parcel.weight || '',
+    status: parcel.status || 'pending',
+    
+    // Sender Information
+    senderName: parcel.senderName || '',
+    senderInfo: {
+      businessName: parcel.senderInfo?.businessName || '',
+      phoneNumber: parcel.senderInfo?.phoneNumber || ''
+    },
+    
+    // Recipient Information
+    recipientName: parcel.recipientName || '',
+    recipientEmail: parcel.recipientEmail || '',
+    recipientPhone: parcel.recipientPhone || '',
+    
+    // Location Information
+    from: parcel.from || '',
+    to: parcel.to || '',
+    
+    // Timestamps (read-only)
+    createdAt: parcel.createdAt || '',
+    updatedAt: parcel.updatedAt || ''
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Handle nested senderInfo fields
+    if (name.startsWith('senderInfo.')) {
+      const field = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        senderInfo: {
+          ...prev.senderInfo,
+          [field]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ ...parcel, ...formData });
+    
+    // Prepare the data for saving
+    const saveData = {
+      ...parcel,
+      ...formData,
+      // Ensure senderInfo is properly structured
+      senderInfo: {
+        ...parcel.senderInfo,
+        ...formData.senderInfo
+      }
+    };
+    
+    onSave(saveData);
     onClose();
   };
 
@@ -68,12 +106,42 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
 
         <form onSubmit={handleSubmit} className="modal-content">
           <div className="form-grid">
+            {/* Parcel Information Section */}
             <div className="form-section">
               <div className="section-header">
                 <div className="section-icon-wrapper">
-                  <FaTruck className="section-icon" />
+                  <FaBox className="section-icon" />
                 </div>
-                <h3>Tracking Information</h3>
+                <h3>Parcel Information</h3>
+              </div>
+              <div className="form-group">
+                <label>
+                  <FaBarcode className="input-icon" />
+                  Parcel Name
+                </label>
+                <input
+                  type="text"
+                  name="parcelName"
+                  value={formData.parcelName}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter parcel name"
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FaWeightHanging className="input-icon" />
+                  Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  name="weight"
+                  value={formData.weight}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter weight in kg"
+                  step="0.1"
+                />
               </div>
               <div className="form-group">
                 <label>
@@ -86,200 +154,204 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                 >
-                  <option value="Dispatched">Dispatched</option>
-                  <option value="In Transit">In Transit</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Failed">Failed</option>
-                  <option value="Ready for Pickup">Ready for Pickup</option>
+                  <option value="pending">Pending</option>
+                  <option value="dispatched">Dispatched</option>
+                  <option value="in transit">In Transit</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="failed">Failed</option>
                 </select>
-              </div>
-              <div className="form-group">
-                <label>
-                  <FaBarcode className="input-icon" />
-                  Tracking Number
-                </label>
-                <input
-                  type="text"
-                  name="trackingNumber"
-                  value={formData.trackingNumber}
-                  onChange={handleChange}
-                  className="form-control"
-                />
               </div>
             </div>
 
+            {/* Sender Information Section */}
             <div className="form-section">
               <div className="section-header">
                 <div className="section-icon-wrapper">
                   <FaUserFriends className="section-icon" />
                 </div>
-                <h3>Contact Information</h3>
+                <h3>Sender Information</h3>
               </div>
               <div className="form-group">
                 <label>
                   <FaUserCircle className="input-icon" />
-                  Sender
+                  Sender Name
                 </label>
                 <input
                   type="text"
-                  name="sender"
-                  value={formData.sender}
+                  name="senderName"
+                  value={formData.senderName}
                   onChange={handleChange}
                   className="form-control"
+                  placeholder="Enter sender name"
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FaStore className="input-icon" />
+                  Business Name
+                </label>
+                <input
+                  type="text"
+                  name="senderInfo.businessName"
+                  value={formData.senderInfo.businessName}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter business name"
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FaIdCard className="input-icon" />
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="senderInfo.phoneNumber"
+                  value={formData.senderInfo.phoneNumber}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter phone number"
+                />
+              </div>
+            </div>
+
+            {/* Recipient Information Section */}
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon-wrapper">
+                  <FaUser className="section-icon" />
+                </div>
+                <h3>Recipient Information</h3>
+              </div>
+              <div className="form-group">
+                <label>
+                  <FaUserCircle className="input-icon" />
+                  Recipient Name
+                </label>
+                <input
+                  type="text"
+                  name="recipientName"
+                  value={formData.recipientName}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter recipient name"
                 />
               </div>
               <div className="form-group">
                 <label>
                   <FaUser className="input-icon" />
-                  Recipient
+                  Email
                 </label>
                 <input
-                  type="text"
-                  name="recipient"
-                  value={formData.recipient}
+                  type="email"
+                  name="recipientEmail"
+                  value={formData.recipientEmail}
                   onChange={handleChange}
                   className="form-control"
+                  placeholder="Enter recipient email"
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FaIdCard className="input-icon" />
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="recipientPhone"
+                  value={formData.recipientPhone}
+                  onChange={handleChange}
+                  className="form-control"
+                  placeholder="Enter recipient phone"
                 />
               </div>
             </div>
 
+            {/* Location Information Section */}
             <div className="form-section">
               <div className="section-header">
                 <div className="section-icon-wrapper">
                   <FaWarehouse className="section-icon" />
                 </div>
-                <h3>Location Details</h3>
+                <h3>Location Information</h3>
               </div>
               <div className="form-group">
                 <label>
-                  <FaIdCard className="input-icon" />
-                  Locker ID
+                  <FaLocationArrow className="input-icon" />
+                  From
                 </label>
                 <input
                   type="text"
-                  name="lockerId"
-                  value={formData.lockerId}
+                  name="from"
+                  value={formData.from}
                   onChange={handleChange}
                   className="form-control"
+                  placeholder="Enter source location"
                 />
               </div>
               <div className="form-group">
                 <label>
                   <FaLocationArrow className="input-icon" />
-                  Location
+                  To
                 </label>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.location}
+                  name="to"
+                  value={formData.to}
                   onChange={handleChange}
                   className="form-control"
+                  placeholder="Enter destination location"
                 />
               </div>
             </div>
 
+            {/* Timestamps Section (Read-only) */}
             <div className="form-section">
               <div className="section-header">
                 <div className="section-icon-wrapper">
-                  <FaRulerCombined className="section-icon" />
+                  <FaCalendarAlt className="section-icon" />
                 </div>
-                <h3>Parcel Specifications</h3>
-              </div>
-              <div className="form-group">
-                <label>
-                  <FaRuler className="input-icon" />
-                  Dimensions
-                </label>
-                <input
-                  type="text"
-                  name="dimensions"
-                  value={formData.dimensions}
-                  onChange={handleChange}
-                  className="form-control"
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  <FaWeightHanging className="input-icon" />
-                  Weight
-                </label>
-                <input
-                  type="text"
-                  name="weight"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  className="form-control"
-                />
-              </div>
-            </div>
-
-
-            <div className="form-section">
-              <div className="section-header">
-                <div className="section-icon-wrapper">
-                  <FaTruckLoading className="section-icon" />
-                </div>
-                <h3>Delivery Information</h3>
+                <h3>Timestamps</h3>
               </div>
               <div className="form-group">
                 <label>
                   <FaCalendarAlt className="input-icon" />
-                  Estimated Delivery
+                  Created Date
                 </label>
                 <input
-                  type="date"
-                  name="estimatedDelivery"
-                  value={formData.estimatedDelivery}
-                  onChange={handleChange}
+                  type="text"
+                  name="createdAt"
+                  value={formData.createdAt}
                   className="form-control"
+                  readOnly
+                  disabled
                 />
               </div>
               <div className="form-group">
                 <label>
                   <FaHistory className="input-icon" />
-                  Delivery Attempts
-                </label>
-                <input
-                  type="number"
-                  name="deliveryAttempts"
-                  value={formData.deliveryAttempts}
-                  onChange={handleChange}
-                  className="form-control"
-                  min="0"
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  <FaStoreAlt className="input-icon" />
-                  Retailer
+                  Last Updated
                 </label>
                 <input
                   type="text"
-                  name="retailer"
-                  value={formData.retailer}
-                  onChange={handleChange}
+                  name="updatedAt"
+                  value={formData.updatedAt}
                   className="form-control"
+                  readOnly
+                  disabled
                 />
               </div>
             </div>
-            <div className="form-actions">
-            <button type="button" className="cancel-button" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="save-button">
-              Save Changes
-            </button>
-          </div>
           </div>
 
-          {/* <div className="form-actions">
+          <div className="form-actions">
             <button type="button" className="cancel-button" onClick={onClose}>
               Cancel
             </button>
             <button type="submit" className="save-button">
               Save Changes
             </button>
-          </div> */}
+          </div>
         </form>
       </div>
     </div>

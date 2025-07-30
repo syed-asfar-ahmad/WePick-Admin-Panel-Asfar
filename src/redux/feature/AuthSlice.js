@@ -7,8 +7,6 @@ const BASE_URL = "http://51.20.35.1/api/v1/admin";
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
-        console.log("Sending credentials to API:", credentials); 
-
     try {
       const response = await axios.post(`${BASE_URL}/auth/login`, credentials);
 
@@ -53,6 +51,9 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem("authToken");
     },
+    updateUserProfile: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -70,6 +71,6 @@ const authSlice = createSlice({
 });
 
 
-export const { clearAuthentication } = authSlice.actions;
+export const { clearAuthentication, updateUserProfile } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -360,4 +360,253 @@
   100% {
     transform: rotate(180deg) scale(1);
   }
+}
+
+// Notification Detail View Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.notification-view-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #eee;
+    background: white;
+
+    h2 {
+      font-size: 1.5rem;
+      color: #333;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: #666;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f8f9fa;
+        color: #333;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .loading-container {
+    padding: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .notification-detail-content {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+
+    .detail-section {
+      margin-bottom: 2rem;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      h3 {
+        font-size: 1.1rem;
+        color: #333;
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &::before {
+          content: '';
+          width: 4px;
+          height: 20px;
+          background: #6CAD61;
+          border-radius: 2px;
+        }
+      }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+
+        .detail-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          label {
+            font-weight: 500;
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            svg {
+              color: #6CAD61;
+            }
+          }
+
+          span {
+            color: #333;
+            font-size: 1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+
+            &:hover {
+              border-color: #6CAD61;
+              box-shadow: 0 0 0 2px rgba(108, 173, 97, 0.1);
+            }
+          }
+
+          .type-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+
+            &.parcel {
+              background: #e3f2fd;
+              color: #1976d2;
+            }
+
+            &.delivery {
+              background: #e8f5e8;
+              color: #2e7d32;
+            }
+
+            &.pickup {
+              background: #fff3e0;
+              color: #f57c00;
+            }
+          }
+
+          .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+
+            &.read {
+              background: #e8f5e8;
+              color: #2e7d32;
+            }
+
+            &.unread {
+              background: #ffebee;
+              color: #c62828;
+            }
+
+            svg {
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+
+      .message-content {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 6px;
+        border: 1px solid #eee;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: #6CAD61;
+          box-shadow: 0 0 0 2px rgba(108, 173, 97, 0.1);
+        }
+
+        p {
+          margin: 0;
+          color: #333;
+          line-height: 1.6;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  .error-container {
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+// Responsive design for modal
+@media (max-width: 768px) {
+  .notification-view-modal {
+    margin: 1rem;
+    max-height: 95vh;
+
+    .modal-header {
+      padding: 1rem 1.5rem;
+
+      h2 {
+        font-size: 1.25rem;
+      }
+    }
+
+    .notification-detail-content {
+      padding: 1.5rem;
+
+      .detail-section {
+        padding: 1rem;
+
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
 } 

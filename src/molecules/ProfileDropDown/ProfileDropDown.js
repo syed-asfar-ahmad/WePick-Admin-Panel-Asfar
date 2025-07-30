@@ -23,6 +23,20 @@ const ProfileDropDown = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  // Get image base URL with fallback
+  const getImageBaseUrl = () => {
+    return process.env.REACT_APP_IMAGE_BASE_URL || 'http://51.20.35.1';
+  };
+
+  // Get image URL with cache busting
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    const normalizedPath = imagePath.replace(/\\/g, '/');
+    const baseUrl = getImageBaseUrl();
+    const timestamp = Date.now();
+    return `${baseUrl}/${normalizedPath}?t=${timestamp}`;
+  };
+
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
@@ -50,21 +64,27 @@ const ProfileDropDown = () => {
           cursor: 'pointer'
         }}
       >
-        {user?.profile_pic ? (
-          <img
-            src={`${process.env.REACT_APP_IMAGE_BASE_URL}/${user.profile_pic}`}
-            className="profile-image"
-            alt="Profile"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '2px solid #fff',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-            }}
-          />
-        ) : (
+                 {(user?.profileImage || user?.profile_pic) ? (
+           <img
+             src={getImageUrl(user.profileImage || user.profile_pic)}
+             className="profile-image"
+             alt="Profile"
+             style={{
+               width: '40px',
+               height: '40px',
+               borderRadius: '50%',
+               objectFit: 'cover',
+               border: '2px solid #fff',
+               boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+             }}
+             onError={(e) => {
+               // Image failed to load
+             }}
+             onLoad={() => {
+               // Image loaded successfully
+             }}
+           />
+         ) : (
           <div style={{ transform: 'scale(1.1)' }}>
             <DummyUserProfile />
           </div>
@@ -115,11 +135,17 @@ const ProfileDropDown = () => {
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  {user?.profile_pic ? (
+                  {(user?.profileImage || user?.profile_pic) ? (
                     <img
-                      src={`${process.env.REACT_APP_IMAGE_BASE_URL}/${user.profile_pic}`}
+                      src={getImageUrl(user.profileImage || user.profile_pic)}
                       alt="Profile"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => {
+                        // Image failed to load
+                      }}
+                      onLoad={() => {
+                        // Image loaded successfully
+                      }}
                     />
                   ) : (
                     <DummyUserProfile size="60px" />

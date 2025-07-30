@@ -39,6 +39,20 @@
     }
   }
 
+  .error-message {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    color: #856404;
+    
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  }
+
   .parcel-info-grid {
     display: flex;
     flex-direction: column;
@@ -169,6 +183,17 @@
               line-height: 1.5;
             }
           }
+        }
+      }
+      
+      .no-history {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+        
+        p {
+          margin: 0;
+          font-size: 1.1rem;
         }
       }
     }

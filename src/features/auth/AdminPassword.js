@@ -6,6 +6,7 @@ import { CustomToast } from "../../atoms/toastMessage";
 import ButtonLoader from "../../atoms/buttonLoader";
 import "./AdminPassword.scss";
 import Loading from '../../components/common/Loading';
+import { adminChangePassword } from "../../services/wepickApi";
 
 
 const AdminPassword = () => {
@@ -61,18 +62,29 @@ const AdminPassword = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const requestData = {
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+        confirmNewPassword: values.confirmPassword
+      };
       
-      CustomToast({
-        type: "success",
-        message: "Password changed successfully"
-      });
-      resetForm();
-      navigate("/dashboard");
+      const response = await adminChangePassword(requestData);
+      
+      // Check if response is successful (either direct or nested)
+      if (response?.success || response?.data?.success) {
+        CustomToast({
+          type: "success",
+          message: response?.message || response?.data?.message || "Password changed successfully"
+        });
+        resetForm();
+        navigate("/dashboard");
+      } else {
+        throw new Error(response?.message || response?.data?.message || "Failed to change password");
+      }
     } catch (error) {
       CustomToast({
         type: "error",
-        message: error.message || "Failed to change password"
+        message: error.response?.data?.message || error.message || "Failed to change password"
       });
     } finally {
       setIsLoading(false);

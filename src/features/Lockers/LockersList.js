@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaLock, FaUnlock, FaFilter, FaBox, FaClock, FaExclamationTriangle, FaRedo, FaSpinner } from 'react-icons/fa';
 import './LockersList.scss';
 import Loading from '../../components/common/Loading';
+import { getLockers } from '../../services/wepickApi';
 
 const LockersList = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -18,34 +19,41 @@ const LockersList = () => {
 
   const [lockers, setLockers] = useState([]);
   const [analytics, setAnalytics] = useState({
-    totalLockers: 0,
-    availableLockers: 0,
-    occupiedLockers: 0
+    totalLockers: 0
   });
 
   const fetchLockers = async () => {
-  try {
-    setIsLoading(true);
-    setError(null);
+    try {
+      setIsLoading(true);
+      setError(null);
 
-     setLockers([]);  
-      setAnalytics({
-        totalLockers: 0,
-        availableLockers: 0,
-        occupiedLockers: 0
-      });
-  } catch (err) {
-    console.error('Error fetching lockers:', err);
-    setError('Failed to load lockers. Please try again.');
-    setLockers([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      const response = await getLockers();
+      
+      if (response?.success) {
+        const lockersData = response.data || [];
+        setLockers(lockersData);
+        
+        // Calculate analytics
+        const totalLockers = response.lockerscount || lockersData.length;
+        
+        setAnalytics({
+          totalLockers
+        });
+      } else {
+        setError('Failed to load lockers. Please try again.');
+        setLockers([]);
+      }
+    } catch (err) {
+      setError('Failed to load lockers. Please try again.');
+      setLockers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchLockers();
-  // }, []);
+  useEffect(() => {
+    fetchLockers();
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -78,19 +86,23 @@ const LockersList = () => {
 
   const getFilteredLockers = () => {
     return lockers.filter(locker => {
-      if (filters.search && !locker.id.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (filters.search && !locker.bname.toLowerCase().includes(filters.search.toLowerCase())) {
         return false;
       }
 
-      if (filters.status && locker.status.toLowerCase() !== filters.status.toLowerCase()) {
+      if (filters.status) {
+        const isAvailable = parseInt(locker.ct_new) > 0;
+        const status = isAvailable ? 'available' : 'occupied';
+        if (status !== filters.status.toLowerCase()) {
+          return false;
+        }
+      }
+
+      if (filters.location && !locker.baddr.toLowerCase().includes(filters.location.toLowerCase())) {
         return false;
       }
 
-      if (filters.location && !locker.location.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
-
-      if (filters.capacity && locker.size !== filters.capacity) {
+      if (filters.capacity && locker.ct !== filters.capacity) {
         return false;
       }
 
@@ -135,24 +147,6 @@ const LockersList = () => {
             <p>{isLoading ? '...' : analytics.totalLockers}</p>
           </div>
         </div>
-        <div className="analytics-card">
-          <div className="analytics-icon available">
-            <FaLock />
-          </div>
-          <div className="analytics-info">
-            <h3>Available Lockers</h3>
-            <p>{isLoading ? '...' : analytics.availableLockers}</p>
-          </div>
-        </div>
-        <div className="analytics-card">
-          <div className="analytics-icon occupied">
-            <FaUnlock />
-          </div>
-          <div className="analytics-info">
-            <h3>Occupied Lockers</h3>
-            <p>{isLoading ? '...' : analytics.occupiedLockers}</p>
-          </div>
-        </div>
       </div>
 
       <div className="page-header">
@@ -187,9 +181,8 @@ const LockersList = () => {
               <label>Status</label>
               <select name="status" value={filters.status} onChange={handleFilterChange}>
                 <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="maintenance">Maintenance</option>
+                <option value="available">Available</option>
+                <option value="occupied">Occupied</option>
               </select>
             </div>
             <div className="filter-group">
@@ -206,9 +199,8 @@ const LockersList = () => {
               <label>Capacity</label>
               <select name="capacity" value={filters.capacity} onChange={handleFilterChange}>
                 <option value="">All Capacities</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
+                <option value="3242">3242</option>
+                <option value="10">10</option>
               </select>
             </div>
           </div>
@@ -241,84 +233,49 @@ const LockersList = () => {
           <table className="lockers-table">
             <thead>
               <tr>
-                <th>Locker ID</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Size</th>
-                <th>Last Used</th>
-                <th>Bus Number</th>
-                <th>Capacity</th>
-                <th>Actions</th>
+                <th>Locker UUID</th>
+                <th>Building Name</th>
+                <th>Building Address</th>
+                <th>Building Postcode</th>
+                <th>Collected Parcels Count</th>
+                <th>Pending Parcels Count</th>
               </tr>
             </thead>
             <tbody>
-              {getFilteredLockers().map((locker) => (
-                <tr key={locker.id}>
-                  <td>
-                    <div className="locker-id">
-                      <span>{locker.id}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="location-cell">
-                      <FaMapMarkerAlt className="icon" />
-                      <span>{locker.location}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{ backgroundColor: getStatusColor(locker.status) }}
-                    >
-                      {locker.status}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="size-badge">{locker.size}</span>
-                  </td>
-                  <td>
-                    <div className="time-cell">
-                      <FaClock className="icon" />
-                      <span>{new Date(locker.lastUsed).toLocaleString()}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="bus-number">
-                      <span className="bus-badge">{locker.busNumber}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="capacity-cell">
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill"
-                          style={{ 
-                            width: locker.capacity,
-                            backgroundColor: locker.capacity > '80%' ? '#4CAF50' : '#FFC107'
-                          }}
-                        />
+              {getFilteredLockers().map((locker) => {
+                const isAvailable = parseInt(locker.ct_new) > 0;
+                const status = isAvailable ? 'Available' : 'Occupied';
+                return (
+                  <tr key={locker.buid}>
+                    <td>
+                      <div className="locker-id">
+                        <span>{locker.buid}</span>
                       </div>
-                      <span className="capacity-text">{locker.capacity}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button 
-                      className={`unlock-button ${isUnlocking[locker.id] ? 'loading' : ''}`}
-                      onClick={() => handleUnlockLocker(locker.id)}
-                      disabled={locker.status === 'Available' || isUnlocking[locker.id]}
-                    >
-                      {isUnlocking[locker.id] ? (
-                        <div className="button-spinner"></div>
-                      ) : (
-                        <>
-                          {locker.status === 'Available' ? <FaLock /> : <FaUnlock />}
-                          {locker.status === 'Available' ? 'Locked' : 'Unlock'}
-                        </>
-                      )}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      <div className="building-name">
+                        <span>{locker.bname}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="location-cell">
+                        <span>{locker.baddr}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="postal-code">{locker.bpost}</span>
+                    </td>
+                    <td>
+                      <span className="total-capacity">{locker.ct}</span>
+                    </td>
+                    <td>
+                      <div className="available-capacity">
+                        <span className="capacity-badge">{locker.ct_new}</span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

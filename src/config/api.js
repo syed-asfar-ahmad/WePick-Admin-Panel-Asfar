@@ -6,6 +6,7 @@
 
 // export const BASE_URL = "http://51.21.116.59/api";
 // export const BASE_URL = "https://api.testing.winwithwits.com/api";
+// export const BASE_URL = "http://localhost:4000/api/v1/admin";
   
 export const BASE_URL = "http://51.20.35.1/api/v1/admin";
 

@@ -4,7 +4,7 @@ import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
 import Loading from '../../components/common/Loading';
-import { getParcelSummary, getParcelReport, getParcelDetail } from '../../services/wepickApi';
+import { getParcelSummary, getParcelReport, getParcelDetail, getParcels, updateParcel } from '../../services/wepickApi';
 
 const ParcelsList = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -36,137 +36,13 @@ const ParcelsList = () => {
     topPerformingLockers: []
   });
 
-  // Mock data for parcels
-  const parcels = [
-    {
-      id: 'P001',
-      status: 'Dispatched',
-      sender: 'John Doe',
-      recipient: 'Jane Smith',
-      lockerId: 'L123',
-      createdAt: '2024-03-15',
-      estimatedDelivery: '2024-03-16',
-      dimensions: '30x20x15 cm',
-      weight: '2.5 kg',
-      retailer: 'Retail Store A',
-      location: 'New York',
-      trackingNumber: 'TRK123456',
-      deliveryAttempts: 1,
-      lastUpdate: '2024-03-15 14:30'
-    },
-    {
-      id: 'P002',
-      status: 'Delivered',
-      sender: 'Mike Johnson',
-      recipient: 'Sarah Wilson',
-      lockerId: 'L124',
-      createdAt: '2024-03-14',
-      estimatedDelivery: '2024-03-15',
-      dimensions: '25x15x10 cm',
-      weight: '1.8 kg',
-      retailer: 'Retail Store B',
-      location: 'Los Angeles',
-      trackingNumber: 'TRK123457',
-      deliveryAttempts: 2,
-      lastUpdate: '2024-03-15 10:15'
-    },
-    {
-      id: 'P003',
-      status: 'In Transit',
-      sender: 'Alice Brown',
-      recipient: 'Bob White',
-      lockerId: 'L125',
-      createdAt: '2024-03-13',
-      estimatedDelivery: '2024-03-17',
-      dimensions: '40x30x20 cm',
-      weight: '3.2 kg',
-      retailer: 'Retail Store C',
-      location: 'Chicago',
-      trackingNumber: 'TRK123458',
-      deliveryAttempts: 1,
-      lastUpdate: '2024-03-15 09:00'
-    },
-    {
-      id: 'P004',
-      status: 'Failed',
-      sender: 'Chris Green',
-      recipient: 'Diana Blue',
-      lockerId: 'L126',
-      createdAt: '2024-03-12',
-      estimatedDelivery: '2024-03-13',
-      dimensions: '35x25x15 cm',
-      weight: '2.0 kg',
-      retailer: 'Retail Store D',
-      location: 'Houston',
-      trackingNumber: 'TRK123459',
-      deliveryAttempts: 3,
-      lastUpdate: '2024-03-14 16:45'
-    },
-    {
-      id: 'P005',
-      status: 'Ready for Pickup',
-      sender: 'Eve Black',
-      recipient: 'Frank Red',
-      lockerId: 'L127',
-      createdAt: '2024-03-11',
-      estimatedDelivery: '2024-03-12',
-      dimensions: '28x18x12 cm',
-      weight: '1.5 kg',
-      retailer: 'Retail Store E',
-      location: 'Phoenix',
-      trackingNumber: 'TRK123460',
-      deliveryAttempts: 1,
-      lastUpdate: '2024-03-12 11:20'
-    },
-    {
-      id: 'P006',
-      status: 'Delivered',
-      sender: 'Grace Silver',
-      recipient: 'Henry Gold',
-      lockerId: 'L128',
-      createdAt: '2024-03-10',
-      estimatedDelivery: '2024-03-11',
-      dimensions: '32x22x14 cm',
-      weight: '2.8 kg',
-      retailer: 'Retail Store F',
-      location: 'Philadelphia',
-      trackingNumber: 'TRK123461',
-      deliveryAttempts: 2,
-      lastUpdate: '2024-03-11 13:10'
-    },
-    {
-      id: 'P007',
-      status: 'Dispatched',
-      sender: 'Ivy Orange',
-      recipient: 'Jack Purple',
-      lockerId: 'L129',
-      createdAt: '2024-03-09',
-      estimatedDelivery: '2024-03-10',
-      dimensions: '38x28x18 cm',
-      weight: '3.0 kg',
-      retailer: 'Retail Store G',
-      location: 'San Antonio',
-      trackingNumber: 'TRK123462',
-      deliveryAttempts: 1,
-      lastUpdate: '2024-03-10 08:30'
-    },
-    {
-      id: 'P008',
-      status: 'In Transit',
-      sender: 'Karen Pink',
-      recipient: 'Leo Brown',
-      lockerId: 'L130',
-      createdAt: '2024-03-08',
-      estimatedDelivery: '2024-03-12',
-      dimensions: '29x19x13 cm',
-      weight: '1.7 kg',
-      retailer: 'Retail Store H',
-      location: 'San Diego',
-      trackingNumber: 'TRK123463',
-      deliveryAttempts: 2,
-      lastUpdate: '2024-03-09 15:00'
-    }
-  ];
+  // Parcels data
+  const [parcels, setParcels] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalCount: 0
+  });
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -188,37 +64,47 @@ const ParcelsList = () => {
     });
   };
 
-  useEffect(() => {
-  const loaderTimer = setTimeout(() => {
-    setIsLoading(false);
-  }, 1500);
-
-  const fetchParcelData = async () => {
+  const fetchParcelsData = async () => {
     try {
-      // Your existing data fetching logic
-      const summaryResponse = await getParcelSummary();
-      if (summaryResponse?.data) {
-        setAnalytics({
-          totalParcels: summaryResponse.data.totalParcels || 0,
-          activeParcels: summaryResponse.data.activeParcels || 0,
-          deliveredParcels: summaryResponse.data.deliveredParcels || 0,
-          averageDeliveryTime: summaryResponse.data.averageDeliveryTime || '0 hours',
-          topPerformingLockers: summaryResponse.data.topPerformingLockers || []
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await getParcels();
+      
+      if (response?.success) {
+        const parcelsData = response.data?.parcels || [];
+        setParcels(parcelsData);
+        
+        // Update pagination
+        setPagination({
+          currentPage: response.data?.currentPage || 1,
+          totalPages: response.data?.totalPages || 1,
+          totalCount: response.data?.totalParcelCount || 0
         });
+        
+        // Update analytics
+        setAnalytics({
+          totalParcels: response.data?.totalParcelCount || 0,
+          activeParcels: 0,
+          deliveredParcels: 0,
+          averageDeliveryTime: '2.5 hours',
+          topPerformingLockers: []
+        });
+      } else {
+        setError('Failed to load parcels. Please try again.');
+        setParcels([]);
       }
-
-      await getParcelReport();
     } catch (err) {
-      setError('Failed to load parcel data. Please try again later.');
+      setError('Failed to load parcels. Please try again.');
+      setParcels([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  fetchParcelData();
-
-  return () => {
-    clearTimeout(loaderTimer);
-  };
-}, []);
+  useEffect(() => {
+    fetchParcelsData();
+  }, []);
 
   const handleApplyFilters = () => {
     const filteredCount = getFilteredParcels().length;
@@ -227,8 +113,7 @@ const ParcelsList = () => {
 
   const getFilteredParcels = () => {
     return parcels.filter(parcel => {
-      if (filters.search && !parcel.id.toLowerCase().includes(filters.search.toLowerCase()) &&
-          !parcel.trackingNumber.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (filters.search && !parcel.parcelId.toLowerCase().includes(filters.search.toLowerCase())) {
         return false;
       }
 
@@ -236,24 +121,19 @@ const ParcelsList = () => {
         return false;
       }
 
-      if (filters.lockerId && parcel.lockerId.toLowerCase() !== filters.lockerId.toLowerCase()) {
+      if (filters.retailer && !parcel.businessName.toLowerCase().includes(filters.retailer.toLowerCase())) {
+        return false;
+      }
+
+      if (filters.location && !parcel.to.toLowerCase().includes(filters.location.toLowerCase())) {
         return false;
       }
 
       if (filters.dateRange) {
-        const createdDate = new Date(parcel.createdAt);
-        const filterDate = new Date(filters.dateRange);
-        if (createdDate < filterDate) {
+        const parcelDate = parcel.createdDate;
+        if (parcelDate !== filters.dateRange) {
           return false;
         }
-      }
-
-      if (filters.retailer && !parcel.retailer.toLowerCase().includes(filters.retailer.toLowerCase())) {
-        return false;
-      }
-
-      if (filters.location && !parcel.location.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
       }
 
       return true;
@@ -285,15 +165,58 @@ const ParcelsList = () => {
     }
   };
 
-  const handleEditParcel = (parcel) => {
-    setEditingParcel(parcel);
+  const handleEditParcel = async (parcel) => {
+    try {
+      setIsLoading(true);
+      const response = await getParcelDetail(parcel.id);
+      if (response?.data) {
+        setEditingParcel(response.data);
+      } else {
+        // Fallback to basic parcel data if API call fails
+        setEditingParcel(parcel);
+      }
+    } catch (err) {
+      console.error('Failed to load parcel details for editing:', err);
+      // Fallback to basic parcel data if API call fails
+      setEditingParcel(parcel);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSaveParcel = (updatedParcel) => {
-    // Here you would typically make an API call to update the parcel
-    console.log('Saving parcel:', updatedParcel);
-    // After successful update, you would update the parcels list
-    setEditingParcel(null);
+  const handleSaveParcel = async (updatedParcel) => {
+    try {
+      setIsLoading(true);
+      
+      // Make API call to update parcel
+      const response = await updateParcel(updatedParcel.id, updatedParcel);
+      
+      if (response?.success) {
+        setEditingParcel(null);
+        
+        // If the updated parcel is currently being viewed, refresh its data
+        if (selectedParcel && selectedParcel.id === updatedParcel.id) {
+          try {
+            const detailResponse = await getParcelDetail(updatedParcel.id);
+            if (detailResponse?.data) {
+              setSelectedParcel(detailResponse.data);
+            }
+          } catch (err) {
+            console.error('Failed to refresh selected parcel data:', err);
+          }
+        }
+        
+        // Refresh the parcels list to show updated data
+        fetchParcelsData();
+      } else {
+        throw new Error('Failed to update parcel');
+      }
+    } catch (err) {
+      console.error('❌ Failed to save parcel:', err);
+      setError('Failed to save parcel. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -305,20 +228,6 @@ const ParcelsList = () => {
           <div className="analytics-info">
             <h3>Total Parcels</h3>
             <p>{isLoading ? "..." : analytics.totalParcels}</p>
-          </div>
-        </div>
-        <div className="analytics-card">
-          <FaCheckCircle />
-          <div className="analytics-info">
-            <h3>Active Parcels</h3>
-            <p>{isLoading ? "..." : analytics.activeParcels}</p>
-          </div>
-        </div>
-        <div className="analytics-card">
-          <FaChartBar />
-          <div className="analytics-info">
-            <h3>Delivered Parcels</h3>
-            <p>{isLoading ? "..." : analytics.deliveredParcels}</p>
           </div>
         </div>
       </div>
@@ -348,57 +257,46 @@ const ParcelsList = () => {
                 name="search"
                 value={filters.search}
                 onChange={handleFilterChange}
-                placeholder="Search by ID or tracking number"
+                placeholder="Search by Parcel ID"
               />
             </div>
             <div className="filter-group">
               <label>Status</label>
               <select name="status" value={filters.status} onChange={handleFilterChange}>
                 <option value="">All Status</option>
+                <option value="pending">Pending</option>
                 <option value="dispatched">Dispatched</option>
-                <option value="in transit">In Transit</option>
                 <option value="delivered">Delivered</option>
                 <option value="failed">Failed</option>
-                <option value="ready for pickup">Ready for Pickup</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>Locker ID</label>
-              <input
-                type="text"
-                name="lockerId"
-                value={filters.lockerId}
-                onChange={handleFilterChange}
-                placeholder="Enter Locker ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Date Range</label>
-              <input
-                type="date"
-                name="dateRange"
-                value={filters.dateRange}
-                onChange={handleFilterChange}
-              />
-            </div>
-            <div className="filter-group">
-              <label>Retailer</label>
+              <label>Business Name</label>
               <input
                 type="text"
                 name="retailer"
                 value={filters.retailer}
                 onChange={handleFilterChange}
-                placeholder="Enter Retailer Name"
+                placeholder="Enter Business Name"
               />
             </div>
             <div className="filter-group">
-              <label>Location</label>
+              <label>Destination</label>
               <input
                 type="text"
                 name="location"
                 value={filters.location}
                 onChange={handleFilterChange}
-                placeholder="Enter Location"
+                placeholder="Enter Destination"
+              />
+            </div>
+            <div className="filter-group">
+              <label>Date</label>
+              <input
+                type="date"
+                name="dateRange"
+                value={filters.dateRange}
+                onChange={handleFilterChange}
               />
             </div>
           </div>
@@ -436,18 +334,13 @@ const ParcelsList = () => {
                 <tr>
                   <th>Parcel ID</th>
                   <th>Status</th>
-                  <th>Sender</th>
-                  <th>Recipient</th>
-                  <th>Locker ID</th>
-                  <th>Location</th>
-                  <th>Tracking Number</th>
+                  <th>Sender Name</th>
+                  <th>Recipient Name</th>
+                  <th>From</th>
+                  <th>To</th>
                   <th>Created Date</th>
-                  <th>Estimated Delivery</th>
-                  <th>Dimensions</th>
                   <th>Weight</th>
-                  <th>Retailer</th>
-                  <th>Delivery Attempts</th>
-                  <th>Last Update</th>
+                  <th>Business Name</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -457,7 +350,7 @@ const ParcelsList = () => {
                     <td className="parcel-cell">
                       <div className="icon-text">
                         <FaBox className="parcel-icon" style={{ color: '#4CAF50' }} />
-                        <span>{parcel.id}</span>
+                        <span>{parcel.parcelId}</span>
                       </div>
                     </td>
                     <td>
@@ -468,18 +361,13 @@ const ParcelsList = () => {
                         {parcel.status}
                       </span>
                     </td>
-                    <td>{parcel.sender}</td>
-                    <td>{parcel.recipient}</td>
-                    <td>{parcel.lockerId}</td>
-                    <td>{parcel.location}</td>
-                    <td>{parcel.trackingNumber}</td>
-                    <td>{parcel.createdAt}</td>
-                    <td>{parcel.estimatedDelivery}</td>
-                    <td>{parcel.dimensions}</td>
+                    <td>{parcel.senderName || 'N/A'}</td>
+                    <td>{parcel.recipientName || 'N/A'}</td>
+                    <td>{parcel.from}</td>
+                    <td>{parcel.to}</td>
+                    <td>{parcel.createdDate}</td>
                     <td>{parcel.weight}</td>
-                    <td>{parcel.retailer}</td>
-                    <td>{parcel.deliveryAttempts}</td>
-                    <td>{parcel.lastUpdate}</td>
+                    <td>{parcel.businessName || 'N/A'}</td>
                     <td>
                       <div className="action-buttons">
                         <button 

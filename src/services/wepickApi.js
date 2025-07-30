@@ -1,4 +1,4 @@
-import { postRequest, getRequest, patchRequest, patchRequestForm } from './api';
+import { postRequest, getRequest, patchRequest, patchRequestForm, postRequestForm } from './api';
 
 // Auth endpoints
 export const SIGNUP = 'auth/signup';
@@ -29,6 +29,24 @@ export const RETAILERS = '/retailers';
 // Dispatched Parcels endpoints
 export const DISPATCHED = '/dispatched';
 
+// Received Parcels endpoints
+export const RECEIVED_PARCELS = '/received-parcels';
+
+// Customers endpoints
+export const CUSTOMERS = '/customers';
+
+// Notifications endpoints
+export const NOTIFICATIONS = '/notifications';
+
+// Lockers endpoints
+export const LOCKERS = '/lockers';
+
+// Parcels endpoints
+export const PARCELS = '/parcels';
+
+// Admin Auth endpoints
+export const ADMIN_CHANGE_PASSWORD = 'auth/change-password';
+export const ADMIN_EDIT_PROFILE = 'auth/edit-profile';
 
 // Auth services
 export const signup = (data) => postRequest(SIGNUP, data);
@@ -41,7 +59,6 @@ export const resetPassword = (data) => postRequest(RESET_PASSWORD, data);
 // User services
 export const updateProfile = (data) => patchRequestForm(UPDATE_PROFILE, data);
 export const updatePassword = (data) => patchRequest(UPDATE_PASSWORD, data);
-export const getUserProfile = () => getRequest(GET_USER_PROFILE);
 
 // Parcel services
 export const trackParcel = (trackingId) => getRequest(`${TRACK_PARCEL}/${trackingId}`);
@@ -64,5 +81,30 @@ export const updateRetailerById = (id, data) => patchRequest(`/retailers/${id}`,
 export const getDispatchedParcels = () => getRequest(DISPATCHED);
 export const getDispatchedParcelById = (id) => getRequest(`${DISPATCHED}/${id}`);
 export const updateDispatchedParcelById = (id, data) => patchRequest(`${DISPATCHED}/${id}`, data);
+
+// Received Parcels services
+export const getReceivedParcels = () => getRequest(RECEIVED_PARCELS);
+export const getReceivedParcelById = (id) => getRequest(`${RECEIVED_PARCELS}/${id}`);
+export const updateReceivedParcelById = (id, data) => patchRequest(`${RECEIVED_PARCELS}/${id}`, data);
+
+// Customers services
+export const getCustomers = () => getRequest(CUSTOMERS);
+export const getCustomerById = (id) => getRequest(`${CUSTOMERS}/${id}`);
+export const updateCustomerById = (id, data) => patchRequest(`/customers/${id}`, data);
+
+// Notifications services
+export const getNotifications = () => getRequest(NOTIFICATIONS);
+export const getNotificationById = (id) => getRequest(`${NOTIFICATIONS}/${id}`);
+
+// Lockers services
+export const getLockers = () => getRequest(LOCKERS);
+
+// Parcels services
+export const getParcels = () => getRequest(PARCELS);
+export const updateParcel = (id, data) => patchRequest(`${PARCELS}/${id}`, data);
+
+// Admin Auth services
+export const adminChangePassword = (data) => postRequest(ADMIN_CHANGE_PASSWORD, data);
+export const adminEditProfile = (data) => patchRequestForm(ADMIN_EDIT_PROFILE, data);
 
 

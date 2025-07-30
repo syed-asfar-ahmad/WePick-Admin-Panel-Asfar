@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FaStore, FaPhone, FaEnvelope, FaMapMarkerAlt, FaIdCard, FaBox, FaTruck, FaStar, FaFileAlt, FaEdit, FaCheckCircle, FaTimesCircle, FaUser, FaCamera } from 'react-icons/fa';
 import './RetailersProfile.scss';
-import { getRetailerById } from '../../../services/wepickApi';
+import { getRetailerById, updateRetailerById } from '../../../services/wepickApi';
 
 const RetailersProfile = () => {
   const { id } = useParams();
@@ -12,8 +12,7 @@ const RetailersProfile = () => {
     owner: '',
     businessEmail: '',
     businessAddress: '',
-    businessRegistrationNumber: '',
-    totalParcels: 0,
+    phone: '',
     profileImage: null
   });
   const [loading, setLoading] = useState(true);
@@ -28,12 +27,11 @@ const RetailersProfile = () => {
         // API response: { success, message, data: { ...retailer } }
         const retailer = response.data || {};
         setFormData({
-          storeName: retailer.storeName || '',
-          owner: retailer.owner || '',
+          storeName: retailer.businessName || '',
+          owner: retailer.name || '',
           businessEmail: retailer.businessEmail || '',
           businessAddress: retailer.businessAddress || '',
-          businessRegistrationNumber: retailer.businessRegistrationNumber || '',
-          totalParcels: retailer.totalParcels || 0,
+          phone: retailer.phoneNumber || '',
           profileImage: null // If you have image URL, set it here
         });
       } catch (err) {
@@ -67,11 +65,35 @@ const RetailersProfile = () => {
     }
   };
 
-  const handleSave = () => {
-    // Here you would typically make an API call to save the changes
-    console.log('Saving changes:', formData);
-    setIsEditing(false);
-    // Show success message or handle errors
+  const handleSave = async () => {
+    try {
+      setIsEditing(false);
+      // Make API call to update retailer data
+      await updateRetailerById(id, {
+        businessName: formData.storeName,
+        name: formData.owner,
+        businessEmail: formData.businessEmail,
+        businessAddress: formData.businessAddress,
+        phoneNumber: formData.phone
+      });
+      
+      // Re-fetch the data to show updated information
+      const response = await getRetailerById(id);
+      const retailer = response.data || {};
+      setFormData({
+        storeName: retailer.businessName || '',
+        owner: retailer.name || '',
+        businessEmail: retailer.businessEmail || '',
+        businessAddress: retailer.businessAddress || '',
+        phone: retailer.phoneNumber || '',
+        profileImage: null
+      });
+      
+      // Show success message or handle errors
+    } catch (err) {
+      console.error('Failed to update retailer:', err);
+      setError('Failed to update retailer. Please try again.');
+    }
   };
 
   const handleCancel = () => {
@@ -192,11 +214,11 @@ const RetailersProfile = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Business Registration Number</label>
+                  <label>Phone</label>
                   <input
-                    type="text"
-                    name="businessRegistrationNumber"
-                    value={formData.businessRegistrationNumber}
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -208,8 +230,7 @@ const RetailersProfile = () => {
                 <div className="contact-info">
                   <p><FaEnvelope /> {formData.businessEmail}</p>
                   <p><FaMapMarkerAlt /> {formData.businessAddress}</p>
-                  <p>Total Parcels: {formData.totalParcels}</p>
-                  <p>Business Registration #: {formData.businessRegistrationNumber}</p>
+                  <p><FaPhone /> {formData.phone}</p>
                 </div>
               </>
             )}

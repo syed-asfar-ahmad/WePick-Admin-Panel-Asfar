@@ -15,8 +15,6 @@ const RetailersList = () => {
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
-    status: '',
-    businessType: '',
     dateRange: '',
     performance: '',
     location: ''
@@ -40,19 +38,19 @@ const RetailersList = () => {
       setIsLoading(true);
       setError(null);
       const response = await getRetailers();
-      // Assume response.data is an array of retailers
-      setRetailers(response.data || []);
+      // The API returns paginated data, so we need to access response.data.data for the retailers array
+      setRetailers(response.data?.data || []);
       // Calculate analytics
-      const total = (response.data || []).length;
-      const active = (response.data || []).filter(r => r.status && r.status.toLowerCase() === 'active').length;
+      const total = (response.data?.data || []).length;
+      const active = (response.data?.data || []).filter(r => r.status && r.status.toLowerCase() === 'active').length;
       const inactive = total - active;
-      const avgSuccess = total > 0 ? Math.round((response.data.reduce((sum, r) => sum + (r.performance?.successRate || 0), 0) / total)) : 0;
+      const avgSuccess = total > 0 ? Math.round((response.data?.data.reduce((sum, r) => sum + (r.performance?.successRate || 0), 0) / total)) : 0;
       // Top performing retailers (by successRate)
-      const topPerforming = [...(response.data || [])]
+      const topPerforming = [...(response.data?.data || [])]
         .sort((a, b) => (b.performance?.successRate || 0) - (a.performance?.successRate || 0))
         .slice(0, 3);
       setAnalytics({
-        totalRetailers: total,
+        totalRetailers: response.data?.totalRetailers || total,
         activeRetailers: active,
         inactiveRetailers: inactive,
         averageSuccessRate: avgSuccess,
@@ -88,8 +86,6 @@ const RetailersList = () => {
   const handleResetFilters = () => {
     setFilters({
       search: '',
-      status: '',
-      businessType: '',
       dateRange: '',
       performance: '',
       location: ''
@@ -106,19 +102,10 @@ const RetailersList = () => {
   const getFilteredRetailers = () => {
     return retailers.filter(retailer => {
       // Search filter
-      if (filters.search && !retailer.name.toLowerCase().includes(filters.search.toLowerCase()) &&
+      if (filters.search && 
+          !retailer.name.toLowerCase().includes(filters.search.toLowerCase()) &&
           !retailer.owner.toLowerCase().includes(filters.search.toLowerCase()) &&
           !retailer.email.toLowerCase().includes(filters.search.toLowerCase())) {
-        return false;
-      }
-
-      // Status filter
-      if (filters.status && retailer.status.toLowerCase() !== filters.status.toLowerCase()) {
-        return false;
-      }
-
-      // Business Type filter
-      if (filters.businessType && retailer.businessType.toLowerCase() !== filters.businessType.toLowerCase()) {
         return false;
       }
 
@@ -252,25 +239,6 @@ const RetailersList = () => {
               />
             </div>
             <div className="filter-group">
-              <label>Status</label>
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Business Type</label>
-              <select name="businessType" value={filters.businessType} onChange={handleFilterChange}>
-                <option value="">All Types</option>
-                <option value="electronics">Electronics</option>
-                <option value="fashion">Fashion</option>
-                <option value="home">Home Goods</option>
-                <option value="food">Food & Beverage</option>
-                <option value="sports">Sports</option>
-              </select>
-            </div>
-            <div className="filter-group">
               <label>Date Range</label>
               <input
                 type="date"
@@ -317,8 +285,8 @@ const RetailersList = () => {
                   <label>Store Name</label>
                   <input
                     type="text"
-                    name="name"
-                    value={selectedRetailer.name}
+                    name="businessName"
+                    value={selectedRetailer.businessName || ''}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -326,17 +294,17 @@ const RetailersList = () => {
                   <label>Owner</label>
                   <input
                     type="text"
-                    name="owner"
-                    value={selectedRetailer.owner}
+                    name="name"
+                    value={selectedRetailer.name || ''}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Email</label>
+                  <label>Business Email</label>
                   <input
                     type="email"
-                    name="email"
-                    value={selectedRetailer.email}
+                    name="businessEmail"
+                    value={selectedRetailer.businessEmail || ''}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -344,44 +312,28 @@ const RetailersList = () => {
                   <label>Phone</label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={selectedRetailer.phone}
+                    name="phoneNumber"
+                    value={selectedRetailer.phoneNumber || ''}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Address</label>
+                  <label>Business Address</label>
                   <input
                     type="text"
-                    name="address"
-                    value={selectedRetailer.address}
+                    name="businessAddress"
+                    value={selectedRetailer.businessAddress || ''}
                     onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Business Type</label>
-                  <select
-                    name="businessType"
-                    value={selectedRetailer.businessType}
+                  <label>Business Registration Number</label>
+                  <input
+                    type="text"
+                    name="businessRegistrationNumber"
+                    value={selectedRetailer.businessRegistrationNumber || ''}
                     onChange={handleInputChange}
-                  >
-                    <option value="Electronics">Electronics</option>
-                    <option value="Fashion">Fashion</option>
-                    <option value="Home Goods">Home Goods</option>
-                    <option value="Food & Beverage">Food & Beverage</option>
-                    <option value="Sports">Sports</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Status</label>
-                  <select
-                    name="status"
-                    value={selectedRetailer.status}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                  </select>
+                  />
                 </div>
               </div>
               <div className="modal-actions">
@@ -411,8 +363,9 @@ const RetailersList = () => {
                 <tr>
                   <th>Store Name</th>
                   <th>Owner</th>
-                  <th>Business Type</th>
-                  <th>Status</th>
+                  <th>Business Email</th>
+                  <th>Business Address</th>
+                  <th>Business Registration Number</th>
                   <th>Total Parcels</th>
                   <th>Actions</th>
                 </tr>
@@ -422,22 +375,16 @@ const RetailersList = () => {
                   <tr key={retailer.id}>
                     <td className="store-cell">
                       <FaStore className="store-icon" />
-                      {retailer.name}
+                      {retailer.name || retailer.storeName || retailer.businessName || 'N/A'}
                     </td>
                     <td>{retailer.owner}</td>
-                    <td>{retailer.businessType}</td>
-                    <td>
-                      <span 
-                        className="status-badge"
-                        style={{ backgroundColor: getStatusColor(retailer.status) }}
-                      >
-                        {retailer.status}
-                      </span>
-                    </td>
+                    <td>{retailer.businessEmail}</td>
+                    <td>{retailer.businessAddress}</td>
+                    <td>{retailer.businessRegistrationNumber}</td>
                     <td>
                       <div className="metric">
                         <FaChartBar />
-                        <span>{retailer.performance.totalParcels}</span>
+                        <span>{retailer.performance?.totalParcels || 0}</span>
                       </div>
                     </td>
                     <td>

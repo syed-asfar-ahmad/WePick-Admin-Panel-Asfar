@@ -60,7 +60,8 @@ export function postRequest(url, body) {
 
 export function postRequestForm(url, body) {
   return new Promise((resolve, reject) => {
-    api.post(url, body, { headers: { "Content-Type": "multipart/form-data" } })
+    // Don't set Content-Type for FormData - let browser set it with boundary
+    api.post(url, body, { headers: {} })
       .then((response) => resolve(response))
       .catch((error) => reject(error));
   });
@@ -68,7 +69,8 @@ export function postRequestForm(url, body) {
 
 export function patchRequestForm(url, body) {
   return new Promise((resolve, reject) => {
-    api.patch(url, body, { headers: { "Content-Type": "multipart/form-data" } })
+    // Don't set Content-Type for FormData - let browser set it with boundary
+    api.patch(url, body, { headers: {} })
       .then((response) => resolve(response))
       .catch((error) => reject(error));
   });
@@ -85,6 +87,14 @@ export function getRequest(url, params) {
 export function patchRequest(url, body) {
   return new Promise((resolve, reject) => {
     api.patch(url, body)
+      .then((response) => resolve(response))
+      .catch((error) => reject(error));
+  });
+}
+
+export function putRequest(url, body) {
+  return new Promise((resolve, reject) => {
+    api.put(url, body)
       .then((response) => resolve(response))
       .catch((error) => reject(error));
   });

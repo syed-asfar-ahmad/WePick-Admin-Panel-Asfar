@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaStore, FaChartBar, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './CustomersList.scss';
 import Loading from '../../../components/common/Loading';
+import { getCustomers, getCustomerById, updateCustomerById } from '../../../services/wepickApi';
 
 const CustomersList = () => {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
   const [filterAnimation, setFilterAnimation] = useState('closed');
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedRetailer, setSelectedRetailer] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState({
     search: '',
@@ -19,121 +20,63 @@ const CustomersList = () => {
     performance: '',
     location: ''
   });
+  const [customers, setCustomers] = useState([]);
+  const [totalCustomers, setTotalCustomers] = useState(0);
 
-  // Analytics data
-  const analytics = {
-    totalRetailers: 156,
-    activeRetailers: 142,
-    inactiveRetailers: 14,
-    averageSuccessRate: 92,
-    topPerformingRetailers: [
-      { name: 'Tech Gadgets Store', successRate: 98, parcels: 450 },
-      { name: 'Fashion Boutique', successRate: 95, parcels: 380 },
-      { name: 'Home Essentials', successRate: 94, parcels: 320 }
-    ]
+  // Fetch customers from API
+  const fetchCustomers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getCustomers();
+      
+      let customersData = [];
+      
+      // Handle different response structures
+      if (response?.data?.data?.list) {
+        customersData = response.data.data.list;
+      } else if (response?.data?.list) {
+        customersData = response.data.list;
+      } else if (response?.data?.data && Array.isArray(response.data.data)) {
+        customersData = response.data.data;
+      } else if (response?.data && Array.isArray(response.data)) {
+        customersData = response.data;
+      } else if (response?.data?.customers) {
+        customersData = response.data.customers;
+      } else {
+        customersData = [];
+      }
+      
+      // Fetch phone numbers for each customer
+      const customersWithPhoneNumbers = await Promise.all(
+        customersData.map(async (customer) => {
+          try {
+            const customerDetail = await getCustomerById(customer.id);
+            return {
+              ...customer,
+              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A'
+            };
+          } catch (err) {
+            console.error(`❌ Error fetching phone for customer ${customer.id}:`, err);
+            return {
+              ...customer,
+              phoneNumber: 'N/A'
+            };
+          }
+        })
+      );
+      
+      setCustomers(customersWithPhoneNumbers);
+      setTotalCustomers(customersWithPhoneNumbers.length);
+    } catch (err) {
+      console.error('❌ Error fetching customers:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Mock data for retailers
-  const retailers = [
-    {
-      id: 1,
-      name: 'Tech Gadgets Store',
-      owner: 'John Smith',
-      email: 'john@techgadgets.com',
-      phone: '+1 234-567-8901',
-      address: '123 Tech Street, San Francisco, CA',
-      businessType: 'Electronics',
-      status: 'Active',
-      registrationDate: '2023-01-15',
-      performance: {
-        successRate: 98,
-        avgDeliveryTime: '2.3 hours',
-        totalParcels: 450,
-        customerRating: 4.8,
-        revenue: '$45,000'
-      }
-    },
-    {
-      id: 2,
-      name: 'Fashion Boutique',
-      owner: 'Sarah Johnson',
-      email: 'sarah@fashionboutique.com',
-      phone: '+1 234-567-8902',
-      address: '456 Style Avenue, San Francisco, CA',
-      businessType: 'Fashion',
-      status: 'Active',
-      registrationDate: '2023-02-20',
-      performance: {
-        successRate: 95,
-        avgDeliveryTime: '2.5 hours',
-        totalParcels: 380,
-        customerRating: 4.7,
-        revenue: '$38,000'
-      }
-    },
-    {
-      id: 3,
-      name: 'Home Essentials',
-      owner: 'Mike Brown',
-      email: 'mike@homeessentials.com',
-      phone: '+1 234-567-8903',
-      address: '789 Home Road, San Francisco, CA',
-      businessType: 'Home Goods',
-      status: 'Active',
-      registrationDate: '2023-03-10',
-      performance: {
-        successRate: 94,
-        avgDeliveryTime: '2.7 hours',
-        totalParcels: 320,
-        customerRating: 4.6,
-        revenue: '$32,000'
-      }
-    },
-    {
-      id: 4,
-      name: 'Gourmet Delights',
-      owner: 'Emma Wilson',
-      email: 'emma@gourmetdelights.com',
-      phone: '+1 234-567-8904',
-      address: '321 Food Street, San Francisco, CA',
-      businessType: 'Food & Beverage',
-      status: 'Active',
-      registrationDate: '2023-04-05',
-      performance: {
-        successRate: 93,
-        avgDeliveryTime: '2.4 hours',
-        totalParcels: 280,
-        customerRating: 4.9,
-        revenue: '$28,000'
-      }
-    },
-    {
-      id: 5,
-      name: 'Sports & Fitness',
-      owner: 'David Chen',
-      email: 'david@sportsfitness.com',
-      phone: '+1 234-567-8905',
-      address: '654 Sport Lane, San Francisco, CA',
-      businessType: 'Sports',
-      status: 'Active',
-      registrationDate: '2023-05-15',
-      performance: {
-        successRate: 91,
-        avgDeliveryTime: '2.6 hours',
-        totalParcels: 250,
-        customerRating: 4.5,
-        revenue: '$25,000'
-      }
-    }
-  ];
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    fetchCustomers();
   }, []);
-  
 
   const toggleFilters = () => {
     if (showFilters) {
@@ -171,89 +114,86 @@ const CustomersList = () => {
   };
 
   const handleApplyFilters = () => {
-    const filteredCount = getFilteredRetailers().length;
-    alert(`Found ${filteredCount} retailers matching your criteria`);
+    const filteredCount = getFilteredCustomers().length;
+    alert(`Found ${filteredCount} customers matching your criteria`);
   };
 
-  const getFilteredRetailers = () => {
-    return retailers.filter(retailer => {
+  const getFilteredCustomers = () => {
+    // Ensure customers is always an array
+    if (!Array.isArray(customers)) {
+      console.log('⚠️ Customers is not an array:', customers);
+      return [];
+    }
+
+    return customers.filter(customer => {
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        const retailerName = retailer.owner.toLowerCase();
-        const retailerEmail = retailer.email.toLowerCase();
-        const retailerPhone = retailer.phone.toLowerCase();
-
+        const customerName = customer.name.toLowerCase();
+        const customerEmail = customer.email.toLowerCase();
         if (
-          !retailerName.includes(searchTerm) &&
-          !retailerEmail.includes(searchTerm) &&
-          !retailerPhone.includes(searchTerm)
+          !customerName.includes(searchTerm) &&
+          !customerEmail.includes(searchTerm)
         ) {
           return false;
         }
       }
-
-      if (filters.status && retailer.status.toLowerCase() !== filters.status.toLowerCase()) {
-        return false;
-      }
-
-      if (filters.businessType && retailer.businessType.toLowerCase() !== filters.businessType.toLowerCase()) {
-        return false;
-      }
-
-      if (filters.dateRange) {
-        const registrationDate = new Date(retailer.registrationDate);
-        const filterDate = new Date(filters.dateRange);
-        if (registrationDate < filterDate) {
-          return false;
-        }
-      }
-
-      if (filters.performance) {
-        const successRate = retailer.performance.successRate;
-        switch (filters.performance) {
-          case 'high':
-            if (successRate <= 90) return false;
-            break;
-          case 'medium':
-            if (successRate < 80 || successRate > 90) return false;
-            break;
-          case 'low':
-            if (successRate >= 80) return false;
-            break;
-        }
-      }
-
-      if (filters.location && !retailer.address.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
-
       return true;
     });
   };
 
-  const getStatusColor = (status) => {
-    return status === 'Active' ? '#4CAF50' : '#F44336';
+  const handleViewCustomer = (customerId) => {
+    navigate(`/customers/${customerId}`);
   };
 
-  const handleViewRetailer = (retailerId) => {
-    navigate(`/customers/${retailerId}`);
+  const handleEditCustomer = async (customer) => {
+    try {
+      setIsLoading(true);
+      
+      const response = await getCustomerById(customer.id);
+      
+      setSelectedCustomer(response.data || customer);
+      setShowEditModal(true);
+    } catch (err) {
+      console.error('❌ Error loading customer for edit:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleEditRetailer = (retailer) => {
-    setSelectedRetailer(retailer);
-    setShowEditModal(true);
-  };
-
-  const handleSaveEdit = (e) => {
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
-    console.log('Saving changes for retailer:', selectedRetailer);
-    setShowEditModal(false);
-    setSelectedRetailer(null);
+    try {
+      setIsLoading(true);
+      
+      // Only send the fields that should be updated
+      const updateData = {
+        name: selectedCustomer.name,
+        email: selectedCustomer.email,
+        phoneNumber: selectedCustomer.phoneNumber
+      };
+      
+
+      
+      const response = await updateCustomerById(selectedCustomer.id, updateData);
+
+      
+      if (response?.success) {
+        setShowEditModal(false);
+        setSelectedCustomer(null);
+        fetchCustomers();
+      } else {
+        console.error('❌ Update failed:', response?.message);
+      }
+    } catch (err) {
+      console.error('❌ Error saving customer:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSelectedRetailer(prev => ({
+    setSelectedCustomer(prev => ({
       ...prev,
       [name]: value
     }));
@@ -261,113 +201,56 @@ const CustomersList = () => {
 
   return (
     <div className="retailers-list-container">
-          {/* Analytics Dashboard */}
-          <div className="analytics-dashboard">
-            <div className="analytics-card">
-              <FaStore />
-              <div className="analytics-info">
-                <h3>Total Customers</h3>
-                <p>{isLoading ? "..." : analytics.totalRetailers}</p>
-              </div>
-            </div>
-            <div className="analytics-card">
-              <FaCheckCircle />
-              <div className="analytics-info">
-                <h3>Active Customers</h3>
-                <p>{isLoading ? "..." : analytics.activeRetailers}</p>
-
-              </div>
-            </div>
+      {/* Analytics Dashboard */}
+      <div className="analytics-dashboard">
+        <div className="analytics-card">
+          <FaStore />
+          <div className="analytics-info">
+            <h3>Total Customers</h3>
+            <p>{isLoading ? "..." : totalCustomers}</p>
           </div>
-
-          <div className="page-header">
-            <h1>Lists</h1>
-            <div className="header-actions">
-              <button className="filter-button" onClick={toggleFilters}>
-                <FaFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
-              </button>
+        </div>
+      </div>
+      <div className="page-header">
+        <h1>Lists</h1>
+        <div className="header-actions">
+          <button className="filter-button" onClick={toggleFilters}>
+            <FaFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+          </button>
+        </div>
+      </div>
+      {/* Enhanced Filters Section */}
+      {showFilters && (
+        <div className={`filters-section ${filterAnimation}`}>
+          <div className="filters-grid">
+            <div className="filter-group">
+              <label>Search</label>
+              <input
+                type="text"
+                name="search"
+                value={filters.search}
+                onChange={handleFilterChange}
+                placeholder="Search Customers..."
+              />
             </div>
+            {/* ...other filters remain unchanged... */}
           </div>
-
-          {/* Enhanced Filters Section */}
-          {showFilters && (
-            <div className={`filters-section ${filterAnimation}`}>
-              <div className="filters-grid">
-                <div className="filter-group">
-                  <label>Search</label>
-                  <input
-                    type="text"
-                    name="search"
-                    value={filters.search}
-                    onChange={handleFilterChange}
-                    placeholder="Search Customers..."
-                  />
-                </div>
-                <div className="filter-group">
-                  <label>Status</label>
-                  <select name="status" value={filters.status} onChange={handleFilterChange}>
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-                <div className="filter-group">
-                  <label>Order Type</label>
-                  <select name="businessType" value={filters.businessType} onChange={handleFilterChange}>
-                    <option value="">All Types</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="fashion">Fashion</option>
-                    <option value="home">Home Goods</option>
-                    <option value="food">Food & Beverage</option>
-                    <option value="sports">Sports</option>
-                  </select>
-                </div>
-                <div className="filter-group">
-                  <label>Date Range</label>
-                  <input
-                    type="date"
-                    name="dateRange"
-                    value={filters.dateRange}
-                    onChange={handleFilterChange}
-                  />
-                </div>
-                <div className="filter-group">
-                  <label>Performance</label>
-                  <select name="performance" value={filters.performance} onChange={handleFilterChange}>
-                    <option value="">All Performance</option>
-                    <option value="high">High (&gt;90%)</option>
-                    <option value="medium">Medium (80-90%)</option>
-                    <option value="low">Low (&lt;80%)</option>
-                  </select>
-                </div>
-                <div className="filter-group">
-                  <label>Location</label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={filters.location}
-                    onChange={handleFilterChange}
-                    placeholder="Enter location..."
-                  />
-                </div>
-              </div>
-              <div className="filter-actions">
-                <button className="reset-button" onClick={handleResetFilters}>
-                  Reset Filters
-                </button>
-                <button className="apply-button" onClick={handleApplyFilters}>
-                  Apply Filters
-                </button>
-              </div>
-            </div>
-          )}
-
-          {isLoading ? (
+          <div className="filter-actions">
+            <button className="reset-button" onClick={handleResetFilters}>
+              Reset Filters
+            </button>
+            <button className="apply-button" onClick={handleApplyFilters}>
+              Apply Filters
+            </button>
+          </div>
+        </div>
+      )}
+      {isLoading ? (
         <Loading />
       ) : (
         <>
           {/* Edit Modal */}
-          {showEditModal && selectedRetailer && (
+          {showEditModal && selectedCustomer && (
             <div className="modal-overlay">
               <div className="edit-modal">
                 <div className="modal-header">
@@ -382,8 +265,8 @@ const CustomersList = () => {
                       <label>Name</label>
                       <input
                         type="text"
-                        name="owner"
-                        value={selectedRetailer.owner}
+                        name="name"
+                        value={selectedCustomer.name}
                         onChange={handleInputChange}
                       />
                     </div>
@@ -392,52 +275,19 @@ const CustomersList = () => {
                       <input
                         type="email"
                         name="email"
-                        value={selectedRetailer.email}
+                        value={selectedCustomer.email}
                         onChange={handleInputChange}
                       />
                     </div>
                     <div className="form-group">
-                      <label>Phone</label>
+                      <label>Phone Number</label>
                       <input
                         type="tel"
-                        name="phone"
-                        value={selectedRetailer.phone}
+                        name="phoneNumber"
+                        value={selectedCustomer.phoneNumber || ''}
                         onChange={handleInputChange}
+                        placeholder="Enter phone number"
                       />
-                    </div>
-                    <div className="form-group">
-                      <label>Address</label>
-                      <input
-                        type="text"
-                        name="address"
-                        value={selectedRetailer.address}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Order Type</label>
-                      <select
-                        name="businessType"
-                        value={selectedRetailer.businessType}
-                        onChange={handleInputChange}
-                      >
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Home Goods">Home Goods</option>
-                        <option value="Food & Beverage">Food & Beverage</option>
-                        <option value="Sports">Sports</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label>Status</label>
-                      <select
-                        name="status"
-                        value={selectedRetailer.status}
-                        onChange={handleInputChange}
-                      >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                      </select>
                     </div>
                   </div>
                   <div className="modal-actions">
@@ -460,35 +310,23 @@ const CustomersList = () => {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Order Type</th>
-                    <th>Status</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
                     <th>Total Parcels</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {getFilteredRetailers().map((retailer) => (
-                    <tr key={retailer.id}>
-                      <td>{retailer.owner}</td>
-                      <td>{retailer.businessType}</td>
-                      <td>
-                        <span 
-                          className="status-badge"
-                          style={{ backgroundColor: getStatusColor(retailer.status) }}
-                        >
-                          {retailer.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="metric">
-                          <FaChartBar />
-                          <span>{retailer.performance.totalParcels}</span>
-                        </div>
-                      </td>
+                  {(getFilteredCustomers() || []).map((customer) => (
+                    <tr key={customer.id}>
+                      <td>{customer.name}</td>
+                      <td>{customer.email}</td>
+                      <td>{customer.phoneNumber || 'N/A'}</td>
+                      <td>{customer.totalParcels}</td>
                       <td>
                         <div className="action-buttons">
-                          <button className="view-button" onClick={() => handleViewRetailer(retailer.id)}>View</button>
-                          <button className="edit-button" onClick={() => handleEditRetailer(retailer)}>Edit</button>
+                          <button className="view-button" onClick={() => handleViewCustomer(customer.id)}>View</button>
+                          <button className="edit-button" onClick={() => handleEditCustomer(customer)}>Edit</button>
                         </div>
                       </td>
                     </tr>

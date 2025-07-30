@@ -217,18 +217,15 @@ const FullScreenMenu = () => {
   };
 
   const handleNestedSubMenuToggle = (id) => {
-    console.log('Toggling nested submenu:', id, 'Current state:', activeNestedSubMenu);
     setActiveNestedSubMenu(activeNestedSubMenu === id ? null : id);
   };
 
   const handleMenuClick = (id) => {
-    console.log('Menu clicked:', id);
     setSelectedMenu(id);
     setSelectedSubMenu(null);
   };
 
   const handleSubMenuClick = (menuId, subMenuId, isNested = false) => {
-    console.log('SubMenu clicked:', menuId, subMenuId, isNested);
     setSelectedMenu(menuId);
     if (isNested) {
       setSelectedNestedSubMenu(subMenuId);
@@ -307,19 +304,19 @@ const FullScreenMenu = () => {
         }
       ]
     },
-    {
-      id: 5,
-      name: "Lockers",
-      link: "/lockers",
-      icon: LockerSvg,
-      submenu: [
-        {
-          id: 1,
-          name: "Lockers List",
-          link: "/listoflockers",
-        },
-      ]
-    },
+    // {
+    //   id: 5,
+    //   name: "Lockers",
+    //   link: "/lockers",
+    //   icon: LockerSvg,
+    //   submenu: [
+    //     {
+    //       id: 1,
+    //       name: "Lockers List",
+    //       link: "/listoflockers",
+    //     },
+    //   ]
+    // },
     {
       id: 6,
       name: " Notifications",
