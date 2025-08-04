@@ -21,7 +21,6 @@ const usePost = () => {
 
     try {
       const response = await axios.post(`${BaseURL}/${url}`, postData, config);
-      console.log(response, "API response?.data?.success");
       if (response?.status === 200) {
         cb(response?.data);
       } 

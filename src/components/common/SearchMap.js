@@ -8,7 +8,7 @@ const MapContainer = ({ addHospitalData, setAddHospitalData, ...props }) => {
         lat: 31.48544799999999,
         lng: 74.3046761,
     });
-    console.log("locationProp", props)
+
     let searchBox;
     let markers = [];
 
@@ -40,7 +40,6 @@ const MapContainer = ({ addHospitalData, setAddHospitalData, ...props }) => {
 
         newPlaces?.forEach((place) => {
             if (!place.geometry || !place.geometry.location) {
-                console.log('Returned place contains no geometry');
                 return;
             }
 
@@ -71,7 +70,6 @@ const MapContainer = ({ addHospitalData, setAddHospitalData, ...props }) => {
         // Update the mapInput state with the first place's coordinates
         if (newPlaces?.length > 0) {
             const firstPlace = newPlaces[0];
-            console.log("firstPlace", firstPlace?.formatted_address)
             //   setMapInput({
             //     lat: firstPlace.geometry.location.lat(),
             //     lng: firstPlace.geometry.location.lng(),
@@ -89,19 +87,15 @@ const MapContainer = ({ addHospitalData, setAddHospitalData, ...props }) => {
     };
 
     const onMarkerDragEnd = (index, event, map) => {
-        console.log("map===>", map)
         const lat = event.latLng.lat();
         const lng = event.latLng.lng();
         const locationName = places[index]?.formatted_address;
-        console.log("placesEvent", event?.formatted_address)
-        console.log(`Marker ${index + 1} dragged to: Lat: ${lat}, Lng: ${lng}, Location Name: ${locationName}`);
         setAddHospitalData((pre) => ({
             ...pre,
             lat: lat,
             long: lng,
             location: lat + ', ' + lng,
         }))
-        console.log("addHospitalDatasdsd", addHospitalData)
         getAddressFromLatLng();
     }
 
@@ -110,16 +104,11 @@ const MapContainer = ({ addHospitalData, setAddHospitalData, ...props }) => {
         geocoder.geocode({ location: { lat: addHospitalData?.lat, lng: addHospitalData?.long } }, (results, status) => {
             if (status === 'OK') {
                 if (results[0]) {
-                    console.log("elloAddress",results[0]?.formatted_address);
                     setAddHospitalData((pre) => ({
                         ...pre,
                         address: results[0]?.formatted_address,
                     }))
-                } else {
-                    console.error('No results found');
                 }
-            } else {
-                console.error(`Geocoder failed with status: ${status}`);
             }
         });
     };

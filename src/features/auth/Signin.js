@@ -36,7 +36,6 @@ if(resultAction?.payload && resultAction?.payload?.user?.userType==="admin"){
       setError(resultAction.payload || "Invalid credentials.");
     }
   } catch (error) {
-    console.error("Login error:", error);
     setError("Something went wrong. Please try again.");
   }
   setLoading(false);

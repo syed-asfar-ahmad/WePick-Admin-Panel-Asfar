@@ -154,7 +154,6 @@ const PieChart = () => {
     <div className="col-12 px-3 pb-4">
       <div className="row">
         {Object.keys(genderTotals)?.map((item, index) => {
-          console.log("item", item)
           return (
             <div className=" flex-nowrap d-flex align-items-center">
               <span className="dot " style={{

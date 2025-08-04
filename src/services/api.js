@@ -15,7 +15,6 @@ const api = axios.create({
   baseURL: BASE_URL,
 });
 
-// ✅ FIXED: Removed repeated console logs and corrected logic
 api.interceptors.request.use((config) => {
   const token = getApiHeaders();
 
@@ -26,7 +25,6 @@ api.interceptors.request.use((config) => {
     }
   }
 
-  // ✅ Always set content-type only if not already set
   if (!config.headers[headerKeys.ContentType]) {
     config.headers[headerKeys.ContentType] = "application/json";
   }
@@ -39,7 +37,6 @@ api.interceptors.response.use(
     return response.data;
   },
   function (error) {
-    console.error("API Error:", error?.response?.data || error.message);
     return Promise.reject(error);
   }
 );
@@ -49,7 +46,6 @@ function getApiHeaders() {
   return state?.auth?.token || localStorage.getItem("authToken") || null;
 }
 
-// ✅ No changes in request methods, kept as is
 export function postRequest(url, body) {
   return new Promise((resolve, reject) => {
     api.post(url, body)
@@ -70,7 +66,7 @@ export function postRequestForm(url, body) {
 export function patchRequestForm(url, body) {
   return new Promise((resolve, reject) => {
     // Don't set Content-Type for FormData - let browser set it with boundary
-    api.patch(url, body, { headers: {} })
+    api.patch(url, body, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then((response) => resolve(response))
       .catch((error) => reject(error));
   });

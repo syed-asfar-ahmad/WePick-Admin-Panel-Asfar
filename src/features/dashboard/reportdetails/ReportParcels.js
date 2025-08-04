@@ -20,18 +20,48 @@ const ReportParcels = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadershown, setLoaderShown] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalReports, setTotalReports] = useState(0);
+  const [pageSize] = useState(20);
+
+  // Fetch dashboard data from API
+  const fetchDashboardData = async (page = 1) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getAdminDashboard(page);
+      
+      if (response?.success) {
+        const reportsData = response.data?.reportDetails || [];
+        setReports(reportsData);
+        
+        // Update pagination from API response
+        setCurrentPage(response.data?.currentPage || page);
+        setTotalPages(response.data?.totalPages || 1);
+        setTotalReports(response.data?.parcelCount || 0); // Use parcelCount from API for total count
+      } else {
+        setError('Failed to fetch data');
+        setReports([]);
+      }
+    } catch (err) {
+      setError('Failed to fetch data');
+      setReports([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchDashboardData(page);
+  };
 
   useEffect(() => {
-    setIsLoading(true);
-    getAdminDashboard()
-      .then(response => {
-        setReports(response?.data?.reportDetails || []);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to fetch data');
-        setIsLoading(false);
-      });
+    fetchDashboardData();
   }, []);
 
   useEffect(() => {
@@ -106,22 +136,83 @@ const ReportParcels = () => {
             </p>
           </div>
           <div className="col-12 mt-3">
-            <Table
-              columns={columns}
-              dataSource={reports}
-              pagination={{
-                position: ['bottomRight'],
-                pageSize: 10,
-                showSizeChanger: false,
-                style: {
-                  marginRight: '16px',
-                  marginBottom: '16px'
-                }
-              }}
-              bordered
-              style={{ background: "#fff", borderRadius: 16 }}
-              className="custom-pagination"
-            />
+            <div className="table-container">
+              <Table
+                columns={columns}
+                dataSource={reports}
+                pagination={false}
+                bordered
+                style={{ background: "#fff", borderRadius: 16 }}
+                className="custom-pagination"
+              />
+            </div>
+            
+            {/* Custom Server-side Pagination */}
+            {reports.length > 0 && totalPages > 1 && (
+              <div className="pagination-container">
+                <div className="pagination-info">
+                  Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalReports)} of {totalReports} parcels
+                </div>
+                <div className="pagination-controls">
+                  <button 
+                    className="pagination-btn prev-btn"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <span>←</span> Previous
+                  </button>
+                  <div className="page-numbers">
+                    {currentPage > 2 && (
+                      <button 
+                        className="pagination-btn page-btn"
+                        onClick={() => handlePageChange(1)}
+                      >
+                        1
+                      </button>
+                    )}
+                    {currentPage > 3 && <span className="page-dots">...</span>}
+                    {currentPage > 1 && (
+                      <button 
+                        className="pagination-btn page-btn"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        {currentPage - 1}
+                      </button>
+                    )}
+                    <button 
+                      className="pagination-btn page-btn active"
+                      disabled
+                    >
+                      {currentPage}
+                    </button>
+                    {currentPage < totalPages && (
+                      <button 
+                        className="pagination-btn page-btn"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                      >
+                        {currentPage + 1}
+                      </button>
+                    )}
+                    {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
+                    {currentPage < totalPages - 1 && (
+                      <button 
+                        className="pagination-btn page-btn"
+                        onClick={() => handlePageChange(totalPages)}
+                      >
+                        {totalPages}
+                      </button>
+                    )}
+                  </div>
+                  <button 
+                    className="pagination-btn next-btn"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next <span>→</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}

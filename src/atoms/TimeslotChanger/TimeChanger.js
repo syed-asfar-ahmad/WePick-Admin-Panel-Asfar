@@ -135,7 +135,6 @@ function TimeInput({ moveNext, empetyTime, currentDate, singleSelector, Time, da
           value={Time ?? time}
           onChange={(e) => {
             setTimeOnChange(e)
-            console.log("firsteeee1", e)
           }}
           min="00:00"
           max="23:59"
@@ -153,7 +152,6 @@ function TimeInput({ moveNext, empetyTime, currentDate, singleSelector, Time, da
             const formattedTime = momentValue.format('HH:mm');
 
             setTimeOnChange({ target: { value: formattedTime } });
-            console.log("firsteeee1", formattedTime);
           }}
         />
 

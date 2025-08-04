@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PostSvg, UserSvg, EventSvg, ParcelSvg } from "../../assets/icons";
-// Components
 import ParcelsChart from './dispatchedparcelschart/ParcelsChart';
 import ReportParcels from './reportdetails/ReportParcels';
-// Styles
 import "./dashboard.scss";
 import "../../assets/css/dashboard.scss";
 import { getAdminDashboard } from '../../services/wepickApi';
@@ -28,7 +26,7 @@ const DashboardCom = () => {
         parcelCount: data.parcelCount || 0,
       });
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      // Handle error silently
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +80,7 @@ const DashboardCom = () => {
                       <div className="d-flex justify-content-between text-center align-items-center ">
                         <div className="dashboard_icon">{icon}</div>
                         <div className="m-0 p-0 dashboard-left-icon-top-text1 text-right">
-                          <div>{total}</div>
+                          <div>{isLoading ? "..." : total}</div>
                           <p className="card-text">{text}</p>
                         </div>
                       </div>

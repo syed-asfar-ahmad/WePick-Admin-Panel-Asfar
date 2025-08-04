@@ -146,7 +146,7 @@ const ReceivedDetails = () => {
               <FaWeightHanging className="icon" />
               <div className="info-content">
                 <label>Weight</label>
-                <span>{parcel.weight ? `${parcel.weight} kg` : 'N/A'}</span>
+                <span>{parcel.weight ? `${parcel.weight} kg` : '-'}</span>
               </div>
             </div>
             <div className="info-item">

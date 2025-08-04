@@ -8,7 +8,6 @@ const  useDeleteData = () => {
     const [error, setError] = useState(null);
     // const token = "127|juaOCZEl1fB0270M5PnwASGgkiPZ18ysci19JXGj"
     const token = localStorage.getItem("token");
-    console.log("tokenlll", token)
     const deleteData = async (url, cb) => {
         const config = {
             headers: {

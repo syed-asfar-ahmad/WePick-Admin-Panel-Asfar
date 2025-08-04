@@ -21,10 +21,7 @@ const SelectState = ({ value, handleChange, country, name, disabled = false, req
     return res;
   };
 
-  console.log("States===>", States, country)
-
   const option = useMemo(() => Cont(), [stat]);
-console.log("optionstate", option)
   return (
     <>
       <div class="">

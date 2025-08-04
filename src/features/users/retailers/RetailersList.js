@@ -8,17 +8,11 @@ import { getRetailerById, updateRetailerById } from '../../../services/wepickApi
 
 const RetailersList = () => {
   const navigate = useNavigate();
-  const [showFilters, setShowFilters] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRetailer, setSelectedRetailer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    search: '',
-    dateRange: '',
-    performance: '',
-    location: ''
-  });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Analytics data (from API)
   const [analytics, setAnalytics] = useState({
@@ -31,6 +25,12 @@ const RetailersList = () => {
 
   // Retailers data from API
   const [retailers, setRetailers] = useState([]);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRetailers, setTotalRetailers] = useState(0);
+  const [pageSize] = useState(20);
 
   // Fetch retailers from API
   const fetchRetailers = async () => {
@@ -38,24 +38,39 @@ const RetailersList = () => {
       setIsLoading(true);
       setError(null);
       const response = await getRetailers();
-      // The API returns paginated data, so we need to access response.data.data for the retailers array
-      setRetailers(response.data?.data || []);
-      // Calculate analytics
-      const total = (response.data?.data || []).length;
-      const active = (response.data?.data || []).filter(r => r.status && r.status.toLowerCase() === 'active').length;
-      const inactive = total - active;
-      const avgSuccess = total > 0 ? Math.round((response.data?.data.reduce((sum, r) => sum + (r.performance?.successRate || 0), 0) / total)) : 0;
-      // Top performing retailers (by successRate)
-      const topPerforming = [...(response.data?.data || [])]
-        .sort((a, b) => (b.performance?.successRate || 0) - (a.performance?.successRate || 0))
-        .slice(0, 3);
-      setAnalytics({
-        totalRetailers: response.data?.totalRetailers || total,
-        activeRetailers: active,
-        inactiveRetailers: inactive,
-        averageSuccessRate: avgSuccess,
-        topPerformingRetailers: topPerforming
-      });
+      
+      if (response?.success) {
+        const retailersData = response.data?.data || [];
+        setRetailers(retailersData);
+        
+        // Update pagination from API response
+        const totalRetailersCount = response.data?.totalRetailers || 0;
+        const totalPagesCount = response.data?.totalPages || 1;
+        
+        setCurrentPage(response.data?.currentPage || 1);
+        setTotalPages(totalPagesCount);
+        setTotalRetailers(totalRetailersCount);
+        
+        // Calculate analytics
+        const total = totalRetailersCount;
+        const active = retailersData.filter(r => r.status && r.status.toLowerCase() === 'active').length;
+        const inactive = total - active;
+        const avgSuccess = total > 0 ? Math.round((retailersData.reduce((sum, r) => sum + (r.performance?.successRate || 0), 0) / total)) : 0;
+        // Top performing retailers (by successRate)
+        const topPerforming = [...retailersData]
+          .sort((a, b) => (b.performance?.successRate || 0) - (a.performance?.successRate || 0))
+          .slice(0, 3);
+        setAnalytics({
+          totalRetailers: total,
+          activeRetailers: active,
+          inactiveRetailers: inactive,
+          averageSuccessRate: avgSuccess,
+          topPerformingRetailers: topPerforming
+        });
+      } else {
+        setError('Failed to load retailers. Please try again.');
+        setRetailers([]);
+      }
     } catch (err) {
       setError('Failed to load retailers. Please try again.');
       setRetailers([]);
@@ -68,78 +83,56 @@ const RetailersList = () => {
     fetchRetailers();
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  // Fetch retailers for specific page
+  const fetchRetailersForPage = async (page) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getRetailers(page);
+      
+      if (response?.success) {
+        const retailersData = response.data?.data || [];
+        setRetailers(retailersData);
+        
+        // Update pagination from API response
+        const totalRetailersCount = response.data?.totalRetailers || 0;
+        const totalPagesCount = response.data?.totalPages || 1;
+        
+        setCurrentPage(response.data?.currentPage || page);
+        setTotalPages(totalPagesCount);
+        setTotalRetailers(totalRetailersCount);
+      } else {
+        setError('Failed to load retailers. Please try again.');
+      }
+    } catch (err) {
+      setError('Failed to load retailers. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    }
   };
 
-  const handleResetFilters = () => {
-    setFilters({
-      search: '',
-      dateRange: '',
-      performance: '',
-      location: ''
-    });
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchRetailersForPage(page);
   };
 
-  const handleApplyFilters = () => {
-    // The filtering is already handled by getFilteredRetailers
-    // This function is just to provide feedback to the user
-    const filteredCount = getFilteredRetailers().length;
-    alert(`Found ${filteredCount} retailers matching your criteria`);
-  };
-
+  // Filter retailers based on search term
   const getFilteredRetailers = () => {
+    if (!searchTerm.trim()) {
+      return retailers;
+    }
+    
     return retailers.filter(retailer => {
-      // Search filter
-      if (filters.search && 
-          !retailer.name.toLowerCase().includes(filters.search.toLowerCase()) &&
-          !retailer.owner.toLowerCase().includes(filters.search.toLowerCase()) &&
-          !retailer.email.toLowerCase().includes(filters.search.toLowerCase())) {
-        return false;
-      }
-
-      // Date Range filter
-      if (filters.dateRange) {
-        const registrationDate = new Date(retailer.registrationDate);
-        const filterDate = new Date(filters.dateRange);
-        if (registrationDate < filterDate) {
-          return false;
-        }
-      }
-
-      // Performance filter
-      if (filters.performance) {
-        const successRate = retailer.performance.successRate;
-        switch (filters.performance) {
-          case 'high':
-            if (successRate <= 90) return false;
-            break;
-          case 'medium':
-            if (successRate < 80 || successRate > 90) return false;
-            break;
-          case 'low':
-            if (successRate >= 80) return false;
-            break;
-        }
-      }
-
-      // Location filter
-      if (filters.location && !retailer.address.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
-
-      return true;
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        (retailer.storeName && retailer.storeName.toLowerCase().includes(searchLower)) ||
+        (retailer.name && retailer.name.toLowerCase().includes(searchLower)) ||
+        (retailer.owner && retailer.owner.toLowerCase().includes(searchLower)) ||
+        (retailer.businessEmail && retailer.businessEmail.toLowerCase().includes(searchLower)) ||
+        (retailer.businessAddress && retailer.businessAddress.toLowerCase().includes(searchLower)) ||
+        (retailer.businessRegistrationNumber && retailer.businessRegistrationNumber.toLowerCase().includes(searchLower))
+      );
     });
   };
 
@@ -187,20 +180,7 @@ const RetailersList = () => {
     }));
   };
 
-  // if (error) {
-  //   return (
-  //     <div className="error-container">
-  //       <div className="error-content">
-  //         <FaExclamationTriangle className="error-icon" />
-  //         <h2>Error Loading Retailers</h2>
-  //         <p>{error}</p>
-  //         <button className="retry-button" onClick={loadRetailers}>
-  //           <FaRedo /> Retry
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  const filteredRetailers = getFilteredRetailers();
 
   return (
     <div className="retailers-list-container">
@@ -210,64 +190,48 @@ const RetailersList = () => {
           <FaStore />
           <div className="analytics-info">
             <h3>Total Retailers</h3>
-            <p>{isLoading ? '...' : analytics.totalRetailers}</p>
+            <p>{isLoading ? "..." : analytics.totalRetailers}</p>
           </div>
         </div>
       </div>
 
       <div className="page-header">
         <h1>Lists</h1>
-        <div className="header-actions">
-          <button className="filter-button" onClick={() => setShowFilters(!showFilters)}>
-            <FaFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
-          </button>
-        </div>
       </div>
 
-      {/* Enhanced Filters Section */}
-      {showFilters && (
-        <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label>Search</label>
-              <input
-                type="text"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                placeholder="Search Retailers..."
-              />
-            </div>
-            <div className="filter-group">
-              <label>Date Range</label>
-              <input
-                type="date"
-                name="dateRange"
-                value={filters.dateRange}
-                onChange={handleFilterChange}
-              />
-            </div>
-          </div>
-          <div className="filter-actions">
-            <button className="reset-button" onClick={handleResetFilters}>
-              Reset Filters
+      {/* Search Filter */}
+      <div className="search-filter-container">
+        <div className="search-input-wrapper">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search Retailers"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button 
+              className="clear-search-btn"
+              onClick={() => setSearchTerm('')}
+              title="Clear search"
+            >
+              <FaTimes />
             </button>
-            <button className="apply-button" onClick={handleApplyFilters}>
-              Apply Filters
-            </button>
-          </div>
+          )}
         </div>
-      )}
-
-      {isLoading ? (
-        <>
-        <Loading />
-        </>
-      ) : (
-        <>
-        
-        {/* </>
-      )} */}
+        {searchTerm && (
+          <div className="search-results-info">
+            <span>Showing {filteredRetailers.length} of {retailers.length} retailers</span>
+            <button 
+              className="reset-search-btn"
+              onClick={() => setSearchTerm('')}
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Edit Modal */}
       {showEditModal && selectedRetailer && (
@@ -349,13 +313,25 @@ const RetailersList = () => {
         </div>
       )}
 
+      {isLoading ? (
+        <>
+        <Loading />
+        </>
+      ) : (
+        <>
+
       {/* Table View */}
       <div className="view-content">
         <div className="table-container">
-          {isLoading ? (
-            <div className="loading-container">
-              <FaSpinner className="spinner" />
-              <p>Loading retailers...</p>
+          {retailers.length === 0 ? (
+            <div className="no-data-container">
+              <p className="error-message">Failed to Load the Retailers Data. Please try again later.</p>
+              <button 
+                className="retry-button"
+                onClick={() => window.location.reload()}
+              >
+                Retry
+              </button>
             </div>
           ) : (
             <table className="retailers-table">
@@ -371,11 +347,11 @@ const RetailersList = () => {
                 </tr>
               </thead>
               <tbody>
-                {getFilteredRetailers().map((retailer) => (
+                {filteredRetailers.map((retailer) => (
                   <tr key={retailer.id}>
                     <td className="store-cell">
                       <FaStore className="store-icon" />
-                      {retailer.name || retailer.storeName || retailer.businessName || 'N/A'}
+                      {retailer.storeName || retailer.name || 'N/A'}
                     </td>
                     <td>{retailer.owner}</td>
                     <td>{retailer.businessEmail}</td>
@@ -384,7 +360,7 @@ const RetailersList = () => {
                     <td>
                       <div className="metric">
                         <FaChartBar />
-                        <span>{retailer.performance?.totalParcels || 0}</span>
+                        <span>{retailer.totalParcels || 0}</span>
                       </div>
                     </td>
                     <td>
@@ -400,6 +376,73 @@ const RetailersList = () => {
           )}
         </div>
       </div>
+      
+      {/* Server-side Pagination */}
+      {retailers.length > 0 && totalPages > 1 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalRetailers)} of {totalRetailers} retailers
+          </div>
+          <div className="pagination-controls">
+            <button 
+              className="pagination-btn prev-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <span>←</span> Previous
+            </button>
+            <div className="page-numbers">
+              {currentPage > 2 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(1)}
+                >
+                  1
+                </button>
+              )}
+              {currentPage > 3 && <span className="page-dots">...</span>}
+              {currentPage > 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+              <button 
+                className="pagination-btn page-btn active"
+                disabled
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
+              {currentPage < totalPages - 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              )}
+            </div>
+            <button 
+              className="pagination-btn next-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
       </>
       )}
     </div>

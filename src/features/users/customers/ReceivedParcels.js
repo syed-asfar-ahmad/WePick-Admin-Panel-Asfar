@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import {  FaFilter, FaBox, FaTruck,  FaClock, FaTimes, FaUser, FaMapMarkerAlt, FaWeight, FaCalendarAlt, FaIdCard, FaHistory } from 'react-icons/fa';
+import {  FaFilter, FaBox, FaTruck,  FaClock, FaTimes, FaUser, FaMapMarkerAlt, FaWeight, FaCalendarAlt, FaIdCard, FaHistory, FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './ReceivedParcels.scss';
 import Loading from '../../../components/common/Loading';
-import { getReceivedParcels, updateReceivedParcelById } from '../../../services/wepickApi';
+import { getReceivedParcels } from '../../../services/wepickApi';
 import { CustomToast } from '../../../atoms/toastMessage';
 
 
 const ReceivedParcels = () => {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedParcel, setSelectedParcel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [parcels, setParcels] = useState([]);
   const [filteredParcels, setFilteredParcels] = useState([]);
   const [error, setError] = useState(null);
   const [totalParcelCount, setTotalParcelCount] = useState(0);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(20);
   const [filters, setFilters] = useState({
     dateRange: '',
     parcelId: '',
@@ -24,9 +27,9 @@ const ReceivedParcels = () => {
     recipientName: '',
     from: '',
     to: '',
-    weight: '',
-    timeRange: '24h'
+    weight: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Analytics data
   const [analytics, setAnalytics] = useState({
@@ -34,23 +37,32 @@ const ReceivedParcels = () => {
   });
 
   // Fetch received parcels from API
-  const fetchReceivedParcels = async () => {
+  const fetchReceivedParcels = async (page = 1) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await getReceivedParcels();
+      const response = await getReceivedParcels(page);
       
       const { success, message, data } = response;
       
       if (success) {
-        setParcels(data.parcels || []);
-        setFilteredParcels(data.parcels || []);
-        setTotalParcelCount(data.totalParcelCount || 0);
+        const parcelsData = data.parcels || data.data || data || [];
+        
+        // Update pagination from API response
+        const totalParcelsFromAPI = data.totalParcelCount || data.totalCount || parcelsData.length;
+        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
+        
+        setCurrentPage(data.currentPage || page);
+        setTotalPages(data.totalPages || calculatedTotalPages);
+        setTotalParcelCount(totalParcelsFromAPI);
+        
+        setParcels(parcelsData);
+        setFilteredParcels(parcelsData);
         
         // Update analytics with total parcels count
         setAnalytics({
-          totalParcels: data.totalParcelCount || 0
+          totalParcels: totalParcelsFromAPI
         });
       } else {
         setError(message || 'Failed to fetch received parcels');
@@ -70,46 +82,66 @@ const ReceivedParcels = () => {
     }
   };
 
-  // Locker locations data
-  const lockerLocations = [
-    { id: 'L789', name: 'Downtown Hub', lat: 37.7749, lng: -122.4194, parcels: 12 },
-    { id: 'L456', name: 'Westside Center', lat: 37.7833, lng: -122.4167, parcels: 8 },
-    { id: 'L234', name: 'Eastside Station', lat: 37.7855, lng: -122.4067, parcels: 15 },
-    { id: 'L567', name: 'North Terminal', lat: 37.7895, lng: -122.4000, parcels: 10 },
-    { id: 'L890', name: 'South Point', lat: 37.7800, lng: -122.4100, parcels: 7 }
-  ];
+  // Fetch parcels for specific page
+  const fetchParcelsForPage = async (page) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await getReceivedParcels(page);
+      
+      const { success, message, data } = response;
+      
+      if (success) {
+        const parcelsData = data.parcels || data.data || data || [];
+        
+        // Update pagination from API response
+        const totalParcelsFromAPI = data.totalParcelCount || data.totalCount || parcelsData.length;
+        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
+        
+        setCurrentPage(data.currentPage || page);
+        setTotalPages(data.totalPages || calculatedTotalPages);
+        setTotalParcelCount(totalParcelsFromAPI);
+        
+        setParcels(parcelsData);
+        setFilteredParcels(parcelsData);
+        
+        // Update analytics with total parcels count
+        setAnalytics({
+          totalParcels: totalParcelsFromAPI
+        });
+      } else {
+        setError(message || 'Failed to fetch received parcels');
+        CustomToast({
+          type: "error",
+          message: message || 'Failed to fetch received parcels'
+        });
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || error.message || 'Failed to fetch received parcels');
+      CustomToast({
+        type: "error",
+        message: error.response?.data?.message || error.message || 'Failed to fetch received parcels'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchParcelsForPage(page);
+  };
 
   // Fetch data when component mounts
   useEffect(() => {
     fetchReceivedParcels();
   }, []);
 
-
-  const timelineData = {
-    '2024-03-17': {
-      total: 45,
-      delivered: 35,
-      inTransit: 7,
-      pending: 3
-    },
-    '2024-03-16': {
-      total: 38,
-      delivered: 30,
-      inTransit: 5,
-      pending: 3
-    },
-    '2024-03-15': {
-      total: 42,
-      delivered: 32,
-      inTransit: 8,
-      pending: 2
-    }
-  };
-
-  // Apply filters whenever filters state changes or parcels change
+  // Apply filters whenever filters state, searchTerm, or parcels change
   useEffect(() => {
     applyFilters();
-  }, [filters, parcels]);
+  }, [filters, searchTerm, parcels]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -127,9 +159,9 @@ const ReceivedParcels = () => {
       recipientName: '',
       from: '',
       to: '',
-      weight: '',
-      timeRange: '24h'
+      weight: ''
     });
+    setSearchTerm('');
     setFilteredParcels(parcels);
   };
 
@@ -140,6 +172,21 @@ const ReceivedParcels = () => {
     }
     
     let result = [...parcels];
+    
+    // Apply search term filter - search across multiple fields
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter(parcel => {
+        return (
+          (parcel.parcelId && parcel.parcelId.toLowerCase().includes(searchLower)) ||
+          (parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) ||
+          (parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) ||
+          (parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) ||
+          (parcel.from && parcel.from.toLowerCase().includes(searchLower)) ||
+          (parcel.to && parcel.to.toLowerCase().includes(searchLower))
+        );
+      });
+    }
     
     // Apply parcel ID filter
     if (filters.parcelId) {
@@ -212,116 +259,6 @@ const ReceivedParcels = () => {
     }
   };
 
-  const handleEditParcel = (parcel) => {
-    setSelectedParcel(parcel);
-    setShowEditModal(true);
-  };
-
-  const handleSaveEdit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      setIsLoading(true);
-      
-      // Validate required fields
-      if (!selectedParcel.parcelName?.trim()) {
-        CustomToast({
-          type: "error",
-          message: "Parcel Name is required"
-        });
-        return;
-      }
-      
-      if (!selectedParcel.senderName?.trim()) {
-        CustomToast({
-          type: "error",
-          message: "Sender Name is required"
-        });
-        return;
-      }
-      
-      if (!selectedParcel.recipientName?.trim()) {
-        CustomToast({
-          type: "error",
-          message: "Recipient Name is required"
-        });
-        return;
-      }
-      
-      if (!selectedParcel.from?.trim()) {
-        CustomToast({
-          type: "error",
-          message: "From location is required"
-        });
-        return;
-      }
-      
-      if (!selectedParcel.to?.trim()) {
-        CustomToast({
-          type: "error",
-          message: "To location is required"
-        });
-        return;
-      }
-      
-      // Validate weight
-      if (selectedParcel.weight && (isNaN(selectedParcel.weight) || selectedParcel.weight <= 0)) {
-        CustomToast({
-          type: "error",
-          message: "Weight must be a positive number"
-        });
-        return;
-      }
-      
-      // Make API call to update the parcel
-      const response = await updateReceivedParcelById(selectedParcel.id, selectedParcel);
-      
-      const { success, message } = response;
-      
-      if (success) {
-        // Update the parcel in the local state
-        const updatedParcels = parcels.map(p => 
-          p.id === selectedParcel.id ? selectedParcel : p
-        );
-        
-        setParcels(updatedParcels);
-        setFilteredParcels(
-          filteredParcels.map(p => p.id === selectedParcel.id ? selectedParcel : p)
-        );
-        
-        CustomToast({
-          type: "success",
-          message: message || "Parcel updated successfully"
-        });
-        
-        // Close modal after successful update
-        setShowEditModal(false);
-        setSelectedParcel(null);
-      } else {
-        CustomToast({
-          type: "error",
-          message: message || "Failed to update parcel"
-        });
-      }
-    } catch (error) {
-      console.error('❌ Update error:', error);
-      CustomToast({
-        type: "error",
-        message: error.response?.data?.message || error.message || "Failed to update parcel"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSelectedParcel(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const handleViewParcel = (parcel) => {
     navigate(`/receivedparcels/${parcel.id}`, { state: { parcel } });
   };
@@ -352,14 +289,6 @@ const ReceivedParcels = () => {
       {showFilters && (
         <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
                         <div className="filters-grid">
-            <div className="filter-group">
-              <label>Time Range</label>
-              <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
-                <option value="24h">Last 24 Hours</option>
-                <option value="week">Last Week</option>
-                <option value="month">Last Month</option>
-              </select>
-            </div>
             <div className="filter-group">
               <label>Date</label>
               <input
@@ -435,216 +364,43 @@ const ReceivedParcels = () => {
             <button className="reset-button" onClick={handleResetFilters}>
               Reset Filters
             </button>
-            <button className="apply-button" onClick={applyFilters}>
-              Apply Filters
-            </button>
           </div>
         </div>
       )}
 
-      {/* Edit Modal */}
-      {showEditModal && selectedParcel && (
-        <div className="modal-overlay">
-          <div className="edit-modal">
-            <div className="modal-header">
-              <h2>Edit Parcel</h2>
-              <button className="close-button" onClick={() => setShowEditModal(false)}>
-                <FaTimes />
-              </button>
-            </div>
-            <form onSubmit={handleSaveEdit}>
-              <div className="modal-content">
-                 
-                 {/* Parcel Information Section */}
-                 <div className="form-section">
-                   <div className="section-header">
-                     <div className="section-icon-wrapper">
-                       <FaBox className="section-icon" />
-                     </div>
-                     <h3>Parcel Information</h3>
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaIdCard className="input-icon" />
-                       Parcel ID
-                     </label>
-                     <input
-                       type="text"
-                       name="parcelId"
-                       value={selectedParcel.parcelId || selectedParcel.id || ''}
-                       onChange={handleInputChange}
-                       disabled
-                       className="disabled-field"
-                     />
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaBox className="input-icon" />
-                       Parcel Name
-                     </label>
-                     <input
-                       type="text"
-                       name="parcelName"
-                       value={selectedParcel.parcelName || ''}
-                       onChange={handleInputChange}
-                       placeholder="Enter parcel name"
-                       required
-                     />
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaWeight className="input-icon" />
-                       Weight (kg)
-                     </label>
-                     <input
-                       type="number"
-                       step="0.1"
-                       min="0"
-                       name="weight"
-                       value={selectedParcel.weight || ''}
-                       onChange={handleInputChange}
-                       placeholder="Enter weight in kg"
-                     />
-                   </div>
-                 </div>
-
-                 {/* Sender & Recipient Information Section */}
-                 <div className="form-section">
-                   <div className="section-header">
-                     <div className="section-icon-wrapper">
-                       <FaUser className="section-icon" />
-                     </div>
-                     <h3>Sender & Recipient Information</h3>
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaUser className="input-icon" />
-                       Sender Name
-                     </label>
-                     <input
-                       type="text"
-                       name="senderName"
-                       value={selectedParcel.senderName || ''}
-                       onChange={handleInputChange}
-                       placeholder="Enter sender name"
-                       required
-                     />
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaUser className="input-icon" />
-                       Recipient Name
-                     </label>
-                     <input
-                       type="text"
-                       name="recipientName"
-                       value={selectedParcel.recipientName || ''}
-                       onChange={handleInputChange}
-                       placeholder="Enter recipient name"
-                       required
-                     />
-                   </div>
-                 </div>
-
-                 {/* Location Information Section */}
-                 <div className="form-section">
-                   <div className="section-header">
-                     <div className="section-icon-wrapper">
-                       <FaMapMarkerAlt className="section-icon" />
-                     </div>
-                     <h3>Location Information</h3>
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaMapMarkerAlt className="input-icon" />
-                       From Location
-                     </label>
-                     <input
-                       type="text"
-                       name="from"
-                       value={selectedParcel.from || ''}
-                       onChange={handleInputChange}
-                       placeholder="Enter source location"
-                       required
-                     />
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaMapMarkerAlt className="input-icon" />
-                       To Location
-                     </label>
-                     <input
-                       type="text"
-                       name="to"
-                       value={selectedParcel.to || ''}
-                       onChange={handleInputChange}
-                       placeholder="Enter destination location"
-                       required
-                     />
-                   </div>
-                 </div>
-
-                 {/* Timestamps Section */}
-                 <div className="form-section">
-                   <div className="section-header">
-                     <div className="section-icon-wrapper">
-                       <FaHistory className="section-icon" />
-                     </div>
-                     <h3>Timestamps</h3>
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaCalendarAlt className="input-icon" />
-                       Date
-                     </label>
-                     <input
-                       type="text"
-                       value={selectedParcel.Date || new Date(selectedParcel.createdAt).toLocaleDateString() || 'N/A'}
-                       disabled
-                       className="disabled-field"
-                     />
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaClock className="input-icon" />
-                       Created At
-                     </label>
-                     <input
-                       type="text"
-                       value={selectedParcel.createdAt ? new Date(selectedParcel.createdAt).toLocaleString() : 'N/A'}
-                       disabled
-                       className="disabled-field"
-                     />
-                   </div>
-                   <div className="form-group">
-                     <label>
-                       <FaClock className="input-icon" />
-                       Updated At
-                     </label>
-                     <input
-                       type="text"
-                       value={selectedParcel.updatedAt ? new Date(selectedParcel.updatedAt).toLocaleString() : 'N/A'}
-                       disabled
-                       className="disabled-field"
-                     />
-                   </div>
-                 </div>
-               </div>
-               <div className="modal-actions">
-                 <button type="button" className="cancel-button" onClick={() => {
-                   setShowEditModal(false);
-                   setSelectedParcel(null);
-                 }}>
-                   Cancel
-                 </button>
-                 <button type="submit" className="save-button" disabled={isLoading}>
-                   {isLoading ? 'Saving...' : 'Save Changes'}
-                 </button>
-               </div>
-             </form>
-           </div>
-         </div>
-       )}
+      {/* Search Filter */}
+      <div className="search-filter-container">
+        <div className="search-input-wrapper">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search Parcels"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button
+              className="clear-search-btn"
+              onClick={() => setSearchTerm('')}
+              title="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        {searchTerm && (
+          <div className="search-results-info">
+            <span>Showing {filteredParcels.length} of {parcels.length} parcels</span>
+            <button
+              className="reset-search-btn"
+              onClick={() => setSearchTerm('')}
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
+      </div>
 
       {isLoading ? (
         <>
@@ -680,12 +436,11 @@ const ReceivedParcels = () => {
                     <td>{parcel.recipientName || 'N/A'}</td>
                     <td>{parcel.from || 'N/A'}</td>
                     <td>{parcel.to || 'N/A'}</td>
-                    <td>{parcel.weight || 'N/A'}</td>
+                    <td>{parcel.weight || '-'}</td>
                     <td>{parcel.Date || new Date(parcel.createdAt).toLocaleDateString() || 'N/A'}</td>
                     <td>
                       <div className="action-buttons">
                         <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>
-                        <button className="edit-button" onClick={() => handleEditParcel(parcel)}>Edit</button>
                       </div>
                     </td>
                   </tr>
@@ -701,6 +456,78 @@ const ReceivedParcels = () => {
           </table>
         </div>
       </div>
+      
+      {/* Server-side Pagination */}
+      {parcels.length > 0 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            {totalPages > 1 
+              ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
+              : `Showing ${totalParcelCount} of ${totalParcelCount} parcels`
+            }
+          </div>
+          {totalPages > 1 && (
+          <div className="pagination-controls">
+            <button 
+              className="pagination-btn prev-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <span>←</span> Previous
+            </button>
+            <div className="page-numbers">
+              {currentPage > 2 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(1)}
+                >
+                  1
+                </button>
+              )}
+              {currentPage > 3 && <span className="page-dots">...</span>}
+              {currentPage > 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+              <button 
+                className="pagination-btn page-btn active"
+                disabled
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
+              {currentPage < totalPages - 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              )}
+            </div>
+            <button 
+              className="pagination-btn next-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next <span>→</span>
+            </button>
+          </div>
+          )}
+        </div>
+      )}
       </>
       )}
     </div>

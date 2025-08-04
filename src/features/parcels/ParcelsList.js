@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaFileAlt, FaChartLine } from 'react-icons/fa';
+import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaFileAlt, FaChartLine, FaSearch } from 'react-icons/fa';
 import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
@@ -19,13 +19,11 @@ const ParcelsList = () => {
     endDate: new Date().toISOString().split('T')[0]
   });
   const [filters, setFilters] = useState({
-    search: '',
     status: '',
     lockerId: '',
-    dateRange: '',
-    retailer: '',
-    location: ''
+    dateRange: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Analytics data
   const [analytics, setAnalytics] = useState({
@@ -38,11 +36,13 @@ const ParcelsList = () => {
 
   // Parcels data
   const [parcels, setParcels] = useState([]);
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalCount: 0
-  });
+  const [filteredParcels, setFilteredParcels] = useState([]);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalParcelCount, setTotalParcelCount] = useState(0);
+  const [pageSize] = useState(20);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -55,36 +55,37 @@ const ParcelsList = () => {
 
   const handleResetFilters = () => {
     setFilters({
-      search: '',
       status: '',
       lockerId: '',
-      dateRange: '',
-      retailer: '',
-      location: ''
+      dateRange: ''
     });
+    setSearchTerm('');
   };
 
-  const fetchParcelsData = async () => {
+  const fetchParcelsData = async (page = 1) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await getParcels();
+      const response = await getParcels(page);
       
       if (response?.success) {
         const parcelsData = response.data?.parcels || [];
-        setParcels(parcelsData);
         
-        // Update pagination
-        setPagination({
-          currentPage: response.data?.currentPage || 1,
-          totalPages: response.data?.totalPages || 1,
-          totalCount: response.data?.totalParcelCount || 0
-        });
+        // Update pagination from API response
+        const totalParcelsFromAPI = response.data?.totalParcelCount || parcelsData.length;
+        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
+        
+        setCurrentPage(response.data?.currentPage || page);
+        setTotalPages(response.data?.totalPages || calculatedTotalPages);
+        setTotalParcelCount(totalParcelsFromAPI);
+        
+        setParcels(parcelsData);
+        setFilteredParcels(parcelsData);
         
         // Update analytics
         setAnalytics({
-          totalParcels: response.data?.totalParcelCount || 0,
+          totalParcels: totalParcelsFromAPI,
           activeParcels: 0,
           deliveredParcels: 0,
           averageDeliveryTime: '2.5 hours',
@@ -93,10 +94,12 @@ const ParcelsList = () => {
       } else {
         setError('Failed to load parcels. Please try again.');
         setParcels([]);
+        setFilteredParcels([]);
       }
     } catch (err) {
       setError('Failed to load parcels. Please try again.');
       setParcels([]);
+      setFilteredParcels([]);
     } finally {
       setIsLoading(false);
     }
@@ -106,32 +109,114 @@ const ParcelsList = () => {
     fetchParcelsData();
   }, []);
 
-  const handleApplyFilters = () => {
-    const filteredCount = getFilteredParcels().length;
-    alert(`Found ${filteredCount} parcels matching your criteria`);
+  // Apply filters automatically whenever filters or searchTerm change
+  useEffect(() => {
+    const filtered = getFilteredParcels();
+    setFilteredParcels(filtered);
+  }, [filters, searchTerm, parcels]);
+
+  // Fetch parcels for specific page
+  const fetchParcelsForPage = async (page) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await getParcels(page);
+      
+      if (response?.success) {
+        const parcelsData = response.data?.parcels || [];
+        
+        // Update pagination from API response
+        const totalParcelsFromAPI = response.data?.totalParcelCount || parcelsData.length;
+        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
+        
+        setCurrentPage(response.data?.currentPage || page);
+        setTotalPages(response.data?.totalPages || calculatedTotalPages);
+        setTotalParcelCount(totalParcelsFromAPI);
+        
+        setParcels(parcelsData);
+        setFilteredParcels(parcelsData);
+        
+        // Update analytics
+        setAnalytics({
+          totalParcels: totalParcelsFromAPI,
+          activeParcels: 0,
+          deliveredParcels: 0,
+          averageDeliveryTime: '2.5 hours',
+          topPerformingLockers: []
+        });
+      } else {
+        setError('Failed to load parcels. Please try again.');
+        setParcels([]);
+        setFilteredParcels([]);
+      }
+    } catch (err) {
+      setError('Failed to load parcels. Please try again.');
+      setParcels([]);
+      setFilteredParcels([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchParcelsForPage(page);
   };
 
   const getFilteredParcels = () => {
+    if (!Array.isArray(parcels)) {
+      return [];
+    }
+
+    const hasActiveFilters = Object.values(filters).some(value => value !== '');
+    if (!hasActiveFilters && !searchTerm) {
+      return parcels;
+    }
+
     return parcels.filter(parcel => {
-      if (filters.search && !parcel.parcelId.toLowerCase().includes(filters.search.toLowerCase())) {
-        return false;
+      // Search filter - case-insensitive match for multiple fields
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        if (
+          !(parcel.parcelId && parcel.parcelId.toLowerCase().includes(searchLower)) &&
+          !(parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) &&
+          !(parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) &&
+          !(parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) &&
+          !(parcel.businessName && parcel.businessName.toLowerCase().includes(searchLower))
+        ) {
+          return false;
+        }
       }
 
-      if (filters.status && parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
-        return false;
-      }
+             // Status filter
+       if (filters.status && filters.status.trim() !== '') {
+         if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
+           return false;
+         }
+       }
 
-      if (filters.retailer && !parcel.businessName.toLowerCase().includes(filters.retailer.toLowerCase())) {
-        return false;
-      }
-
-      if (filters.location && !parcel.to.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
-
-      if (filters.dateRange) {
-        const parcelDate = parcel.createdDate;
-        if (parcelDate !== filters.dateRange) {
+               // Date filter - specifically for createdDate column
+      if (filters.dateRange && filters.dateRange.trim() !== '') {
+        try {
+          const filterDate = new Date(filters.dateRange);
+          filterDate.setHours(0, 0, 0, 0); // Set to start of day
+          
+          // Only use createdDate field
+          if (parcel.createdDate) {
+            const parcelDate = new Date(parcel.createdDate);
+            parcelDate.setHours(0, 0, 0, 0); // Set to start of day
+            
+            // Check if parcel was created on the selected date (exact match)
+            if (parcelDate.getTime() !== filterDate.getTime()) {
+              return false;
+            }
+          } else {
+            // If no createdDate, exclude from results
+            return false;
+          }
+        } catch (error) {
+          console.error('Error parsing date:', error);
           return false;
         }
       }
@@ -141,14 +226,22 @@ const ParcelsList = () => {
   };
 
   const getStatusColor = (status) => {
-    const colors = {
-      'Dispatched': '#4CAF50',
-      'In Transit': '#2196F3',
-      'Delivered': '#4CAF50',
-      'Failed': '#F44336',
-      'Ready for Pickup': '#FF9800'
-    };
-    return colors[status] || '#666';
+    switch(status.toLowerCase()) {
+      case 'delivered':
+        return '#4CAF50';
+      case 'in transit':
+        return '#2196F3';
+      case 'pending':
+        return '#FFC107';
+      case 'failed':
+        return '#F44336';
+      case 'dispatched':
+        return '#4CAF50';
+      case 'ready for pickup':
+        return '#FF9800';
+      default:
+        return '#757575';
+    }
   };
 
   const handleViewParcel = async (parcel) => {
@@ -176,7 +269,6 @@ const ParcelsList = () => {
         setEditingParcel(parcel);
       }
     } catch (err) {
-      console.error('Failed to load parcel details for editing:', err);
       // Fallback to basic parcel data if API call fails
       setEditingParcel(parcel);
     } finally {
@@ -202,7 +294,7 @@ const ParcelsList = () => {
               setSelectedParcel(detailResponse.data);
             }
           } catch (err) {
-            console.error('Failed to refresh selected parcel data:', err);
+            // Handle refresh error silently
           }
         }
         
@@ -212,7 +304,6 @@ const ParcelsList = () => {
         throw new Error('Failed to update parcel');
       }
     } catch (err) {
-      console.error('❌ Failed to save parcel:', err);
       setError('Failed to save parcel. Please try again.');
     } finally {
       setIsLoading(false);
@@ -249,67 +340,68 @@ const ParcelsList = () => {
       {/* Filters Section */}
       {showFilters && (
         <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label>Search</label>
-              <input
-                type="text"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                placeholder="Search by Parcel ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Status</label>
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All Status</option>
-                <option value="pending">Pending</option>
-                <option value="dispatched">Dispatched</option>
-                <option value="delivered">Delivered</option>
-                <option value="failed">Failed</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Business Name</label>
-              <input
-                type="text"
-                name="retailer"
-                value={filters.retailer}
-                onChange={handleFilterChange}
-                placeholder="Enter Business Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Destination</label>
-              <input
-                type="text"
-                name="location"
-                value={filters.location}
-                onChange={handleFilterChange}
-                placeholder="Enter Destination"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Date</label>
-              <input
-                type="date"
-                name="dateRange"
-                value={filters.dateRange}
-                onChange={handleFilterChange}
-              />
-            </div>
+                     <div className="filters-grid">
+                          <div className="filter-group">
+               <label>Status</label>
+               <select name="status" value={filters.status} onChange={handleFilterChange}>
+                 <option value="">All Status</option>
+                 <option value="pending">Pending</option>
+                 <option value="dispatched">Dispatched</option>
+                 <option value="delivered">Delivered</option>
+                 <option value="failed">Failed</option>
+               </select>
+             </div>
+             <div className="filter-group">
+               <label>Date</label>
+               <input
+                 type="date"
+                 name="dateRange"
+                 value={filters.dateRange}
+                 onChange={handleFilterChange}
+               />
+             </div>
           </div>
           <div className="filter-actions">
             <button className="reset-button" onClick={handleResetFilters}>
               Reset Filters
             </button>
-            <button className="apply-button" onClick={handleApplyFilters}>
-              Apply Filters
-            </button>
           </div>
         </div>
       )}
+
+      {/* Search Filter */}
+      <div className="search-filter-container">
+        <div className="search-input-wrapper">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search Parcels"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button
+              className="clear-search-btn"
+              onClick={() => setSearchTerm('')}
+              title="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        {searchTerm && (
+          <div className="search-results-info">
+            <span>Showing {getFilteredParcels().length} of {parcels.length} parcels</span>
+            <button
+              className="reset-search-btn"
+              onClick={() => setSearchTerm('')}
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Table View */}
       <div className="view-content">
@@ -332,7 +424,7 @@ const ParcelsList = () => {
             <table className="parcels-table">
               <thead>
                 <tr>
-                  <th>Parcel ID</th>
+                  <th>Parcel Name</th>
                   <th>Status</th>
                   <th>Sender Name</th>
                   <th>Recipient Name</th>
@@ -347,12 +439,9 @@ const ParcelsList = () => {
               <tbody>
                 {getFilteredParcels().map((parcel) => (
                   <tr key={parcel.id}>
-                    <td className="parcel-cell">
-                      <div className="icon-text">
-                        <FaBox className="parcel-icon" style={{ color: '#4CAF50' }} />
-                        <span>{parcel.parcelId}</span>
-                      </div>
-                    </td>
+                                         <td className="parcel-cell">
+                       <span>{parcel.parcelName || 'N/A'}</span>
+                     </td>
                     <td>
                       <span 
                         className="status-badge"
@@ -366,7 +455,7 @@ const ParcelsList = () => {
                     <td>{parcel.from}</td>
                     <td>{parcel.to}</td>
                     <td>{parcel.createdDate}</td>
-                    <td>{parcel.weight}</td>
+                    <td>{parcel.weight || '-'}</td>
                     <td>{parcel.businessName || 'N/A'}</td>
                     <td>
                       <div className="action-buttons">
@@ -379,6 +468,7 @@ const ParcelsList = () => {
                         <button 
                           className="action-button edit" 
                           onClick={() => handleEditParcel(parcel)}
+                          disabled={parcel.status?.toLowerCase() === 'delivered'}
                         >
                           Edit
                         </button>
@@ -391,6 +481,78 @@ const ParcelsList = () => {
           )}
         </div>
       </div>
+      
+      {/* Server-side Pagination */}
+      {parcels.length > 0 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            {totalPages > 1 
+              ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
+              : `Showing ${totalParcelCount} of ${totalParcelCount} parcels`
+            }
+          </div>
+          {totalPages > 1 && (
+          <div className="pagination-controls">
+            <button 
+              className="pagination-btn prev-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <span>←</span> Previous
+            </button>
+            <div className="page-numbers">
+              {currentPage > 2 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(1)}
+                >
+                  1
+                </button>
+              )}
+              {currentPage > 3 && <span className="page-dots">...</span>}
+              {currentPage > 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+              <button 
+                className="pagination-btn page-btn active"
+                disabled
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
+              {currentPage < totalPages - 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              )}
+            </div>
+            <button 
+              className="pagination-btn next-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next <span>→</span>
+            </button>
+          </div>
+          )}
+        </div>
+      )}
 
       {/* Parcel View Modal */}
       {selectedParcel && (

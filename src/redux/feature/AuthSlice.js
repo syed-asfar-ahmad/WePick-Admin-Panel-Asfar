@@ -10,7 +10,8 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post(`${BASE_URL}/auth/login`, credentials);
 
-      const { user, token } = response.data;
+      // Fix: Use accessToken instead of token
+      const { user, accessToken } = response.data;
 
       CustomToast({
         type: "success",
@@ -18,16 +19,14 @@ export const loginUser = createAsyncThunk(
       });
 
       // Store token locally (optional)
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("authToken", accessToken);
 
       return {
         user,
-        token,
+        token: accessToken, // Use accessToken as token
         isAuthenticated: true,
       };
     } catch (error) {
-      console.error("API Full Error:", error.response?.data);
-
       const errMsg =
         error.response?.data?.message || "Invalid Email or Password";
       CustomToast({ type: "error", message: errMsg });

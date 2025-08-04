@@ -45,7 +45,6 @@ const ProfileDropDown = () => {
       localStorage.removeItem("token");
       window.location.href = "/signin";
     } catch (error) {
-      console.error("Logout failed:", error);
       // Still clear local state even if API call fails
       dispatch(clearAuthentication());
       localStorage.removeItem("token");

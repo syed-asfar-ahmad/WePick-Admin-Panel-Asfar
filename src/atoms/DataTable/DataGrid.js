@@ -24,7 +24,6 @@ import RecieptView from "../RecieptView/index.js";
 import AccountView from "../Acoount/index.js";
 
 const DG = ({ index, loader, data, getData, setFilterState }) => {
-  console.log(data,"datadata")
   const [loading, setLoading] = useState(false);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
@@ -170,7 +169,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
       headerAlign: "center",
       align: "center",
       renderCell: (params) => {
-        console.log("params", params);
         return (
           <>
             <Link
@@ -600,7 +598,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
         </div>
       ),
       renderCell: (params) => {
-        console.log("params", params?.row);
         const isActive = params?.row?.status;
         return (
           <Switch
@@ -1090,7 +1087,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
       flex: 1.5,
       sortable: true,
       renderCell: (params) => {
-        console.log(params,"paramsparams")
         return (
           <span
             
@@ -1223,7 +1219,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
       sortable: false,
       flex: 1.5,
       renderCell: (params) => {
-        console.log("derfer", params?.row?.id);
         return (
           <>
             <div
@@ -2008,7 +2003,6 @@ const DG = ({ index, loader, data, getData, setFilterState }) => {
         break;
       case 9:
         const tempBoosts = data;
-        console.log("tem", tempBoosts);
         setColumns(boostsColumns);
         let outputBoosts = [];
         for (let i = 0; i < tempBoosts?.length; i++) {

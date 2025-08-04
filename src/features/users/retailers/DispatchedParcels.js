@@ -16,16 +16,16 @@ const DispatchedParcels = () => {
   const [parcels, setParcels] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [updatesSupported, setUpdatesSupported] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(20);
+  
   const [filters, setFilters] = useState({
     dateRange: '',
-    status: '',
-    parcelId: '',
-    retailer: '',
-    customer: '',
-    lockerId: '',
-    size: '',
-    priority: '',
-    timeRange: ''
+    status: ''
   });
 
   // Helper function to format date for HTML date input
@@ -54,19 +54,26 @@ const DispatchedParcels = () => {
   };
 
   // Fetch dispatched parcels from API
-  const fetchParcels = async () => {
+  const fetchParcels = async (page = 1) => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getDispatchedParcels();
+      const response = await getDispatchedParcels(page);
       
-      // Extract parcels array from the correct nested structure
-      const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
-      
-      // Store total count from API
-      setTotalCount(response.data?.totalCount || 0);
-      
-      setParcels(parcelsData);
+      if (response?.success) {
+        // Extract parcels array from the correct nested structure
+        const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
+        
+        // Update pagination from API response
+        setCurrentPage(response.data?.currentPage || page);
+        setTotalPages(response.data?.totalPages || 1);
+        setTotalCount(response.data?.totalCount || 0);
+        
+        setParcels(parcelsData);
+      } else {
+        setError('Failed to load dispatched parcels. Please try again.');
+        setParcels([]);
+      }
     } catch (err) {
       setError('Failed to load dispatched parcels. Please try again.');
       setParcels([]);
@@ -75,57 +82,67 @@ const DispatchedParcels = () => {
     }
   };
 
+  // Fetch parcels for specific page
+  const fetchParcelsForPage = async (page) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getDispatchedParcels(page);
+      
+      if (response?.success) {
+        const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
+        
+        // Update pagination from API response
+        setCurrentPage(response.data?.currentPage || page);
+        setTotalPages(response.data?.totalPages || 1);
+        setTotalCount(response.data?.totalCount || 0);
+        
+        setParcels(parcelsData);
+      } else {
+        setError('Failed to load dispatched parcels. Please try again.');
+      }
+    } catch (err) {
+      setError('Failed to load dispatched parcels. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchParcelsForPage(page);
+  };
+
+  // Calculate today's parcels count
+  const getTodayParcelsCount = () => {
+    if (!Array.isArray(parcels)) return 0;
+    
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    return parcels.filter(parcel => {
+      // Check if parcel has a date field
+      if (parcel.date) {
+        const parcelDate = new Date(parcel.date);
+        const parcelDateString = parcelDate.toISOString().split('T')[0];
+        return parcelDateString === todayString;
+      }
+      
+      // Check if parcel has createdAt field
+      if (parcel.createdAt) {
+        const parcelDate = new Date(parcel.createdAt);
+        const parcelDateString = parcelDate.toISOString().split('T')[0];
+        return parcelDateString === todayString;
+      }
+      
+      return false;
+    }).length;
+  };
+
   useEffect(() => {
     fetchParcels();
   }, []);
-
-  // Analytics data
-  const analytics = {
-    totalToday: 156,
-    avgDeliveryTime: '2.5 hours',
-    topRetailers: [
-      { name: 'Tech Gadgets Store', count: 45 },
-      { name: 'Fashion Boutique', count: 38 },
-      { name: 'Home Essentials', count: 32 }
-    ],
-    statusBreakdown: {
-      delivered: 65,
-      inTransit: 25,
-      pending: 15,
-      failed: 5
-    }
-  };
-
-  // Locker locations data
-  const lockerLocations = [
-    { id: 'L789', name: 'Downtown Hub', lat: 37.7749, lng: -122.4194, parcels: 12 },
-    { id: 'L456', name: 'Westside Center', lat: 37.7833, lng: -122.4167, parcels: 8 },
-    { id: 'L234', name: 'Eastside Station', lat: 37.7855, lng: -122.4067, parcels: 15 },
-    { id: 'L567', name: 'North Terminal', lat: 37.7895, lng: -122.4000, parcels: 10 },
-    { id: 'L890', name: 'South Point', lat: 37.7800, lng: -122.4100, parcels: 7 }
-  ];
-
-  // Timeline data
-  const timelineData = {
-    '2024-03-17': {
-      total: 45,
-      delivered: 35,
-      inTransit: 7,
-      pending: 3
-    },
-    '2024-03-16': {
-      total: 38,
-      delivered: 30,
-      inTransit: 5,
-      pending: 3
-    },
-    '2024-03-15': {
-      total: 42,
-      delivered: 32,
-      inTransit: 8,
-      pending: 2
-    }
-  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -138,21 +155,11 @@ const DispatchedParcels = () => {
   const handleResetFilters = () => {
     setFilters({
       dateRange: '',
-      status: '',
-      parcelId: '',
-      retailer: '',
-      customer: '',
-      lockerId: '',
-      size: '',
-      priority: '',
-      timeRange: ''
+      status: ''
     });
   };
 
-  const handleApplyFilters = () => {
-    const filteredCount = getFilteredParcels().length;
-    alert(`Found ${filteredCount} parcels matching your criteria`);
-  };
+
 
   const getFilteredParcels = () => {
     // Ensure parcels is always an array
@@ -161,67 +168,73 @@ const DispatchedParcels = () => {
     }
 
     const hasActiveFilters = Object.values(filters).some(value => value !== '');
-    if (!hasActiveFilters) {
+    if (!hasActiveFilters && !searchTerm) {
       return parcels;
     }
 
     return parcels.filter(parcel => {
-      if (filters.parcelId && !parcel.parcelId.toLowerCase().includes(filters.parcelId.toLowerCase())) {
-        return false;
-      }
-      if (filters.retailer && !(parcel.senderName || parcel.from || '').toLowerCase().includes(filters.retailer.toLowerCase())) {
-        return false;
-      }
-      if (filters.customer && !(parcel.recipientName || parcel.to || '').toLowerCase().includes(filters.customer.toLowerCase())) {
-        return false;
-      }
-      if (filters.lockerId && !parcel.from.toLowerCase().includes(filters.lockerId.toLowerCase())) {
-        return false;
-      }
-
-      // Exact match filters
-      if (filters.status && parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
-        return false;
-      }
-      if (filters.size && parcel.weight.toLowerCase() !== filters.size.toLowerCase()) {
-        return false;
-      }
-      if (filters.priority && parcel.parcelName.toLowerCase() !== filters.priority.toLowerCase()) {
-        return false;
-      }
-
-      // Date Range filter
-      if (filters.dateRange) {
-        const parcelDate = new Date(parcel.date);
-        const filterDate = new Date(filters.dateRange);
-        if (parcelDate < filterDate) {
+      // Status filter - exact match (case insensitive)
+      if (filters.status && filters.status.trim() !== '') {
+        const parcelStatus = (parcel.status || '').toLowerCase().trim();
+        const filterStatus = filters.status.toLowerCase().trim();
+        if (parcelStatus !== filterStatus) {
           return false;
         }
       }
 
-      // Time Range filter
-      if (filters.timeRange) {
-        const parcelDate = new Date(parcel.date);
-        const now = new Date();
-        const diffTime = Math.abs(now - parcelDate);
-        const diffHours = diffTime / (1000 * 60 * 60);
+      // Date Range filter - filter parcels created on the selected date
+      if (filters.dateRange && filters.dateRange.trim() !== '') {
+        try {
+          const filterDate = new Date(filters.dateRange);
+          filterDate.setHours(0, 0, 0, 0); // Set to start of day
+          
+          let parcelDate = null;
+          
+          // Try different date fields that might exist
+          if (parcel.date) {
+            parcelDate = new Date(parcel.date);
+          } else if (parcel.createdAt) {
+            parcelDate = new Date(parcel.createdAt);
+          } else if (parcel.updatedAt) {
+            parcelDate = new Date(parcel.updatedAt);
+          }
+          
+          if (parcelDate) {
+            parcelDate.setHours(0, 0, 0, 0); // Set to start of day
+            // Check if dates are equal (same day)
+            if (parcelDate.getTime() !== filterDate.getTime()) {
+              return false;
+            }
+          } else {
+            // If no date found, exclude from results
+            return false;
+          }
+        } catch (error) {
+          console.error('Error parsing date:', error);
+          return false;
+        }
+      }
 
-        switch (filters.timeRange) {
-          case '24h':
-            if (diffHours > 24) return false;
-            break;
-          case 'week':
-            if (diffHours > 168) return false; // 7 days
-            break;
-          case 'month':
-            if (diffHours > 720) return false; // 30 days
-            break;
+      // Search filter - case-insensitive match for parcelId, parcelName, senderName, recipientName, from, to
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        if (
+          !(parcel.parcelId && parcel.parcelId.toLowerCase().includes(searchLower)) &&
+          !(parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) &&
+          !(parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) &&
+          !(parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) &&
+          !(parcel.from && parcel.from.toLowerCase().includes(searchLower)) &&
+          !(parcel.to && parcel.to.toLowerCase().includes(searchLower))
+        ) {
+          return false;
         }
       }
 
       return true;
     });
   };
+
+  const filteredParcels = getFilteredParcels();
 
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
@@ -251,7 +264,6 @@ const DispatchedParcels = () => {
         setShowEditModal(true);
       }
     } catch (err) {
-      console.error('Failed to load parcel details for editing:', err);
       // Fallback to basic parcel data if API call fails
       setSelectedParcel(parcel);
       setShowEditModal(true);
@@ -300,9 +312,6 @@ const DispatchedParcels = () => {
         throw new Error('Failed to update parcel');
       }
     } catch (err) {
-      console.error('❌ Update error:', err);
-      console.error('❌ Error response:', err.response?.data);
-      console.error('❌ Error status:', err.response?.status);
       setError('Failed to update parcel. Please try again.');
     } finally {
       setIsLoading(false);
@@ -343,7 +352,6 @@ const DispatchedParcels = () => {
         setShowViewModal(true);
       }
     } catch (err) {
-      console.error('Failed to load parcel details:', err);
       // Fallback to basic parcel data if API call fails
       setSelectedParcel(parcel);
       setShowViewModal(true);
@@ -351,64 +359,6 @@ const DispatchedParcels = () => {
       setIsLoading(false);
     }
   };
-
-  // Mock tracking history data
-  const getTrackingHistory = (parcelId) => {
-    return [
-      {
-        timestamp: '2024-03-17 14:30:00',
-        status: 'Delivered',
-        location: 'Customer Location',
-        description: 'Package delivered to customer'
-      },
-      {
-        timestamp: '2024-03-17 13:15:00',
-        status: 'In Transit',
-        location: 'Downtown Hub',
-        description: 'Package out for delivery'
-      },
-      {
-        timestamp: '2024-03-17 10:00:00',
-        status: 'In Transit',
-        location: 'Westside Center',
-        description: 'Package arrived at sorting facility'
-      },
-      {
-        timestamp: '2024-03-16 16:45:00',
-        status: 'Pending',
-        location: 'Eastside Station',
-        description: 'Package received at locker'
-      }
-    ];
-  };
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="dispatched-parcels-container">
-  //       <div className="loading-container">
-  //         <FaSpinner className="spinner" />
-  //         <p>Loading parcels...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // if (error) {
-  //   return (
-  //     <div className="dispatched-parcels-container">
-  //       <div className="error-container">
-  //         <div className="error-content">
-  //           <FaTimesCircle className="error-icon" />
-  //           <h2>Error Loading Parcels</h2>
-  //           <p>{error}</p>
-  //           <button className="retry-button" onClick={() => window.location.reload()}>
-  //             <FaSpinner /> Retry
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="dispatched-parcels-container">
@@ -418,7 +368,7 @@ const DispatchedParcels = () => {
           <FaBox />
           <div className="analytics-info">
             <h3>Total Today</h3>
-            <p>{isLoading ? "..." : totalCount}</p>
+            <p>{isLoading ? "..." : getTodayParcelsCount()}</p>
           </div>
         </div>
       </div>
@@ -436,14 +386,6 @@ const DispatchedParcels = () => {
       {showFilters && (
         <div className={`filters-section ${showFilters ? 'show' : 'hide'}`}>
           <div className="filters-grid">
-            <div className="filter-group">
-              <label>Time Range</label>
-              <select name="timeRange" value={filters.timeRange} onChange={handleFilterChange}>
-                <option value="24h">Last 24 Hours</option>
-                <option value="week">Last Week</option>
-                <option value="month">Last Month</option>
-              </select>
-            </div>
             <div className="filter-group">
               <label>Date Range</label>
               <input
@@ -463,75 +405,48 @@ const DispatchedParcels = () => {
                 <option value="failed">Failed</option>
               </select>
             </div>
-            <div className="filter-group">
-              <label>Parcel ID</label>
-              <input
-                type="text"
-                name="parcelId"
-                value={filters.parcelId}
-                onChange={handleFilterChange}
-                placeholder="Enter Parcel ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Retailer</label>
-              <input
-                type="text"
-                name="retailer"
-                value={filters.retailer}
-                onChange={handleFilterChange}
-                placeholder="Enter Retailer Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Customer</label>
-              <input
-                type="text"
-                name="customer"
-                value={filters.customer}
-                onChange={handleFilterChange}
-                placeholder="Enter Customer Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Locker ID</label>
-              <input
-                type="text"
-                name="lockerId"
-                value={filters.lockerId}
-                onChange={handleFilterChange}
-                placeholder="Enter Locker ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Size</label>
-              <select name="size" value={filters.size} onChange={handleFilterChange}>
-                <option value="">All Sizes</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Priority</label>
-              <select name="priority" value={filters.priority} onChange={handleFilterChange}>
-                <option value="">All Priorities</option>
-                <option value="standard">Standard</option>
-                <option value="express">Express</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </div>
           </div>
           <div className="filter-actions">
             <button className="reset-button" onClick={handleResetFilters}>
               Reset Filters
             </button>
-            <button className="apply-button" onClick={handleApplyFilters}>
-              Apply Filters
-            </button>
           </div>
         </div>
       )}
+
+      {/* Search Filter */}
+      <div className="search-filter-container">
+        <div className="search-input-wrapper">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search Parcels"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button 
+              className="clear-search-btn"
+              onClick={() => setSearchTerm('')}
+              title="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        {searchTerm && (
+          <div className="search-results-info">
+            <span>Showing {filteredParcels.length} of {parcels.length} parcels</span>
+            <button 
+              className="reset-search-btn"
+              onClick={() => setSearchTerm('')}
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Edit Modal */}
       {showEditModal && selectedParcel && (
@@ -820,7 +735,7 @@ const DispatchedParcels = () => {
                         <FaWeightHanging className="info-icon" />
                         <span>Weight</span>
                       </div>
-                      <div className="info-value">{selectedParcel.weight ? `${selectedParcel.weight}kg` : 'N/A'}</div>
+                      <div className="info-value">{selectedParcel.weight ? `${selectedParcel.weight}kg` : '-'}</div>
                     </div>
                     <div className="info-item">
                       <div className="info-label">
@@ -985,9 +900,9 @@ const DispatchedParcels = () => {
       {/* View Content */}
       <div className="view-content">
         <div className="table-container">
-          {parcels.length === 0 ? (
+          {filteredParcels.length === 0 ? (
             <div className="no-data-container">
-              <p className="error-message">Failed to Load the Dispatched Parcels Data. Please try again later.</p>
+              <p className="error-message">No parcels found matching your criteria.</p>
               <button 
                 className="retry-button"
                 onClick={() => window.location.reload()}
@@ -1012,7 +927,7 @@ const DispatchedParcels = () => {
                 </tr>
               </thead>
               <tbody>
-                {(getFilteredParcels() || []).map((parcel) => (
+                {filteredParcels.map((parcel) => (
                   <tr key={parcel.id} className="clickable-row">
                     <td>{parcel.parcelId}</td>
                     <td>{parcel.parcelName}</td>
@@ -1020,7 +935,7 @@ const DispatchedParcels = () => {
                     <td>{parcel.recipientName || parcel.to || 'N/A'}</td>
                     <td>{parcel.from}</td>
                     <td>{parcel.to}</td>
-                    <td>{parcel.weight}</td>
+                    <td>{parcel.weight || '-'}</td>
                     <td>
                       <span 
                         className="status-badge"
@@ -1036,7 +951,9 @@ const DispatchedParcels = () => {
                     <td>
                       <div className="action-buttons">
                         <button className="view-button" onClick={() => handleViewParcel(parcel)}>View</button>
-                        <button className="edit-button" onClick={() => handleEditParcel(parcel)}>Edit</button>
+                        <button className="edit-button" onClick={() => handleEditParcel(parcel)} disabled={parcel.status?.toLowerCase() === 'delivered'}>
+                          Edit
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -1046,6 +963,73 @@ const DispatchedParcels = () => {
           )}
         </div>
       </div>
+      
+      {/* Server-side Pagination */}
+      {filteredParcels.length > 0 && totalPages > 1 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount} parcels
+          </div>
+          <div className="pagination-controls">
+            <button 
+              className="pagination-btn prev-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <span>←</span> Previous
+            </button>
+            <div className="page-numbers">
+              {currentPage > 2 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(1)}
+                >
+                  1
+                </button>
+              )}
+              {currentPage > 3 && <span className="page-dots">...</span>}
+              {currentPage > 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+              <button 
+                className="pagination-btn page-btn active"
+                disabled
+              >
+                {currentPage}
+              </button>
+              {currentPage < totalPages && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
+              {currentPage < totalPages - 1 && (
+                <button 
+                  className="pagination-btn page-btn"
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              )}
+            </div>
+            <button 
+              className="pagination-btn next-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
       </>
       )}
     </div>

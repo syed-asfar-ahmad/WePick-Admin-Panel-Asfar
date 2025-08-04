@@ -28,16 +28,18 @@ const ParcelViewModal = ({ parcel, onClose }) => {
   if (!parcel) return null;
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'Dispatched':
+    switch(status.toLowerCase()) {
+      case 'delivered':
         return '#4CAF50';
-      case 'In Transit':
+      case 'in transit':
         return '#2196F3';
-      case 'Delivered':
-        return '#4CAF50';
-      case 'Failed':
+      case 'pending':
+        return '#FFC107';
+      case 'failed':
         return '#F44336';
-      case 'Ready for Pickup':
+      case 'dispatched':
+        return '#4CAF50';
+      case 'ready for pickup':
         return '#FF9800';
       default:
         return '#757575';
@@ -221,7 +223,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                   </div>
                   <div>
                     <label>Weight</label>
-                    <p>{parcel.weight ? `${parcel.weight}kg` : 'N/A'}</p>
+                    <p>{parcel.weight ? `${parcel.weight}kg` : '-'}</p>
                   </div>
                 </div>
               </div>

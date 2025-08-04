@@ -49,7 +49,6 @@ const DispatchedParcelsChart = () => {
       setDailyData(processedData);
     } catch (error) {
       setDailyData([]);
-      console.error("Error fetching dispatched parcels data:", error);
     } finally {
       setIsLoading(false);
     }

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
-// css
 import "../assets/css/dashboard.scss";
 
-// Components
+
 import DashboardCom from "../components/DashboardComponents/DashboardCom";
 import FullScreenMenu from "../components/DashboardComponents/FullScreenMenu";
 import SiteFooter from "../organisms/Footer/Footer";

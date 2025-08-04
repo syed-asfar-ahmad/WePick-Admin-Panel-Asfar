@@ -7,27 +7,24 @@ import { getCustomers, getCustomerById, updateCustomerById } from '../../../serv
 
 const CustomersList = () => {
   const navigate = useNavigate();
-  const [showFilters, setShowFilters] = useState(false);
-  const [filterAnimation, setFilterAnimation] = useState('closed');
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    search: '',
-    status: '',
-    businessType: '',
-    dateRange: '',
-    performance: '',
-    location: ''
-  });
+  const [isEditLoading, setIsEditLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [customers, setCustomers] = useState([]);
   const [totalCustomers, setTotalCustomers] = useState(0);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(20);
 
   // Fetch customers from API
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (page = 1) => {
     try {
       setIsLoading(true);
-      const response = await getCustomers();
+      const response = await getCustomers(page);
       
       let customersData = [];
       
@@ -56,7 +53,6 @@ const CustomersList = () => {
               phoneNumber: customerDetail?.data?.phoneNumber || 'N/A'
             };
           } catch (err) {
-            console.error(`❌ Error fetching phone for customer ${customer.id}:`, err);
             return {
               ...customer,
               phoneNumber: 'N/A'
@@ -65,79 +61,100 @@ const CustomersList = () => {
         })
       );
       
+      // Update pagination from API response
+      setCurrentPage(response.data?.currentPage || page);
+      setTotalPages(response.data?.totalPages || 1);
+      setTotalCustomers(response.data?.totalCustomers || customersWithPhoneNumbers.length);
+      
       setCustomers(customersWithPhoneNumbers);
-      setTotalCustomers(customersWithPhoneNumbers.length);
     } catch (err) {
-      console.error('❌ Error fetching customers:', err);
+      // Handle error silently
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Fetch customers for specific page
+  const fetchCustomersForPage = async (page) => {
+    try {
+      setIsLoading(true);
+      const response = await getCustomers(page);
+      
+      let customersData = [];
+      
+      // Handle different response structures
+      if (response?.data?.data?.list) {
+        customersData = response.data.data.list;
+      } else if (response?.data?.list) {
+        customersData = response.data.list;
+      } else if (response?.data?.data && Array.isArray(response.data.data)) {
+        customersData = response.data.data;
+      } else if (response?.data && Array.isArray(response.data)) {
+        customersData = response.data;
+      } else if (response?.data?.customers) {
+        customersData = response.data.customers;
+      } else {
+        customersData = [];
+      }
+      
+      // Fetch phone numbers for each customer
+      const customersWithPhoneNumbers = await Promise.all(
+        customersData.map(async (customer) => {
+          try {
+            const customerDetail = await getCustomerById(customer.id);
+            return {
+              ...customer,
+              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A'
+            };
+          } catch (err) {
+            return {
+              ...customer,
+              phoneNumber: 'N/A'
+            };
+          }
+        })
+      );
+      
+      // Update pagination from API response
+      setCurrentPage(response.data?.currentPage || page);
+      setTotalPages(response.data?.totalPages || 1);
+      setTotalCustomers(response.data?.totalCustomers || customersWithPhoneNumbers.length);
+      
+      setCustomers(customersWithPhoneNumbers);
+    } catch (err) {
+      // Handle error silently
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchCustomersForPage(page);
   };
 
   useEffect(() => {
     fetchCustomers();
   }, []);
 
-  const toggleFilters = () => {
-    if (showFilters) {
-      setFilterAnimation('closing');
-      setTimeout(() => {
-        setShowFilters(false);
-        setFilterAnimation('closed');
-      }, 500);
-    } else {
-      setShowFilters(true);
-      setFilterAnimation('opening');
-      setTimeout(() => {
-        setFilterAnimation('open');
-      }, 500);
-    }
-  };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleResetFilters = () => {
-    setFilters({
-      search: '',
-      status: '',
-      businessType: '',
-      dateRange: '',
-      performance: '',
-      location: ''
-    });
-  };
-
-  const handleApplyFilters = () => {
-    const filteredCount = getFilteredCustomers().length;
-    alert(`Found ${filteredCount} customers matching your criteria`);
-  };
 
   const getFilteredCustomers = () => {
-    // Ensure customers is always an array
-    if (!Array.isArray(customers)) {
-      console.log('⚠️ Customers is not an array:', customers);
+    if (!customers || customers.length === 0) {
       return [];
     }
 
+    if (!searchTerm.trim()) {
+      return customers;
+    }
+
     return customers.filter(customer => {
-      if (filters.search) {
-        const searchTerm = filters.search.toLowerCase();
-        const customerName = customer.name.toLowerCase();
-        const customerEmail = customer.email.toLowerCase();
-        if (
-          !customerName.includes(searchTerm) &&
-          !customerEmail.includes(searchTerm)
-        ) {
-          return false;
-        }
-      }
-      return true;
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
+        (customer.email && customer.email.toLowerCase().includes(searchLower)) ||
+        (customer.phoneNumber && customer.phoneNumber.toLowerCase().includes(searchLower))
+      );
     });
   };
 
@@ -147,23 +164,23 @@ const CustomersList = () => {
 
   const handleEditCustomer = async (customer) => {
     try {
-      setIsLoading(true);
+      setIsEditLoading(true);
       
       const response = await getCustomerById(customer.id);
       
       setSelectedCustomer(response.data || customer);
       setShowEditModal(true);
     } catch (err) {
-      console.error('❌ Error loading customer for edit:', err);
+      // Handle error silently
     } finally {
-      setIsLoading(false);
+      setIsEditLoading(false);
     }
   };
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     try {
-      setIsLoading(true);
+      setIsEditLoading(true);
       
       // Only send the fields that should be updated
       const updateData = {
@@ -182,12 +199,12 @@ const CustomersList = () => {
         setSelectedCustomer(null);
         fetchCustomers();
       } else {
-        console.error('❌ Update failed:', response?.message);
+        // Handle update failure silently
       }
     } catch (err) {
-      console.error('❌ Error saving customer:', err);
+      // Handle error silently
     } finally {
-      setIsLoading(false);
+      setIsEditLoading(false);
     }
   };
 
@@ -213,38 +230,41 @@ const CustomersList = () => {
       </div>
       <div className="page-header">
         <h1>Lists</h1>
-        <div className="header-actions">
-          <button className="filter-button" onClick={toggleFilters}>
-            <FaFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
-          </button>
-        </div>
       </div>
-      {/* Enhanced Filters Section */}
-      {showFilters && (
-        <div className={`filters-section ${filterAnimation}`}>
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label>Search</label>
-              <input
-                type="text"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                placeholder="Search Customers..."
-              />
-            </div>
-            {/* ...other filters remain unchanged... */}
-          </div>
-          <div className="filter-actions">
-            <button className="reset-button" onClick={handleResetFilters}>
-              Reset Filters
+
+      {/* Search Filter */}
+      <div className="search-filter-container">
+        <div className="search-input-wrapper">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search Customers"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button 
+              className="clear-search-btn"
+              onClick={() => setSearchTerm('')}
+              title="Clear search"
+            >
+              <FaTimes />
             </button>
-            <button className="apply-button" onClick={handleApplyFilters}>
-              Apply Filters
-            </button>
-          </div>
+          )}
         </div>
-      )}
+        {searchTerm && (
+          <div className="search-results-info">
+            <span>Showing {getFilteredCustomers().length} of {customers.length} customers</span>
+            <button 
+              className="reset-search-btn"
+              onClick={() => setSearchTerm('')}
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
+      </div>
       {isLoading ? (
         <Loading />
       ) : (
@@ -294,8 +314,8 @@ const CustomersList = () => {
                     <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)}>
                       Cancel
                     </button>
-                    <button type="submit" className="save-button">
-                      Save Changes
+                    <button type="submit" className="save-button" disabled={isEditLoading}>
+                      {isEditLoading ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </form>
@@ -326,15 +346,84 @@ const CustomersList = () => {
                       <td>
                         <div className="action-buttons">
                           <button className="view-button" onClick={() => handleViewCustomer(customer.id)}>View</button>
-                          <button className="edit-button" onClick={() => handleEditCustomer(customer)}>Edit</button>
+                          <button className="edit-button" onClick={() => handleEditCustomer(customer)} disabled={isEditLoading}>
+                            Edit
+                          </button>
                         </div>
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
+                              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        {/* Server-side Pagination */}
+        {customers.length > 0 && totalPages > 1 && (
+          <div className="pagination-container">
+            <div className="pagination-info">
+              Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalCustomers)} of {totalCustomers} customers
+            </div>
+            <div className="pagination-controls">
+              <button 
+                className="pagination-btn prev-btn"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <span>←</span> Previous
+              </button>
+              <div className="page-numbers">
+                {currentPage > 2 && (
+                  <button 
+                    className="pagination-btn page-btn"
+                    onClick={() => handlePageChange(1)}
+                  >
+                    1
+                  </button>
+                )}
+                {currentPage > 3 && <span className="page-dots">...</span>}
+                {currentPage > 1 && (
+                  <button 
+                    className="pagination-btn page-btn"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                  >
+                    {currentPage - 1}
+                  </button>
+                )}
+                <button 
+                  className="pagination-btn page-btn active"
+                  disabled
+                >
+                  {currentPage}
+                </button>
+                {currentPage < totalPages && (
+                  <button 
+                    className="pagination-btn page-btn"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                  >
+                    {currentPage + 1}
+                  </button>
+                )}
+                {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
+                {currentPage < totalPages - 1 && (
+                  <button 
+                    className="pagination-btn page-btn"
+                    onClick={() => handlePageChange(totalPages)}
+                  >
+                    {totalPages}
+                  </button>
+                )}
+              </div>
+              <button 
+                className="pagination-btn next-btn"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next <span>→</span>
+              </button>
             </div>
           </div>
+        )}
         </>
       )}
     </div>

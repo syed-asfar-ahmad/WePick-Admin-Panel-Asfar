@@ -610,3 +610,112 @@
     }
   }
 } 
+
+// Pagination Styles
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding: 16px 0;
+  border-top: 1px solid #e0e0e0;
+
+  .pagination-info {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .pagination-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background: white;
+      color: #555;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 40px;
+      justify-content: center;
+
+      &:hover:not(:disabled) {
+        background: #f8f9fa;
+        border-color: #6CAD61;
+        color: #6CAD61;
+      }
+
+      &:disabled {
+        background: #f5f5f5;
+        color: #999;
+        cursor: not-allowed;
+        border-color: #e0e0e0;
+      }
+
+      &.active {
+        background: #6CAD61;
+        color: white;
+        border-color: #6CAD61;
+        cursor: default;
+
+        &:hover {
+          background: #6CAD61;
+          color: white;
+        }
+      }
+
+      &.prev-btn, &.next-btn {
+        min-width: 80px;
+        font-weight: 500;
+      }
+    }
+
+    .page-numbers {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .page-dots {
+        color: #999;
+        font-weight: 500;
+        padding: 0 4px;
+      }
+    }
+  }
+}
+
+// Responsive pagination
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+
+    .pagination-info {
+      text-align: center;
+    }
+
+    .pagination-controls {
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .pagination-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+        min-width: 36px;
+
+        &.prev-btn, &.next-btn {
+          min-width: 70px;
+        }
+      }
+    }
+  }
+} 

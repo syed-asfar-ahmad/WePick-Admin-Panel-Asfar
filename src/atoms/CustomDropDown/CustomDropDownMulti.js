@@ -58,8 +58,6 @@ const CustomDropDown = ({
     return null;
   });
 
-  console.log("valuefirst", value)
-
   return (
     <div>
       <Select

@@ -122,7 +122,6 @@ const LockersList = () => {
           : locker
       ));
     } catch (error) {
-      console.error('Error unlocking locker:', error);
       setError(`Failed to unlock locker ${lockerId}. Please try again.`);
     } finally {
       setIsUnlocking(prev => ({ ...prev, [lockerId]: false }));

@@ -14,7 +14,7 @@
 }
 
 .upload-profile-img-final{
-    background-color: white;
+    background-color: transparent;
     width: 80px;
     height: 80px;
     display: flex;
@@ -22,6 +22,7 @@
     align-items: center;
     border: 1px solid #E4E3E4;
     border-radius: 50px;
+    overflow: hidden;
     img{
         width: 100%;
         height: 100%;

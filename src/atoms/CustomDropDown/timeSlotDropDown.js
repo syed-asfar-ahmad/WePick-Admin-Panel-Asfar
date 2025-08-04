@@ -46,7 +46,6 @@ const CustomDropDown = ({
     }
     return null;
   });
-  console.log("valueeeee", value);
   return (
     <div>
       <Select

@@ -21,7 +21,6 @@ const CustomPagination = ({ page, totalPages, onChangePage }) => {
     // Show at most maxPagesToShow page buttons, centered around the current page
     const startPage = Math.max(page - Math.floor(maxPagesToShow / 2), 1);
     const endPage = Math.min(startPage + maxPagesToShow, totalPages);
-    console.log("startPage",endPage,startPage)
 
     for (let i = startPage; i <= endPage; i++) {
       pageButtons.push(

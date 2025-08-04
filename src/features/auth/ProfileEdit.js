@@ -166,7 +166,6 @@ const ProfileEdit = () => {
         }));
       }
     } catch (error) {
-      console.error('Error deleting profile image:', error);
       CustomToast({
         type: "error",
         message: "Failed to remove profile picture"
@@ -313,7 +312,7 @@ const ProfileEdit = () => {
                       width: '100%', 
                       height: '100%', 
                       objectFit: 'cover',
-                      border: '2px solid red' // Temporary border to see the image area
+                      borderRadius: '50%'
                     }}
                   />
                  <button 

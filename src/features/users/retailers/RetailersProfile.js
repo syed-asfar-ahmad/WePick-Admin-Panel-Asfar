@@ -91,7 +91,6 @@ const RetailersProfile = () => {
       
       // Show success message or handle errors
     } catch (err) {
-      console.error('Failed to update retailer:', err);
       setError('Failed to update retailer. Please try again.');
     }
   };
@@ -132,31 +131,24 @@ const RetailersProfile = () => {
           <h1>Retailer Profile</h1>
           {/* You can add status badge if available in API */}
         </div>
-        <div className="edit-buttons">
-          {isEditing ? (
-            <>
-              <button 
-                className="edit-button save"
-                onClick={handleSave}
-              >
-                <FaCheckCircle /> Save Changes
-              </button>
-              <button 
-                className="edit-button cancel"
-                onClick={handleCancel}
-              >
-                <FaTimesCircle /> Cancel
-              </button>
-            </>
-          ) : (
-            <button 
-              className="edit-button"
-              onClick={() => setIsEditing(true)}
-            >
-              <FaEdit /> Edit Profile
-            </button>
-          )}
-        </div>
+                 <div className="edit-buttons">
+           {isEditing && (
+             <>
+               <button 
+                 className="edit-button save"
+                 onClick={handleSave}
+               >
+                 <FaCheckCircle /> Save Changes
+               </button>
+               <button 
+                 className="edit-button cancel"
+                 onClick={handleCancel}
+               >
+                 <FaTimesCircle /> Cancel
+               </button>
+             </>
+           )}
+         </div>
       </div>
 
       <div className="profile-grid">

@@ -13,7 +13,6 @@ const MuiltiplesImages = ({selectedImages, setSelectedImages, Id, addUrl, delete
     const [errorImage, setErrorImage] = useState([]);
     const fileInputRef = useRef(null);
     const { data, isLoading, error, postData } = usePost();
-    console.log("Idasd", Id)
 
     useEffect(()=>{
        if(Id &&  selectedImages.some(image => image.name)){
@@ -23,7 +22,6 @@ const MuiltiplesImages = ({selectedImages, setSelectedImages, Id, addUrl, delete
         postData( `${addUrl}/${Id}`,
             formData,
             (res) => {
-              console.log("ressss", res)
               setSelectedImagesCall(!selectedImagesCall)
             }
           );
@@ -38,7 +36,6 @@ const MuiltiplesImages = ({selectedImages, setSelectedImages, Id, addUrl, delete
             postData( `${deleteUrl}/${Id}`,
             formData,
                 (res) => {
-                  console.log("ressss", res)
                 
                 }
               );
@@ -78,10 +75,8 @@ const MuiltiplesImages = ({selectedImages, setSelectedImages, Id, addUrl, delete
         for (const image of imageArray) {
             const img = new Image();
             img.src = URL.createObjectURL(image);
-console.log("imggg", img)
             await new Promise(resolve => {
                 img.onload = () => {
-                    console.log("img.width", img.width, img.height)
                     if (img.height + img.height === img.width ) {
                         invalidImagesCount++;
 
@@ -104,10 +99,9 @@ console.log("imggg", img)
         }
     };
 
-    console.log("errorImage", errorImage?.invalidImageNames)
+
 
     const removeImage = (imageName) => {
-        console.log("imageName", imageName ,selectedImages[1]?.name)
         setRemoveImg(!removeImg)
         const updatedImages = selectedImages.filter(image =>  image?.imageUrl !== imageName && image.name !== imageName);
         setSelectedImages(updatedImages);
@@ -127,7 +121,6 @@ console.log("imggg", img)
             postData( `${deleteUrl}/${Id}`,
             formData,
                 (res) => {
-                  console.log("ressss", res)
                 
                 }
               );
@@ -135,7 +128,7 @@ console.log("imggg", img)
 
     };
 
-    console.log("selectedImages", selectedImages)
+
 
     return (
         <>

@@ -70,37 +70,37 @@ export const getParcelReport = (startDate, endDate) =>
 export const getParcelDetail = (parcelId) => getRequest(`${GET_PARCEL_DETAIL}/${parcelId}`); 
 
 // Admin Services
-export const getAdminDashboard = () => getRequest(ADMIN_DASHBOARD);
+export const getAdminDashboard = (page = 1) => getRequest(`${ADMIN_DASHBOARD}?page=${page}`);
 
 // Retailer services
-export const getRetailers = () => getRequest(RETAILERS);
+export const getRetailers = (page = 1) => getRequest(`${RETAILERS}?page=${page}`);
 export const getRetailerById = (id) => getRequest(`/retailers/${id}`);
 export const updateRetailerById = (id, data) => patchRequest(`/retailers/${id}`, data);
 
 // Dispatched Parcels services
-export const getDispatchedParcels = () => getRequest(DISPATCHED);
+export const getDispatchedParcels = (page = 1) => getRequest(`${DISPATCHED}?page=${page}`);
 export const getDispatchedParcelById = (id) => getRequest(`${DISPATCHED}/${id}`);
 export const updateDispatchedParcelById = (id, data) => patchRequest(`${DISPATCHED}/${id}`, data);
 
 // Received Parcels services
-export const getReceivedParcels = () => getRequest(RECEIVED_PARCELS);
+export const getReceivedParcels = (page = 1) => getRequest(`${RECEIVED_PARCELS}?page=${page}`);
 export const getReceivedParcelById = (id) => getRequest(`${RECEIVED_PARCELS}/${id}`);
 export const updateReceivedParcelById = (id, data) => patchRequest(`${RECEIVED_PARCELS}/${id}`, data);
 
 // Customers services
-export const getCustomers = () => getRequest(CUSTOMERS);
+export const getCustomers = (page = 1) => getRequest(`${CUSTOMERS}?page=${page}`);
 export const getCustomerById = (id) => getRequest(`${CUSTOMERS}/${id}`);
 export const updateCustomerById = (id, data) => patchRequest(`/customers/${id}`, data);
 
 // Notifications services
-export const getNotifications = () => getRequest(NOTIFICATIONS);
+export const getNotifications = (page = 1) => getRequest(`${NOTIFICATIONS}?page=${page}`);
 export const getNotificationById = (id) => getRequest(`${NOTIFICATIONS}/${id}`);
 
 // Lockers services
 export const getLockers = () => getRequest(LOCKERS);
 
 // Parcels services
-export const getParcels = () => getRequest(PARCELS);
+export const getParcels = (page = 1) => getRequest(`${PARCELS}?page=${page}`);
 export const updateParcel = (id, data) => patchRequest(`${PARCELS}/${id}`, data);
 
 // Admin Auth services
