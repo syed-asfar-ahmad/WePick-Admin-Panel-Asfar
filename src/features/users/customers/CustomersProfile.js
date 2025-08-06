@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaEnvelope, FaUser, FaPhone } from 'react-icons/fa';
+import Loading from '../../../components/common/Loading';
 import './CustomersProfile.scss';
 import { getCustomerById } from '../../../services/wepickApi';
 
@@ -14,6 +15,7 @@ const CustomersProfile = () => {
     profileImage: null
   });
   const [loading, setLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -35,6 +37,10 @@ const CustomersProfile = () => {
         setError('Failed to load customer profile.');
       } finally {
         setLoading(false);
+        // Add a small delay to ensure smooth transition
+        setTimeout(() => {
+          setInitialLoadComplete(true);
+        }, 500);
       }
     };
     fetchCustomerData();
@@ -57,11 +63,20 @@ const CustomersProfile = () => {
     );
   };
 
-  if (loading) {
-    return <div className="loading">Loading...</div>;
+  if (loading || !initialLoadComplete) {
+    return <Loading />;
   }
   if (error) {
-    return <div className="error">{error}</div>;
+    return (
+      <div className="error-container">
+        <div className="error-content">
+          <p className="error-message">{error}</p>
+          <button className="retry-button" onClick={() => window.location.reload()}>
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

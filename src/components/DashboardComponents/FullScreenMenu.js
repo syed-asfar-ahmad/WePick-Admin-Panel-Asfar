@@ -304,19 +304,19 @@ const FullScreenMenu = () => {
         }
       ]
     },
-    // {
-    //   id: 5,
-    //   name: "Lockers",
-    //   link: "/lockers",
-    //   icon: LockerSvg,
-    //   submenu: [
-    //     {
-    //       id: 1,
-    //       name: "Lockers List",
-    //       link: "/listoflockers",
-    //     },
-    //   ]
-    // },
+    {
+      id: 5,
+      name: "Lockers",
+      link: "/lockers",
+      icon: LockerSvg,
+      submenu: [
+        {
+          id: 1,
+          name: "Lockers List",
+          link: "/listoflockers",
+        },
+      ]
+    },
     {
       id: 6,
       name: " Notifications",

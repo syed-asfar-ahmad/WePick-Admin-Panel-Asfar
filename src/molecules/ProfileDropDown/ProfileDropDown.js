@@ -25,7 +25,7 @@ const ProfileDropDown = () => {
 
   // Get image base URL with fallback
   const getImageBaseUrl = () => {
-    return process.env.REACT_APP_IMAGE_BASE_URL || 'http://51.20.35.1';
+    return process.env.REACT_APP_IMAGE_BASE_URL || 'http://35.183.208.209';
   };
 
   // Get image URL with cache busting

@@ -23,7 +23,7 @@ const ProfileEdit = () => {
   // Use Redux user data for profile
   // Get image base URL with fallback
   const getImageBaseUrl = () => {
-    return process.env.REACT_APP_IMAGE_BASE_URL || 'http://51.20.35.1';
+    return process.env.REACT_APP_IMAGE_BASE_URL || 'http://35.183.208.209';
   };
 
   // Test different possible image paths

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../assets/css/dashboard.scss";
 
-
 import DashboardCom from "../components/DashboardComponents/DashboardCom";
 import FullScreenMenu from "../components/DashboardComponents/FullScreenMenu";
 import SiteFooter from "../organisms/Footer/Footer";
 import Header from "../organisms/Header/Header";
 import Privacy from "./Privacy/Privacy";
+import Loading from "../components/common/Loading";
 
 const Dashboard = () => {
   let location = useLocation();
@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [menuIconLeftPadding, setMenuIconLeftPadding] = useState("pl-3");
   const [MobileMenu1, setMobileMenu1] = useState(true);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
   const [menuDropDownFullScreen, setMenuDropDownFullScreen] = useState({
     name: "dashboard",
     toggle: false,
@@ -55,6 +56,14 @@ const Dashboard = () => {
     }
   }, [isLargeScreen]);
 
+  useEffect(() => {
+    // Simulate page loading time and ensure all components are ready
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleMenu = () => {
     if (isLargeScreen) {
       if (menu === 0) {
@@ -83,6 +92,8 @@ const Dashboard = () => {
     <>
       {location.pathname === "/privacy" ? (
         <Privacy />
+      ) : isPageLoading ? (
+        <Loading />
       ) : (
         <div className="fluid-container">
           <div className="row m-0 pr-0 ">
