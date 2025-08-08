@@ -11,6 +11,7 @@ const ParcelsList = () => {
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [editingParcel, setEditingParcel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState(null);
   const [parcelSummary, setParcelSummary] = useState(null);
   const [parcelReport, setParcelReport] = useState(null);
@@ -278,14 +279,12 @@ const ParcelsList = () => {
 
   const handleSaveParcel = async (updatedParcel) => {
     try {
-      setIsLoading(true);
+      setIsEditLoading(true);
       
       // Make API call to update parcel
       const response = await updateParcel(updatedParcel.id, updatedParcel);
       
       if (response?.success) {
-        setEditingParcel(null);
-        
         // If the updated parcel is currently being viewed, refresh its data
         if (selectedParcel && selectedParcel.id === updatedParcel.id) {
           try {
@@ -298,7 +297,10 @@ const ParcelsList = () => {
           }
         }
         
-        // Refresh the parcels list to show updated data
+        // Clear parcels data, close modal, then fetch data (which will set loading)
+        setParcels([]);
+        setFilteredParcels([]);
+        setEditingParcel(null);
         fetchParcelsData();
       } else {
         throw new Error('Failed to update parcel');
@@ -306,7 +308,7 @@ const ParcelsList = () => {
     } catch (err) {
       setError('Failed to save parcel. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsEditLoading(false);
     }
   };
 
@@ -567,6 +569,7 @@ const ParcelsList = () => {
           parcel={editingParcel}
           onClose={() => setEditingParcel(null)}
           onSave={handleSaveParcel}
+          isEditLoading={isEditLoading}
         />
       )}
     </div>

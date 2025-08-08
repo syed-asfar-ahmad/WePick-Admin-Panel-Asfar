@@ -25,7 +25,7 @@ import {
 } from 'react-icons/fa';
 import './ParcelEditModal.scss';
 
-const ParcelEditModal = ({ parcel, onClose, onSave }) => {
+const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => {
   const [formData, setFormData] = useState({
     // Parcel Information
     parcelName: parcel.parcelName || '',
@@ -99,7 +99,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
           <div className="header-content">
             <h2>Edit Parcel</h2>
           </div>
-          <button className="close-button" onClick={onClose}>
+          <button className="close-button" onClick={onClose} disabled={isEditLoading}>
             <FaTimes />
           </button>
         </div>
@@ -126,6 +126,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter parcel name"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -141,6 +142,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   className="form-control"
                   placeholder="Enter weight in kg"
                   step="0.1"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -153,6 +155,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   value={formData.status}
                   onChange={handleChange}
                   className="form-control"
+                  disabled={isEditLoading}
                 >
                   <option value="pending">Pending</option>
                   <option value="dispatched">Dispatched</option>
@@ -183,6 +186,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter sender name"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -197,6 +201,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter business name"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -211,6 +216,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter phone number"
+                  disabled={isEditLoading}
                 />
               </div>
             </div>
@@ -235,6 +241,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter recipient name"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -249,6 +256,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter recipient email"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -263,6 +271,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter recipient phone"
+                  disabled={isEditLoading}
                 />
               </div>
             </div>
@@ -287,6 +296,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter source location"
+                  disabled={isEditLoading}
                 />
               </div>
               <div className="form-group">
@@ -301,6 +311,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Enter destination location"
+                  disabled={isEditLoading}
                 />
               </div>
             </div>
@@ -345,10 +356,10 @@ const ParcelEditModal = ({ parcel, onClose, onSave }) => {
           </div>
 
           <div className="form-actions">
-            <button type="button" className="cancel-button" onClick={onClose}>
+            <button type="button" className="cancel-button" onClick={onClose} disabled={isEditLoading}>
               Cancel
             </button>
-            <button type="submit" className="save-button">
+            <button type="submit" className="save-button" disabled={isEditLoading}>
               Save Changes
             </button>
           </div>

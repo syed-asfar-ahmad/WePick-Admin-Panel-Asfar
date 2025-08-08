@@ -11,6 +11,7 @@ const RetailersList = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRetailer, setSelectedRetailer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -160,7 +161,7 @@ const RetailersList = () => {
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     try {
-      setIsLoading(true);
+      setIsEditLoading(true);
       await updateRetailerById(selectedRetailer.id, selectedRetailer);
       setShowEditModal(false);
       setSelectedRetailer(null);
@@ -168,7 +169,7 @@ const RetailersList = () => {
     } catch (err) {
       setError('Failed to update retailer.');
     } finally {
-      setIsLoading(false);
+      setIsEditLoading(false);
     }
   };
 
@@ -239,7 +240,7 @@ const RetailersList = () => {
           <div className="edit-modal">
             <div className="modal-header">
               <h2>Edit Retailer</h2>
-              <button className="close-button" onClick={() => setShowEditModal(false)}>
+              <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                 <FaTimes />
               </button>
             </div>
@@ -252,6 +253,7 @@ const RetailersList = () => {
                     name="businessName"
                     value={selectedRetailer.businessName || ''}
                     onChange={handleInputChange}
+                    disabled={isEditLoading}
                   />
                 </div>
                 <div className="form-group">
@@ -261,6 +263,7 @@ const RetailersList = () => {
                     name="name"
                     value={selectedRetailer.name || ''}
                     onChange={handleInputChange}
+                    disabled={isEditLoading}
                   />
                 </div>
                 <div className="form-group">
@@ -270,6 +273,7 @@ const RetailersList = () => {
                     name="businessEmail"
                     value={selectedRetailer.businessEmail || ''}
                     onChange={handleInputChange}
+                    disabled={isEditLoading}
                   />
                 </div>
                 <div className="form-group">
@@ -279,6 +283,7 @@ const RetailersList = () => {
                     name="phoneNumber"
                     value={selectedRetailer.phoneNumber || ''}
                     onChange={handleInputChange}
+                    disabled={isEditLoading}
                   />
                 </div>
                 <div className="form-group">
@@ -288,6 +293,7 @@ const RetailersList = () => {
                     name="businessAddress"
                     value={selectedRetailer.businessAddress || ''}
                     onChange={handleInputChange}
+                    disabled={isEditLoading}
                   />
                 </div>
                 <div className="form-group">
@@ -297,14 +303,15 @@ const RetailersList = () => {
                     name="businessRegistrationNumber"
                     value={selectedRetailer.businessRegistrationNumber || ''}
                     onChange={handleInputChange}
+                    disabled={isEditLoading}
                   />
                 </div>
               </div>
               <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)}>
+                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                   Cancel
                 </button>
-                <button type="submit" className="save-button">
+                <button type="submit" className="save-button" disabled={isEditLoading}>
                   Save Changes
                 </button>
               </div>

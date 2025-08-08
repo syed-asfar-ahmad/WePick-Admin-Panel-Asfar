@@ -12,6 +12,7 @@ const DispatchedParcels = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState(null);
   const [parcels, setParcels] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -275,7 +276,7 @@ const DispatchedParcels = () => {
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     try {
-      setIsLoading(true);
+      setIsEditLoading(true);
       
       // Create a clean update data object with only non-empty values
       const updateData = {};
@@ -314,7 +315,7 @@ const DispatchedParcels = () => {
     } catch (err) {
       setError('Failed to update parcel. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsEditLoading(false);
     }
   };
 
@@ -459,7 +460,7 @@ const DispatchedParcels = () => {
                 </div>
                 <h2>Edit Parcel</h2>
               </div>
-              <button className="close-button" onClick={() => setShowEditModal(false)}>
+              <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                 <FaTimes />
               </button>
             </div>
@@ -498,6 +499,7 @@ const DispatchedParcels = () => {
                       onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter parcel name"
+                      disabled={isEditLoading}
                     />
                   </div>
                   <div className="form-group">
@@ -513,6 +515,7 @@ const DispatchedParcels = () => {
                       className="form-control"
                       placeholder="Enter weight"
                       step="0.1"
+                      disabled={isEditLoading}
                     />
                   </div>
                   <div className="form-group">
@@ -525,6 +528,7 @@ const DispatchedParcels = () => {
                       value={selectedParcel.status || 'pending'}
                       onChange={handleInputChange}
                       className="form-control"
+                      disabled={isEditLoading}
                     >
                       <option value="pending">Pending</option>
                       <option value="in transit">In Transit</option>
@@ -554,6 +558,7 @@ const DispatchedParcels = () => {
                       onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter sender name"
+                      disabled={isEditLoading}
                     />
                   </div>
                   <div className="form-group">
@@ -568,6 +573,7 @@ const DispatchedParcels = () => {
                       onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter business name"
+                      disabled={isEditLoading}
                     />
                   </div>
                                      <div className="form-group">
@@ -575,14 +581,15 @@ const DispatchedParcels = () => {
                        <FaIdCard className="input-icon" />
                        Phone Number
                      </label>
-                     <input
-                       type="tel"
-                       name="senderInfo.phoneNumber"
-                       value={selectedParcel.senderInfo?.phoneNumber || ''}
-                       onChange={handleInputChange}
-                       className="form-control"
-                       placeholder="Enter phone number"
-                     />
+                                         <input
+                      type="tel"
+                      name="senderInfo.phoneNumber"
+                      value={selectedParcel.senderInfo?.phoneNumber || ''}
+                      onChange={handleInputChange}
+                      className="form-control"
+                      placeholder="Enter phone number"
+                      disabled={isEditLoading}
+                    />
                    </div>
                 </div>
 
@@ -606,6 +613,7 @@ const DispatchedParcels = () => {
                       onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter recipient name"
+                      disabled={isEditLoading}
                     />
                   </div>
                   <div className="form-group">
@@ -619,6 +627,7 @@ const DispatchedParcels = () => {
                       value={selectedParcel.recipientPhone || ''}
                       onChange={handleInputChange}
                       className="form-control"
+                      disabled={isEditLoading}
                       placeholder="Enter recipient phone"
                     />
                   </div>
@@ -633,6 +642,7 @@ const DispatchedParcels = () => {
                       value={selectedParcel.recipientEmail || ''}
                       onChange={handleInputChange}
                       className="form-control"
+                      disabled={isEditLoading}
                       placeholder="Enter recipient email"
                     />
                   </div>
@@ -658,6 +668,7 @@ const DispatchedParcels = () => {
                       onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter source location"
+                      disabled={isEditLoading}
                     />
                   </div>
                   <div className="form-group">
@@ -672,15 +683,16 @@ const DispatchedParcels = () => {
                       onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter destination location"
+                      disabled={isEditLoading}
                     />
                   </div>
                 </div>
               </div>
               <div className="form-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)}>
+                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                   Cancel
                 </button>
-                <button type="submit" className="save-button">
+                <button type="submit" className="save-button" disabled={isEditLoading}>
                   Save Changes
                 </button>
               </div>

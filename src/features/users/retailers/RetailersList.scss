@@ -569,6 +569,7 @@
     width: 90%;
     max-width: 800px;
     padding: 1.25rem;
+    position: relative;
 
     .modal-header {
       display: flex;
@@ -597,11 +598,16 @@
         height: 32px;
         border-radius: 50%;
 
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
         svg {
           transition: transform 0.3s ease;
         }
 
-        &:hover {
+        &:hover:not(:disabled) {
           background-color: #f8f9fa;
           color: #dc3545;
 
@@ -640,6 +646,12 @@
             outline: none;
             border-color: #4CAF50;
           }
+
+          &:disabled {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+            opacity: 0.7;
+          }
         }
       }
     }
@@ -656,13 +668,21 @@
         font-size: 0.9rem;
         cursor: pointer;
         transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
 
         &.cancel-button {
           background: white;
           border: 1px solid #dc3545;
           color: #dc3545;
 
-          &:hover {
+          &:hover:not(:disabled) {
             background: #dc3545;
             color: white;
           }
@@ -673,8 +693,13 @@
           border: none;
           color: white;
 
-          &:hover {
+          &:hover:not(:disabled) {
             background: #45a049;
+          }
+
+          .spinner {
+            animation: spin 1s linear infinite;
+            font-size: 0.8rem;
           }
         }
       }
