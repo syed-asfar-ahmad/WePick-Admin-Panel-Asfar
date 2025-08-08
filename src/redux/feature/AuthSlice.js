@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { CustomToast } from "../../atoms/toastMessage";
 import axios from "axios";
-
-const BASE_URL = "http://35.183.208.209/api/v1/admin";
+import { BASE_URL } from "../../config/api";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
