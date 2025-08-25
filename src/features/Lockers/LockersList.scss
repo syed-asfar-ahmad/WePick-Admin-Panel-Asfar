@@ -439,6 +439,37 @@
       font-weight: 600;
     }
 
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+      overflow-y: hidden;
+      
+      // Custom scrollbar styling
+      scrollbar-width: thin;
+      scrollbar-color: #6CAD61 #f0f0f0;
+      
+      &::-webkit-scrollbar {
+        height: 8px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #6CAD61;
+        border-radius: 4px;
+        
+        &:hover {
+          background: #5a9c4f;
+        }
+      }
+    }
+
     .lockers-table {
       width: 100%;
       border-collapse: collapse;

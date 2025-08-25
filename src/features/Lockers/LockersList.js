@@ -323,7 +323,8 @@ const LockersList = () => {
                                        {/* Locker Information and Compartments Details Table */}
               <div className="lockers-table-container">
                 <h2>Locker Information</h2>
-                <table className="lockers-table">
+                <div className="table-container">
+                  <table className="lockers-table">
                   <thead>
                     <tr>
                       <th>Locker UUID</th>
@@ -371,9 +372,11 @@ const LockersList = () => {
                     })}
                   </tbody>
                 </table>
+                </div>
 
                 <h2>Compartments Details</h2>
-                <table className="lockers-table">
+                <div className="table-container">
+                  <table className="lockers-table">
                   <thead>
                     <tr>
                       <th>Compartment ID</th>
@@ -419,6 +422,7 @@ const LockersList = () => {
                     })}
                   </tbody>
                 </table>
+                </div>
               </div>
 
              {/* Compartments Details Pagination - Outside container */}

@@ -27,6 +27,8 @@ const ReportParcels = () => {
   const [totalReports, setTotalReports] = useState(0);
   const [pageSize] = useState(20);
 
+
+
   // Fetch dashboard data from API
   const fetchDashboardData = async (page = 1) => {
     try {
@@ -59,6 +61,8 @@ const ReportParcels = () => {
     setCurrentPage(page);
     fetchDashboardData(page);
   };
+
+
 
   useEffect(() => {
     fetchDashboardData();

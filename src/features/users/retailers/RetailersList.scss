@@ -325,6 +325,76 @@
           color: #333;
         }
 
+        // Column Headers with Dropdown Styling
+        .column-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          
+          span {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+          }
+          
+          .sort-dropdown {
+            padding: 2px 4px;
+            border: none;
+            background: transparent;
+            color: #999;
+            transition: all 0.2s ease;
+            
+            &:hover {
+              color: #6CAD61;
+              background-color: #f8f9fa;
+            }
+            
+            &.active {
+              color: #6CAD61 !important;
+              background-color: #e6f9f0;
+              
+              .anticon {
+                color: #6CAD61 !important;
+              }
+            }
+            
+            .anticon {
+              font-size: 12px;
+              transition: color 0.2s ease;
+            }
+          }
+        }
+
+        // Dropdown menu styling
+        .ant-dropdown-menu {
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          
+          .ant-dropdown-menu-item {
+            padding: 8px 16px;
+            font-size: 13px;
+            
+            &:hover {
+              background-color: #f8f9fa;
+              color: #6CAD61;
+            }
+            
+            // Style for Clear Sort option
+            &[data-key*="-clear"] {
+              border-top: 1px solid #e9ecef;
+              margin-top: 4px;
+              padding-top: 12px;
+              color: #dc3545;
+              
+              &:hover {
+                background-color: #fff5f5;
+                color: #dc3545;
+              }
+            }
+          }
+        }
+
         .clickable-row {
           cursor: pointer;
           transition: background-color 0.2s ease;

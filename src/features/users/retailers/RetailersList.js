@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaExclamationTriangle, FaRedo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { Dropdown, Button } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import './RetailersList.scss';
 import Loading from '../../../components/common/Loading';
 import { getRetailers } from '../../../services/wepickApi';
@@ -32,6 +34,10 @@ const RetailersList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalRetailers, setTotalRetailers] = useState(0);
   const [pageSize] = useState(20);
+
+  // Sorting state for store name
+  const [sortField, setSortField] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
 
   // Fetch retailers from API
   const fetchRetailers = async () => {
@@ -118,22 +124,88 @@ const RetailersList = () => {
     fetchRetailersForPage(page);
   };
 
-  // Filter retailers based on search term
+  // Handle sorting
+  const handleSort = (field, order) => {
+    if (order === 'clear') {
+      setSortField(null);
+      setSortOrder('asc');
+    } else {
+      setSortField(field);
+      setSortOrder(order);
+    }
+  };
+
+  // Create dropdown items for store name sorting
+  const getDropdownItems = () => {
+    const items = [
+      {
+        key: 'storeName-asc',
+        label: 'Ascending',
+        onClick: () => handleSort('storeName', 'asc'),
+      },
+      {
+        key: 'storeName-desc',
+        label: 'Descending',
+        onClick: () => handleSort('storeName', 'desc'),
+      },
+    ];
+
+    // Add "Clear Sort" option if currently sorted
+    if (sortField === 'storeName') {
+      items.push({
+        key: 'storeName-clear',
+        label: 'Clear Sort',
+        onClick: () => handleSort('storeName', 'clear'),
+      });
+    }
+
+    return items;
+  };
+
+  // Filter retailers based on search term and apply sorting
   const getFilteredRetailers = () => {
-    if (!searchTerm.trim()) {
-      return retailers;
+    let filteredRetailers = retailers;
+    
+    if (searchTerm.trim()) {
+      filteredRetailers = retailers.filter(retailer => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          (retailer.storeName && retailer.storeName.toLowerCase().includes(searchLower)) ||
+          (retailer.name && retailer.name.toLowerCase().includes(searchLower)) ||
+          (retailer.owner && retailer.owner.toLowerCase().includes(searchLower)) ||
+          (retailer.businessEmail && retailer.businessEmail.toLowerCase().includes(searchLower)) ||
+          (retailer.businessAddress && retailer.businessAddress.toLowerCase().includes(searchLower)) ||
+          (retailer.businessRegistrationNumber && retailer.businessRegistrationNumber.toLowerCase().includes(searchLower))
+        );
+      });
     }
     
-    return retailers.filter(retailer => {
-      const searchLower = searchTerm.toLowerCase();
-      return (
-        (retailer.storeName && retailer.storeName.toLowerCase().includes(searchLower)) ||
-        (retailer.name && retailer.name.toLowerCase().includes(searchLower)) ||
-        (retailer.owner && retailer.owner.toLowerCase().includes(searchLower)) ||
-        (retailer.businessEmail && retailer.businessEmail.toLowerCase().includes(searchLower)) ||
-        (retailer.businessAddress && retailer.businessAddress.toLowerCase().includes(searchLower)) ||
-        (retailer.businessRegistrationNumber && retailer.businessRegistrationNumber.toLowerCase().includes(searchLower))
-      );
+    // Apply sorting if sortField is set
+    if (sortField === 'storeName') {
+      return filteredRetailers.sort((a, b) => {
+        const aValue = (a.storeName || a.name || '').toLowerCase();
+        const bValue = (b.storeName || b.name || '').toLowerCase();
+        
+        if (sortOrder === 'asc') {
+          return aValue.localeCompare(bValue);
+        } else {
+          return bValue.localeCompare(aValue);
+        }
+      });
+    }
+    
+    // Default sort by createdAt field (newest first) if no custom sorting
+    return filteredRetailers.sort((a, b) => {
+      if (a.createdAt && b.createdAt) {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA; // Descending order (newest first)
+      }
+      // Fallback to ObjectId if createdAt is not available
+      if (a.id && b.id) {
+        return b.id.localeCompare(a.id);
+      }
+      return 0;
     });
   };
 
@@ -344,7 +416,23 @@ const RetailersList = () => {
             <table className="retailers-table">
               <thead>
                 <tr>
-                  <th>Store Name</th>
+                  <th>
+                    <div className="column-header">
+                      <span>Store Name</span>
+                      <Dropdown
+                        menu={{ items: getDropdownItems() }}
+                        trigger={['click']}
+                        placement="bottomLeft"
+                      >
+                        <Button 
+                          type="text" 
+                          size="small"
+                          className={`sort-dropdown ${sortField === 'storeName' ? 'active' : ''}`}
+                          icon={<DownOutlined />}
+                        />
+                      </Dropdown>
+                    </div>
+                  </th>
                   <th>Owner</th>
                   <th>Business Email</th>
                   <th>Business Address</th>

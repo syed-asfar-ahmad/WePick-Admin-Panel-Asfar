@@ -73,6 +73,14 @@ const ParcelsList = () => {
       if (response?.success) {
         const parcelsData = response.data?.parcels || [];
         
+        // Ensure parcelsData is an array
+        if (!Array.isArray(parcelsData)) {
+          setParcels([]);
+          setFilteredParcels([]);
+          setError('Invalid data format received from server.');
+          return;
+        }
+        
         // Update pagination from API response
         const totalParcelsFromAPI = response.data?.totalParcelCount || parcelsData.length;
         const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
@@ -170,60 +178,84 @@ const ParcelsList = () => {
       return [];
     }
 
+    // If no search term and no filters, return all parcels
     const hasActiveFilters = Object.values(filters).some(value => value !== '');
     if (!hasActiveFilters && !searchTerm) {
       return parcels;
     }
 
-    return parcels.filter(parcel => {
-      // Search filter - case-insensitive match for multiple fields
-      if (searchTerm) {
-        const searchLower = searchTerm.toLowerCase();
-        if (
-          !(parcel.parcelId && parcel.parcelId.toLowerCase().includes(searchLower)) &&
-          !(parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) &&
-          !(parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) &&
-          !(parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) &&
-          !(parcel.businessName && parcel.businessName.toLowerCase().includes(searchLower))
-        ) {
+    try {
+      return parcels.filter(parcel => {
+        // Ensure parcel is a valid object
+        if (!parcel || typeof parcel !== 'object') {
           return false;
         }
-      }
 
-             // Status filter
-       if (filters.status && filters.status.trim() !== '') {
-         if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
-           return false;
-         }
-       }
-
-               // Date filter - specifically for createdDate column
-      if (filters.dateRange && filters.dateRange.trim() !== '') {
-        try {
-          const filterDate = new Date(filters.dateRange);
-          filterDate.setHours(0, 0, 0, 0); // Set to start of day
+        // Search filter - case-insensitive match for multiple fields
+        if (searchTerm && searchTerm.trim() !== '') {
+          const searchLower = searchTerm.toLowerCase().trim();
           
-          // Only use createdDate field
-          if (parcel.createdDate) {
-            const parcelDate = new Date(parcel.createdDate);
-            parcelDate.setHours(0, 0, 0, 0); // Set to start of day
+          // Check if any field contains the search term
+          const searchableFields = [
+            parcel.parcelId,
+            parcel.parcelName,
+            parcel.senderName,
+            parcel.recipientName,
+            parcel.businessName,
+            parcel.customerName,
+            parcel.from,
+            parcel.to
+          ];
+
+          const hasMatch = searchableFields.some(field => {
+            if (!field) return false;
             
-            // Check if parcel was created on the selected date (exact match)
-            if (parcelDate.getTime() !== filterDate.getTime()) {
-              return false;
-            }
-          } else {
-            // If no createdDate, exclude from results
+            // Convert field to string for comparison (handles both string and number types)
+            const fieldString = String(field).toLowerCase();
+            return fieldString.includes(searchLower);
+          });
+
+          if (!hasMatch) {
             return false;
           }
-        } catch (error) {
-          console.error('Error parsing date:', error);
-          return false;
         }
-      }
 
-      return true;
-    });
+        // Status filter
+        if (filters.status && filters.status.trim() !== '') {
+          if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
+            return false;
+          }
+        }
+
+        // Date filter - specifically for createdDate column
+        if (filters.dateRange && filters.dateRange.trim() !== '') {
+          try {
+            const filterDate = new Date(filters.dateRange);
+            filterDate.setHours(0, 0, 0, 0); // Set to start of day
+            
+            // Only use createdDate field
+            if (parcel.createdDate) {
+              const parcelDate = new Date(parcel.createdDate);
+              parcelDate.setHours(0, 0, 0, 0); // Set to start of day
+              
+              // Check if parcel was created on the selected date (exact match)
+              if (parcelDate.getTime() !== filterDate.getTime()) {
+                return false;
+              }
+            } else {
+              // If no createdDate, exclude from results
+              return false;
+            }
+          } catch (error) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    } catch (error) {
+      return [];
+    }
   };
 
   const getStatusColor = (status) => {
@@ -377,10 +409,14 @@ const ParcelsList = () => {
           <FaSearch className="search-icon" />
           <input
             type="text"
-            placeholder="Search Parcels"
+            placeholder="Search parcels"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchTerm(value);
+            }}
             className="search-input"
+            disabled={isLoading}
           />
           {searchTerm && (
             <button
@@ -394,7 +430,12 @@ const ParcelsList = () => {
         </div>
         {searchTerm && (
           <div className="search-results-info">
-            <span>Showing {getFilteredParcels().length} of {parcels.length} parcels</span>
+            <span>
+              {getFilteredParcels().length === 0 
+                ? `No parcels found for "${searchTerm}"` 
+                : `Showing ${getFilteredParcels().length} of ${parcels.length} parcels`
+              }
+            </span>
             <button
               className="reset-search-btn"
               onClick={() => setSearchTerm('')}
