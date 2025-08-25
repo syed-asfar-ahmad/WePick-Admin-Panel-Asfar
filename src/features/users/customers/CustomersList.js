@@ -144,17 +144,31 @@ const CustomersList = () => {
       return [];
     }
 
-    if (!searchTerm.trim()) {
-      return customers;
+    let filteredCustomers = customers;
+
+    if (searchTerm.trim()) {
+      filteredCustomers = customers.filter(customer => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
+          (customer.email && customer.email.toLowerCase().includes(searchLower)) ||
+          (customer.phoneNumber && customer.phoneNumber.toLowerCase().includes(searchLower))
+        );
+      });
     }
 
-    return customers.filter(customer => {
-      const searchLower = searchTerm.toLowerCase();
-      return (
-        (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
-        (customer.email && customer.email.toLowerCase().includes(searchLower)) ||
-        (customer.phoneNumber && customer.phoneNumber.toLowerCase().includes(searchLower))
-      );
+    // Sort by createdAt field (newest first)
+    return filteredCustomers.sort((a, b) => {
+      if (a.createdAt && b.createdAt) {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA; // Descending order (newest first)
+      }
+      // Fallback to ObjectId if createdAt is not available
+      if (a.id && b.id) {
+        return b.id.localeCompare(a.id);
+      }
+      return 0;
     });
   };
 

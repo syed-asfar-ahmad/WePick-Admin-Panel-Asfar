@@ -65,10 +65,17 @@ const DispatchedParcels = () => {
         // Extract parcels array from the correct nested structure
         const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
         
+        // Ensure parcelsData is an array
+        if (!Array.isArray(parcelsData)) {
+          setParcels([]);
+          setError('Invalid data format received from server.');
+          return;
+        }
+        
         // Update pagination from API response
         setCurrentPage(response.data?.currentPage || page);
         setTotalPages(response.data?.totalPages || 1);
-        setTotalCount(response.data?.totalCount || 0);
+        setTotalCount(response.data?.totalCount || parcelsData.length);
         
         setParcels(parcelsData);
       } else {
@@ -168,71 +175,97 @@ const DispatchedParcels = () => {
       return [];
     }
 
+    // If no search term and no filters, return all parcels
     const hasActiveFilters = Object.values(filters).some(value => value !== '');
     if (!hasActiveFilters && !searchTerm) {
       return parcels;
     }
 
-    return parcels.filter(parcel => {
-      // Status filter - exact match (case insensitive)
-      if (filters.status && filters.status.trim() !== '') {
-        const parcelStatus = (parcel.status || '').toLowerCase().trim();
-        const filterStatus = filters.status.toLowerCase().trim();
-        if (parcelStatus !== filterStatus) {
+    try {
+      return parcels.filter(parcel => {
+        // Ensure parcel is a valid object
+        if (!parcel || typeof parcel !== 'object') {
           return false;
         }
-      }
 
-      // Date Range filter - filter parcels created on the selected date
-      if (filters.dateRange && filters.dateRange.trim() !== '') {
-        try {
-          const filterDate = new Date(filters.dateRange);
-          filterDate.setHours(0, 0, 0, 0); // Set to start of day
-          
-          let parcelDate = null;
-          
-          // Try different date fields that might exist
-          if (parcel.date) {
-            parcelDate = new Date(parcel.date);
-          } else if (parcel.createdAt) {
-            parcelDate = new Date(parcel.createdAt);
-          } else if (parcel.updatedAt) {
-            parcelDate = new Date(parcel.updatedAt);
-          }
-          
-          if (parcelDate) {
-            parcelDate.setHours(0, 0, 0, 0); // Set to start of day
-            // Check if dates are equal (same day)
-            if (parcelDate.getTime() !== filterDate.getTime()) {
-              return false;
-            }
-          } else {
-            // If no date found, exclude from results
+        // Status filter - exact match (case insensitive)
+        if (filters.status && filters.status.trim() !== '') {
+          const parcelStatus = (parcel.status || '').toLowerCase().trim();
+          const filterStatus = filters.status.toLowerCase().trim();
+          if (parcelStatus !== filterStatus) {
             return false;
           }
-        } catch (error) {
-          console.error('Error parsing date:', error);
-          return false;
         }
-      }
 
-      // Search filter - case-insensitive match for parcelId, parcelName, senderName, recipientName, from, to
-      if (searchTerm) {
-        const searchLower = searchTerm.toLowerCase();
-        if (
-          !(parcel.parcelId && parcel.parcelId.toLowerCase().includes(searchLower)) &&
-          !(parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) &&
-          !(parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) &&
-          !(parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) &&
-          !(parcel.from && parcel.from.toLowerCase().includes(searchLower)) &&
-          !(parcel.to && parcel.to.toLowerCase().includes(searchLower))
-        ) {
-          return false;
+        // Date Range filter - filter parcels created on the selected date
+        if (filters.dateRange && filters.dateRange.trim() !== '') {
+          try {
+            const filterDate = new Date(filters.dateRange);
+            if (isNaN(filterDate.getTime())) {
+              return false;
+            }
+            filterDate.setHours(0, 0, 0, 0); // Set to start of day
+            
+            let parcelDate = null;
+            
+            // Try different date fields that might exist
+            if (parcel.date) {
+              parcelDate = new Date(parcel.date);
+            } else if (parcel.createdAt) {
+              parcelDate = new Date(parcel.createdAt);
+            } else if (parcel.updatedAt) {
+              parcelDate = new Date(parcel.updatedAt);
+            }
+            
+            if (parcelDate && !isNaN(parcelDate.getTime())) {
+              parcelDate.setHours(0, 0, 0, 0); // Set to start of day
+              // Check if dates are equal (same day)
+              if (parcelDate.getTime() !== filterDate.getTime()) {
+                return false;
+              }
+            } else {
+              // If no valid date found, exclude from results
+              return false;
+            }
+          } catch (error) {
+            return false;
+          }
         }
-      }
 
-      return true;
-    });
+        // Search filter - case-insensitive match for parcelId, parcelName, senderName, recipientName, from, to
+        if (searchTerm && searchTerm.trim() !== '') {
+          const searchLower = searchTerm.toLowerCase().trim();
+          
+          // Check if any field contains the search term
+          const searchableFields = [
+            parcel.parcelId,
+            parcel.parcelName,
+            parcel.senderName,
+            parcel.recipientName,
+            parcel.from,
+            parcel.to,
+            parcel.businessName,
+            parcel.customerName
+          ];
+
+          const hasMatch = searchableFields.some(field => {
+            if (!field) return false;
+            
+            // Convert field to string for comparison (handles both string and number types)
+            const fieldString = String(field).toLowerCase();
+            return fieldString.includes(searchLower);
+          });
+
+          if (!hasMatch) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    } catch (error) {
+      return [];
+    }
   };
 
   const filteredParcels = getFilteredParcels();
@@ -421,10 +454,14 @@ const DispatchedParcels = () => {
           <FaSearch className="search-icon" />
           <input
             type="text"
-            placeholder="Search Parcels"
+            placeholder="Search dispatched parcels"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchTerm(value);
+            }}
             className="search-input"
+            disabled={isLoading}
           />
           {searchTerm && (
             <button 
@@ -438,7 +475,12 @@ const DispatchedParcels = () => {
         </div>
         {searchTerm && (
           <div className="search-results-info">
-            <span>Showing {filteredParcels.length} of {parcels.length} parcels</span>
+            <span>
+              {filteredParcels.length === 0 
+                ? `No parcels found for "${searchTerm}"` 
+                : `Showing ${filteredParcels.length} of ${parcels.length} parcels`
+              }
+            </span>
             <button 
               className="reset-search-btn"
               onClick={() => setSearchTerm('')}
