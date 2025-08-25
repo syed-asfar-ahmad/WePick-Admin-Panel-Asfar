@@ -178,7 +178,7 @@ const ReceivedParcels = () => {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(parcel => {
         return (
-          (parcel.parcelId && parcel.parcelId.toLowerCase().includes(searchLower)) ||
+          (parcel.parcelId && String(parcel.parcelId).toLowerCase().includes(searchLower)) ||
           (parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) ||
           (parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) ||
           (parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) ||
@@ -191,7 +191,7 @@ const ReceivedParcels = () => {
     // Apply parcel ID filter
     if (filters.parcelId) {
       result = result.filter(parcel => 
-        parcel.parcelId && parcel.parcelId.toLowerCase().includes(filters.parcelId.toLowerCase())
+        parcel.parcelId && String(parcel.parcelId).toLowerCase().includes(filters.parcelId.toLowerCase())
       );
     }
     
