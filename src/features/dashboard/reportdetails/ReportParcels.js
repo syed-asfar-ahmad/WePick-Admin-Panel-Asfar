@@ -4,15 +4,21 @@ import "./ReportParcels.scss";
 import Loading from '../../../components/common/Loading';
 import { getAdminDashboard } from '../../../services/wepickApi';
 
-const statusStyles = {
-  "In Transit": {
-    color: "#1BC949",
-    background: "#E6F9F0",
-  },
-  "Failed": {
-    color: "#FF4D4F",
-    background: "#FFEAEA",
-  },
+const getStatusColor = (status) => {
+  switch(status.toLowerCase()) {
+    case 'delivered':
+      return '#4CAF50';
+    case 'in transit':
+      return '#2196F3';
+    case 'pending':
+      return '#FFC107';
+    case 'failed':
+      return '#F44336';
+    case 'deposit':
+      return '#757575';
+    default:
+      return '#757575';
+  }
 };
 
 const ReportParcels = () => {
@@ -106,21 +112,21 @@ const ReportParcels = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        const style = statusStyles[status] || statusStyles["In Transit"];
         return (
-          <Tag
-            style={{
-              color: style.color,
-              background: style.background,
-              borderRadius: 12,
-              fontWeight: 600,
-              fontSize: 13,
-              padding: "2px 14px 2px 8px",
-              border: "none",
+          <span
+            className="status-badge"
+            style={{ 
+              backgroundColor: getStatusColor(status),
+              color: 'white',
+              padding: '4px 12px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: '600',
+              display: 'inline-block'
             }}
           >
             {status}
-          </Tag>
+          </span>
         );
       },
     },
