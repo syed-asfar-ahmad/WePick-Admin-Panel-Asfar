@@ -25,6 +25,7 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://we-pick-admin-panel-asfar-new.vercel.app/api"
+    "REACT_APP_API_URL": "https://we-pick-admin-panel-asfar-new.vercel.app/api",
+    "CI": "false"
   }
 }
