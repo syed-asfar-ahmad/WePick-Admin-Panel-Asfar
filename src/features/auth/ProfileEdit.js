@@ -23,6 +23,7 @@ const ProfileEdit = () => {
   // Use Redux user data for profile
   // Get image base URL with fallback
   const getImageBaseUrl = () => {
+
     // Use Vercel proxy in production, direct URL in development
 return process.env.NODE_ENV === 'production' 
   ? 'https://we-pick-admin-panel-asfar-new.vercel.app/api' 
