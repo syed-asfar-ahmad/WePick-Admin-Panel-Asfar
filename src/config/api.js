@@ -8,7 +8,10 @@
 // export const BASE_URL = "https://api.testing.winwithwits.com/api";
 // export const BASE_URL = "http://localhost:4000/api/v1/admin";
   
-export const BASE_URL = "http://35.183.208.209/api/v1/admin";
+// Use Vercel proxy in production, direct URL in development
+export const BASE_URL = process.env.NODE_ENV === 'production' 
+  ? "/api/v1/admin" 
+  : "http://35.183.208.209/api/v1/admin";
 
 
 

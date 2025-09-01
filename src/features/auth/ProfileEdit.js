@@ -23,7 +23,10 @@ const ProfileEdit = () => {
   // Use Redux user data for profile
   // Get image base URL with fallback
   const getImageBaseUrl = () => {
-    return process.env.REACT_APP_IMAGE_BASE_URL || 'http://35.183.208.209';
+    // Use Vercel proxy in production, direct URL in development
+return process.env.NODE_ENV === 'production' 
+  ? 'https://we-pick-admin-panel-asfar-new.vercel.app/api' 
+  : 'http://35.183.208.209';
   };
 
   // Test different possible image paths
