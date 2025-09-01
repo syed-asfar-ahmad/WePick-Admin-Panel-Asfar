@@ -8,7 +8,7 @@
 // export const BASE_URL = "https://api.testing.winwithwits.com/api";
 // export const BASE_URL = "http://localhost:4000/api/v1/admin";
   
-export const BASE_URL = "https://wepick.txlabz.com/api/v1/admin";
+export const BASE_URL = "http://35.183.208.209/api/v1/admin";
 
 
 

@@ -43,19 +43,21 @@ const CustomersList = () => {
         customersData = [];
       }
       
-      // Fetch phone numbers for each customer
-      const customersWithPhoneNumbers = await Promise.all(
+      // Fetch phone numbers and totalParcels for each customer
+      const customersWithDetails = await Promise.all(
         customersData.map(async (customer) => {
           try {
             const customerDetail = await getCustomerById(customer.id);
             return {
               ...customer,
-              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A'
+              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A',
+              totalParcels: customerDetail?.data?.totalParcels || 0
             };
           } catch (err) {
             return {
               ...customer,
-              phoneNumber: 'N/A'
+              phoneNumber: 'N/A',
+              totalParcels: 0
             };
           }
         })
@@ -64,9 +66,9 @@ const CustomersList = () => {
       // Update pagination from API response
       setCurrentPage(response.data?.currentPage || page);
       setTotalPages(response.data?.totalPages || 1);
-      setTotalCustomers(response.data?.totalCustomers || customersWithPhoneNumbers.length);
+      setTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
       
-      setCustomers(customersWithPhoneNumbers);
+      setCustomers(customersWithDetails);
     } catch (err) {
       // Handle error silently
     } finally {
@@ -97,19 +99,21 @@ const CustomersList = () => {
         customersData = [];
       }
       
-      // Fetch phone numbers for each customer
-      const customersWithPhoneNumbers = await Promise.all(
+      // Fetch phone numbers and totalParcels for each customer
+      const customersWithDetails = await Promise.all(
         customersData.map(async (customer) => {
           try {
             const customerDetail = await getCustomerById(customer.id);
             return {
               ...customer,
-              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A'
+              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A',
+              totalParcels: customerDetail?.data?.totalParcels || 0
             };
           } catch (err) {
             return {
               ...customer,
-              phoneNumber: 'N/A'
+              phoneNumber: 'N/A',
+              totalParcels: 0
             };
           }
         })
@@ -118,9 +122,9 @@ const CustomersList = () => {
       // Update pagination from API response
       setCurrentPage(response.data?.currentPage || page);
       setTotalPages(response.data?.totalPages || 1);
-      setTotalCustomers(response.data?.totalCustomers || customersWithPhoneNumbers.length);
+      setTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
       
-      setCustomers(customersWithPhoneNumbers);
+      setCustomers(customersWithDetails);
     } catch (err) {
       // Handle error silently
     } finally {
