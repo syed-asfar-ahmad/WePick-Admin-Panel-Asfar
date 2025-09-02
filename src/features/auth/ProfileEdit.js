@@ -207,20 +207,9 @@ return process.env.NODE_ENV === 'production'
         return;
       }
       
-      // Check if phone number starts with 0 (Pakistan format)
-      if (cleanPhoneNumber && !cleanPhoneNumber.startsWith('0')) {
-        CustomToast({
-          type: "error",
-          message: "Phone number should start with 0"
-        });
-        setIsLoading(false);
-        setSubmitting(false);
-        return;
-      }
-      
       // Convert 11 digits to 10 digits for backend compatibility
       let phoneNumberToSend = cleanPhoneNumber || '';
-      if (cleanPhoneNumber && cleanPhoneNumber.length === 11 && cleanPhoneNumber.startsWith('0')) {
+      if (cleanPhoneNumber && cleanPhoneNumber.length === 11) {
         phoneNumberToSend = cleanPhoneNumber.substring(1);
       }
       
