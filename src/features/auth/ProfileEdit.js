@@ -73,8 +73,9 @@ return process.env.NODE_ENV === 'production'
       .required("Name is required")
       .min(2, "Name must be at least 2 characters"),
     phoneNumber: Yup.string()
-      .matches(/^[0-9]*$/, "Phone number must contain only digits")
+      .matches(/^[0-9]+$/, "Phone number must contain only digits")
       .min(10, "Phone number must be at least 10 digits")
+      .max(11, "Phone number cannot exceed 11 digits")
       .optional(),
   });
 
@@ -193,14 +194,44 @@ return process.env.NODE_ENV === 'production'
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setIsLoading(true);
     try {
+      // Clean and validate phone number
+      const cleanPhoneNumber = values.phoneNumber?.trim().replace(/\s/g, '');
+      
+      if (cleanPhoneNumber && (cleanPhoneNumber.length < 10 || cleanPhoneNumber.length > 11)) {
+        CustomToast({
+          type: "error",
+          message: "Phone number must be between 10 and 11 digits"
+        });
+        setIsLoading(false);
+        setSubmitting(false);
+        return;
+      }
+      
+      // Check if phone number starts with 0 (Pakistan format)
+      if (cleanPhoneNumber && !cleanPhoneNumber.startsWith('0')) {
+        CustomToast({
+          type: "error",
+          message: "Phone number should start with 0"
+        });
+        setIsLoading(false);
+        setSubmitting(false);
+        return;
+      }
+      
+      // Convert 11 digits to 10 digits for backend compatibility
+      let phoneNumberToSend = cleanPhoneNumber || '';
+      if (cleanPhoneNumber && cleanPhoneNumber.length === 11 && cleanPhoneNumber.startsWith('0')) {
+        phoneNumberToSend = cleanPhoneNumber.substring(1);
+      }
+      
       const formData = new FormData();
       formData.append('name', values.name);
-      formData.append('phoneNumber', values.phoneNumber);
+      formData.append('phoneNumber', phoneNumberToSend);
       if (avatar) {
         formData.append('profileImage', avatar);
       }
       
-                   const response = await adminEditProfile(formData);
+      const response = await adminEditProfile(formData);
       
       if (response?.success || response?.data?.success) {
         // Update Redux state with new profile data
@@ -263,12 +294,22 @@ return process.env.NODE_ENV === 'production'
       } else {
         throw new Error(response?.message || response?.data?.message || "Failed to update profile");
       }
-    } catch (error) {
-      CustomToast({
-        type: "error",
-        message: error.response?.data?.message || error.message || "Failed to update profile"
-      });
-    } finally {
+         } catch (error) {
+       let errorMessage = "Failed to update profile";
+       
+       if (error.response?.data?.message) {
+         errorMessage = error.response.data.message;
+       } else if (error.response?.data?.error) {
+         errorMessage = error.response.data.error;
+       } else if (error.message) {
+         errorMessage = error.message;
+       }
+       
+       CustomToast({
+         type: "error",
+         message: errorMessage
+       });
+     } finally {
       setIsLoading(false);
       setSubmitting(false);
     }
@@ -388,24 +429,25 @@ return process.env.NODE_ENV === 'production'
                       />
                     </div>
 
-                    <div className="form-group">
-                      <label htmlFor="phoneNumber">
-                        <i className="fa fa-phone"></i>
-                        Phone Number
-                      </label>
-                      <div className="input-group">
-                        <Field
-                          type="text"
-                          name="phoneNumber"
-                          placeholder="Enter phone number"
-                        />
-                      </div>
-                      <ErrorMessage
-                        name="phoneNumber"
-                        component="div"
-                        className="error-message"
-                      />
-                    </div>
+                                         <div className="form-group">
+                       <label htmlFor="phoneNumber">
+                         <i className="fa fa-phone"></i>
+                         Phone Number
+                       </label>
+                       <div className="input-group">
+                         <Field
+                           type="text"
+                           name="phoneNumber"
+                           placeholder="Enter phone number"
+                           maxLength="11"
+                         />
+                       </div>
+                       <ErrorMessage
+                         name="phoneNumber"
+                         component="div"
+                         className="error-message"
+                       />
+                     </div>
                   </div>
                 </div>
 
