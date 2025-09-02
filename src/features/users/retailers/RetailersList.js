@@ -7,11 +7,14 @@ import './RetailersList.scss';
 import Loading from '../../../components/common/Loading';
 import { getRetailers } from '../../../services/wepickApi';
 import { getRetailerById, updateRetailerById } from '../../../services/wepickApi';
+import { CustomToast } from '../../../atoms/toastMessage';
 
 const RetailersList = () => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRetailer, setSelectedRetailer] = useState(null);
+  const [originalRetailerData, setOriginalRetailerData] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -221,8 +224,12 @@ const RetailersList = () => {
     try {
       setIsLoading(true);
       const response = await getRetailerById(retailer.id);
-      setSelectedRetailer(response.data || retailer);
+      const retailerData = response.data || retailer;
+      setSelectedRetailer(retailerData);
+      setOriginalRetailerData(retailerData);
       setShowEditModal(true);
+      // Reset change tracking
+      setHasFormChanges(false);
     } catch (err) {
       setError('Failed to load retailer details for editing.');
     } finally {
@@ -234,11 +241,26 @@ const RetailersList = () => {
     e.preventDefault();
     try {
       setIsEditLoading(true);
-      await updateRetailerById(selectedRetailer.id, selectedRetailer);
-      setShowEditModal(false);
-      setSelectedRetailer(null);
-      fetchRetailers(); // Refresh list after edit
+      const response = await updateRetailerById(selectedRetailer.id, selectedRetailer);
+      
+      if (response?.success) {
+        CustomToast({
+          type: "success",
+          message: response?.message || response?.data?.message || "Retailer updated successfully"
+        });
+        setShowEditModal(false);
+        setSelectedRetailer(null);
+        setOriginalRetailerData(null);
+        setHasFormChanges(false);
+        fetchRetailers(); // Refresh list after edit
+      } else {
+        throw new Error('Failed to update retailer');
+      }
     } catch (err) {
+      CustomToast({
+        type: "error",
+        message: err?.response?.data?.message || err?.message || 'Failed to update retailer. Please try again.'
+      });
       setError('Failed to update retailer.');
     } finally {
       setIsEditLoading(false);
@@ -251,6 +273,27 @@ const RetailersList = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Check if there are any changes compared to original data
+    setTimeout(() => {
+      const hasChanges = checkForChanges();
+      setHasFormChanges(hasChanges);
+    }, 0);
+  };
+
+  // Function to check if form has any changes
+  const checkForChanges = () => {
+    if (!originalRetailerData || !selectedRetailer) return false;
+    
+    // Check all fields
+    if (originalRetailerData.businessName !== selectedRetailer.businessName) return true;
+    if (originalRetailerData.name !== selectedRetailer.name) return true;
+    if (originalRetailerData.businessEmail !== selectedRetailer.businessEmail) return true;
+    if (originalRetailerData.phoneNumber !== selectedRetailer.phoneNumber) return true;
+    if (originalRetailerData.businessAddress !== selectedRetailer.businessAddress) return true;
+    if (originalRetailerData.businessRegistrationNumber !== selectedRetailer.businessRegistrationNumber) return true;
+    
+    return false;
   };
 
   const filteredRetailers = getFilteredRetailers();
@@ -380,10 +423,15 @@ const RetailersList = () => {
                 </div>
               </div>
               <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
+                <button type="button" className="cancel-button" onClick={() => {
+                  setShowEditModal(false);
+                  setSelectedRetailer(null);
+                  setOriginalRetailerData(null);
+                  setHasFormChanges(false);
+                }} disabled={isEditLoading}>
                   Cancel
                 </button>
-                <button type="submit" className="save-button" disabled={isEditLoading}>
+                <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
                   Save Changes
                 </button>
               </div>

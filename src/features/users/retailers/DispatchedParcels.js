@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
 import Loading from '../../../components/common/Loading';
 import { getDispatchedParcels, getDispatchedParcelById, updateDispatchedParcelById } from '../../../services/wepickApi';
+import { CustomToast } from '../../../atoms/toastMessage';
 
 const DispatchedParcels = () => {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ const DispatchedParcels = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
+  const [originalParcelData, setOriginalParcelData] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -280,6 +283,8 @@ const DispatchedParcels = () => {
         return '#FFC107';
       case 'failed':
         return '#F44336';
+      case 'deposit':
+        return '#FF9800';
       default:
         return '#757575';
     }
@@ -291,19 +296,24 @@ const DispatchedParcels = () => {
       const response = await getDispatchedParcelById(parcel.id);
       if (response?.success && response?.data) {
         setSelectedParcel(response.data);
+        setOriginalParcelData(response.data);
         setShowEditModal(true);
       } else {
         // Fallback to basic parcel data if API call fails
         setSelectedParcel(parcel);
+        setOriginalParcelData(parcel);
         setShowEditModal(true);
       }
     } catch (err) {
       // Fallback to basic parcel data if API call fails
       setSelectedParcel(parcel);
+      setOriginalParcelData(parcel);
       setShowEditModal(true);
     } finally {
       setIsLoading(false);
     }
+    // Reset change tracking
+    setHasFormChanges(false);
   };
 
   const handleSaveEdit = async (e) => {
@@ -339,13 +349,23 @@ const DispatchedParcels = () => {
       const response = await updateDispatchedParcelById(selectedParcel.id, updateData);
       
       if (response?.success) {
+        CustomToast({
+          type: "success",
+          message: response?.message || response?.data?.message || "Parcel updated successfully"
+        });
         setShowEditModal(false);
         setSelectedParcel(null);
+        setOriginalParcelData(null);
+        setHasFormChanges(false);
         fetchParcels(); // Refresh list after edit
       } else {
         throw new Error('Failed to update parcel');
       }
     } catch (err) {
+      CustomToast({
+        type: "error",
+        message: err?.response?.data?.message || err?.message || 'Failed to update parcel. Please try again.'
+      });
       setError('Failed to update parcel. Please try again.');
     } finally {
       setIsEditLoading(false);
@@ -371,6 +391,34 @@ const DispatchedParcels = () => {
         [name]: value
       }));
     }
+    
+    // Check if there are any changes compared to original data
+    setTimeout(() => {
+      const hasChanges = checkForChanges();
+      setHasFormChanges(hasChanges);
+    }, 0);
+  };
+
+  // Function to check if form has any changes
+  const checkForChanges = () => {
+    if (!originalParcelData || !selectedParcel) return false;
+    
+    // Check main fields
+    if (originalParcelData.parcelName !== selectedParcel.parcelName) return true;
+    if (originalParcelData.weight !== selectedParcel.weight) return true;
+    if (originalParcelData.status !== selectedParcel.status) return true;
+    if (originalParcelData.senderName !== selectedParcel.senderName) return true;
+    if (originalParcelData.recipientName !== selectedParcel.recipientName) return true;
+    if (originalParcelData.recipientEmail !== selectedParcel.recipientEmail) return true;
+    if (originalParcelData.recipientPhone !== selectedParcel.recipientPhone) return true;
+    if (originalParcelData.from !== selectedParcel.from) return true;
+    if (originalParcelData.to !== selectedParcel.to) return true;
+    
+    // Check nested senderInfo fields
+    if (originalParcelData.senderInfo?.businessName !== selectedParcel.senderInfo?.businessName) return true;
+    if (originalParcelData.senderInfo?.phoneNumber !== selectedParcel.senderInfo?.phoneNumber) return true;
+    
+    return false;
   };
 
   const handleViewParcel = async (parcel) => {
@@ -411,7 +459,7 @@ const DispatchedParcels = () => {
         <h1>Dispatched Parcels</h1>
         <div className="header-actions">
           <button className="filter-button" onClick={() => setShowFilters(!showFilters)}>
-            <FaFilter style={{ color: '#4CAF50' }} /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+            <FaFilter style={{ color: '#4CAF50' }} /> {showFilters ? 'Close Filters' : 'Show Filters'}
           </button>
         </div>
       </div>
@@ -730,14 +778,19 @@ const DispatchedParcels = () => {
                   </div>
                 </div>
               </div>
-              <div className="form-actions">
-                <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
-                  Cancel
-                </button>
-                <button type="submit" className="save-button" disabled={isEditLoading}>
-                  Save Changes
-                </button>
-              </div>
+                             <div className="form-actions">
+                 <button type="button" className="cancel-button" onClick={() => {
+                   setShowEditModal(false);
+                   setSelectedParcel(null);
+                   setOriginalParcelData(null);
+                   setHasFormChanges(false);
+                 }} disabled={isEditLoading}>
+                   Cancel
+                 </button>
+                 <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
+                   Save Changes
+                 </button>
+               </div>
             </form>
           </div>
         </div>

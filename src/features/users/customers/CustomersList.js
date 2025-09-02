@@ -4,13 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import './CustomersList.scss';
 import Loading from '../../../components/common/Loading';
 import { getCustomers, getCustomerById, updateCustomerById } from '../../../services/wepickApi';
+import { CustomToast } from '../../../atoms/toastMessage';
 
 const CustomersList = () => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [originalCustomerData, setOriginalCustomerData] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditLoading, setIsEditLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [customers, setCustomers] = useState([]);
   const [totalCustomers, setTotalCustomers] = useState(0);
@@ -186,10 +190,17 @@ const CustomersList = () => {
       
       const response = await getCustomerById(customer.id);
       
-      setSelectedCustomer(response.data || customer);
+      const customerData = response.data || customer;
+      setSelectedCustomer(customerData);
+      setOriginalCustomerData(customerData);
       setShowEditModal(true);
+      // Reset change tracking
+      setHasFormChanges(false);
     } catch (err) {
-      // Handle error silently
+      CustomToast({
+        type: "error",
+        message: 'Failed to load customer details for editing.'
+      });
     } finally {
       setIsEditLoading(false);
     }
@@ -207,20 +218,26 @@ const CustomersList = () => {
         phoneNumber: selectedCustomer.phoneNumber
       };
       
-
-      
       const response = await updateCustomerById(selectedCustomer.id, updateData);
 
-      
       if (response?.success) {
+        CustomToast({
+          type: "success",
+          message: response?.message || response?.data?.message || "Customer updated successfully"
+        });
         setShowEditModal(false);
         setSelectedCustomer(null);
+        setOriginalCustomerData(null);
+        setHasFormChanges(false);
         fetchCustomers();
       } else {
-        // Handle update failure silently
+        throw new Error('Failed to update customer');
       }
     } catch (err) {
-      // Handle error silently
+      CustomToast({
+        type: "error",
+        message: err?.response?.data?.message || err?.message || 'Failed to update customer. Please try again.'
+      });
     } finally {
       setIsEditLoading(false);
     }
@@ -232,6 +249,24 @@ const CustomersList = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Check if there are any changes compared to original data
+    setTimeout(() => {
+      const hasChanges = checkForChanges();
+      setHasFormChanges(hasChanges);
+    }, 0);
+  };
+
+  // Function to check if form has any changes
+  const checkForChanges = () => {
+    if (!originalCustomerData || !selectedCustomer) return false;
+    
+    // Check all fields
+    if (originalCustomerData.name !== selectedCustomer.name) return true;
+    if (originalCustomerData.email !== selectedCustomer.email) return true;
+    if (originalCustomerData.phoneNumber !== selectedCustomer.phoneNumber) return true;
+    
+    return false;
   };
 
   return (
@@ -293,7 +328,7 @@ const CustomersList = () => {
               <div className="edit-modal">
                 <div className="modal-header">
                   <h2>Edit Customer</h2>
-                  <button className="close-button" onClick={() => setShowEditModal(false)}>
+                  <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                     <FaTimes />
                   </button>
                 </div>
@@ -306,6 +341,7 @@ const CustomersList = () => {
                         name="name"
                         value={selectedCustomer.name}
                         onChange={handleInputChange}
+                        disabled={isEditLoading}
                       />
                     </div>
                     <div className="form-group">
@@ -315,6 +351,7 @@ const CustomersList = () => {
                         name="email"
                         value={selectedCustomer.email}
                         onChange={handleInputChange}
+                        disabled={isEditLoading}
                       />
                     </div>
                     <div className="form-group">
@@ -325,15 +362,21 @@ const CustomersList = () => {
                         value={selectedCustomer.phoneNumber || ''}
                         onChange={handleInputChange}
                         placeholder="Enter phone number"
+                        disabled={isEditLoading}
                       />
                     </div>
                   </div>
                   <div className="modal-actions">
-                    <button type="button" className="cancel-button" onClick={() => setShowEditModal(false)}>
+                    <button type="button" className="cancel-button" onClick={() => {
+                      setShowEditModal(false);
+                      setSelectedCustomer(null);
+                      setOriginalCustomerData(null);
+                      setHasFormChanges(false);
+                    }} disabled={isEditLoading}>
                       Cancel
                     </button>
-                    <button type="submit" className="save-button" disabled={isEditLoading}>
-                      {isEditLoading ? 'Saving...' : 'Save Changes'}
+                    <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
+                      Save Changes
                     </button>
                   </div>
                 </form>

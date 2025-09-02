@@ -15,7 +15,7 @@ const getStatusColor = (status) => {
     case 'failed':
       return '#F44336';
     case 'deposit':
-      return '#757575';
+      return '#FF9800';
     default:
       return '#757575';
   }

@@ -120,21 +120,22 @@ const NotificationDropDown = () => {
           <Box
             sx={{
               position: 'absolute',
-              top: '4px',
-              right: '4px',
+              top: '0px',
+              right: '0px',
               backgroundColor: '#FF5252',
               color: 'white',
               borderRadius: '50%',
-              width: '18px',
-              height: '18px',
+              width: '22px',
+              height: '22px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: 'bold',
               boxShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
               border: '2px solid white',
-              zIndex: 1
+              zIndex: 1,
+              padding: '2px'
             }}
           >
             {getUnreadCount() > 9 ? '9+' : getUnreadCount()}

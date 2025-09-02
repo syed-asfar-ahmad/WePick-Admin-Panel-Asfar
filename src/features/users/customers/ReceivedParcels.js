@@ -280,7 +280,7 @@ const ReceivedParcels = () => {
         <h1>Received Parcels</h1>
         <div className="header-actions">
           <button className="filter-button" onClick={() => setShowFilters(!showFilters)}>
-            <FaFilter style={{ color: '#4CAF50' }} /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+            <FaFilter style={{ color: '#4CAF50' }} /> {showFilters ? 'Close Filters' : 'Show Filters'}
           </button>
         </div>
       </div>

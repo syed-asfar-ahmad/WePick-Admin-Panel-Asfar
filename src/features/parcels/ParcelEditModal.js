@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FaTimes, 
   FaBox, 
@@ -24,6 +24,7 @@ import {
   FaEdit
 } from 'react-icons/fa';
 import './ParcelEditModal.scss';
+import { CustomToast } from '../../atoms/toastMessage';
 
 const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => {
   const [formData, setFormData] = useState({
@@ -53,6 +54,35 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
     updatedAt: parcel.updatedAt || ''
   });
 
+  const [originalFormData, setOriginalFormData] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
+
+  // Initialize original form data when parcel changes
+  useEffect(() => {
+    if (parcel) {
+      const initialData = {
+        parcelName: parcel.parcelName || '',
+        weight: parcel.weight || '',
+        status: parcel.status || 'pending',
+        senderName: parcel.senderName || '',
+        senderInfo: {
+          businessName: parcel.senderInfo?.businessName || '',
+          phoneNumber: parcel.senderInfo?.phoneNumber || ''
+        },
+        recipientName: parcel.recipientName || '',
+        recipientEmail: parcel.recipientEmail || '',
+        recipientPhone: parcel.recipientPhone || '',
+        from: parcel.from || '',
+        to: parcel.to || '',
+        createdAt: parcel.createdAt || '',
+        updatedAt: parcel.updatedAt || ''
+      };
+      setFormData(initialData);
+      setOriginalFormData(initialData);
+      setHasFormChanges(false);
+    }
+  }, [parcel]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     
@@ -72,10 +102,44 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
         [name]: value
       }));
     }
+    
+    // Check if there are any changes compared to original data
+    setTimeout(() => {
+      const hasChanges = checkForChanges();
+      setHasFormChanges(hasChanges);
+    }, 0);
+  };
+
+  // Function to check if form has any changes
+  const checkForChanges = () => {
+    if (!originalFormData || !formData) return false;
+    
+    // Check all fields
+    if (originalFormData.parcelName !== formData.parcelName) return true;
+    if (originalFormData.weight !== formData.weight) return true;
+    if (originalFormData.status !== formData.status) return true;
+    if (originalFormData.senderName !== formData.senderName) return true;
+    if (originalFormData.senderInfo.businessName !== formData.senderInfo.businessName) return true;
+    if (originalFormData.senderInfo.phoneNumber !== formData.senderInfo.phoneNumber) return true;
+    if (originalFormData.recipientName !== formData.recipientName) return true;
+    if (originalFormData.recipientEmail !== formData.recipientEmail) return true;
+    if (originalFormData.recipientPhone !== formData.recipientPhone) return true;
+    if (originalFormData.from !== formData.from) return true;
+    if (originalFormData.to !== formData.to) return true;
+    
+    return false;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!hasFormChanges) {
+      CustomToast({
+        type: "info",
+        message: "No changes to save"
+      });
+      return;
+    }
     
     // Prepare the data for saving
     const saveData = {
@@ -89,7 +153,6 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
     };
     
     onSave(saveData);
-    onClose();
   };
 
   return (
@@ -359,7 +422,7 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
             <button type="button" className="cancel-button" onClick={onClose} disabled={isEditLoading}>
               Cancel
             </button>
-            <button type="submit" className="save-button" disabled={isEditLoading}>
+            <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
               Save Changes
             </button>
           </div>

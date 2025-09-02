@@ -767,6 +767,22 @@
             background: #45a049;
           }
 
+          &:disabled {
+            background: #ccc !important;
+            color: #666 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            box-shadow: none !important;
+            opacity: 0.6;
+            border: 1px solid #ddd;
+
+            &:hover {
+              background: #ccc !important;
+              transform: none !important;
+              box-shadow: none !important;
+            }
+          }
+
           .spinner {
             animation: spin 1s linear infinite;
             font-size: 0.8rem;

@@ -5,6 +5,7 @@ import ParcelEditModal from './ParcelEditModal';
 import './ParcelsList.scss';
 import Loading from '../../components/common/Loading';
 import { getParcelSummary, getParcelReport, getParcelDetail, getParcels, updateParcel } from '../../services/wepickApi';
+import { CustomToast } from '../../atoms/toastMessage';
 
 const ParcelsList = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -272,6 +273,8 @@ const ParcelsList = () => {
         return '#4CAF50';
       case 'ready for pickup':
         return '#FF9800';
+      case 'deposit':
+        return '#FF9800';
       default:
         return '#757575';
     }
@@ -300,10 +303,18 @@ const ParcelsList = () => {
       } else {
         // Fallback to basic parcel data if API call fails
         setEditingParcel(parcel);
+        CustomToast({
+          type: "warning",
+          message: "Using basic parcel data for editing"
+        });
       }
     } catch (err) {
       // Fallback to basic parcel data if API call fails
       setEditingParcel(parcel);
+      CustomToast({
+        type: "warning",
+        message: "Failed to load detailed parcel data. Using basic data for editing."
+      });
     } finally {
       setIsLoading(false);
     }
@@ -317,6 +328,11 @@ const ParcelsList = () => {
       const response = await updateParcel(updatedParcel.id, updatedParcel);
       
       if (response?.success) {
+        CustomToast({
+          type: "success",
+          message: response?.message || response?.data?.message || "Parcel updated successfully"
+        });
+        
         // If the updated parcel is currently being viewed, refresh its data
         if (selectedParcel && selectedParcel.id === updatedParcel.id) {
           try {
@@ -338,6 +354,10 @@ const ParcelsList = () => {
         throw new Error('Failed to update parcel');
       }
     } catch (err) {
+      CustomToast({
+        type: "error",
+        message: err?.response?.data?.message || err?.message || 'Failed to save parcel. Please try again.'
+      });
       setError('Failed to save parcel. Please try again.');
     } finally {
       setIsEditLoading(false);
