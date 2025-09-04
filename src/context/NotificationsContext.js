@@ -17,6 +17,7 @@ export const NotificationsProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [totalNotificationsCount, setTotalNotificationsCount] = useState(0);
   
   // Function to get icon based on notification type
   const getNotificationIcon = (type) => {

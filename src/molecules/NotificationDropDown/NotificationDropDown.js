@@ -365,83 +365,124 @@ const NotificationDropDown = () => {
             </Typography>
           </Box>
         ) : (
-          notifications.slice(0, 5).map((notification, index) => (
-            <React.Fragment key={notification.id}>
-              <MenuItem
-                onClick={() => handleNotificationClick(notification)}
-                sx={{
-                  padding: '16px 20px',
-                  cursor: 'pointer',
-                  backgroundColor: 'transparent',
-                  transition: 'all 0.2s ease',
-                  position: 'relative',
-                  width: '100%',
-                  whiteSpace: 'normal', // Allow text to wrap
+          <>
+            {notifications.map((notification, index) => (
+              <React.Fragment key={notification.id}>
+                <MenuItem
+                  onClick={() => handleNotificationClick(notification)}
+                  sx={{
+                    padding: '16px 20px',
+                    cursor: 'pointer',
+                    backgroundColor: 'transparent',
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
+                    width: '100%',
+                    whiteSpace: 'normal', // Allow text to wrap
+                    '&:hover': {
+                      backgroundColor: 'rgba(108, 173, 97, 0.05)',
+                      transform: 'translateX(4px)'
+                    },
+                                         '&.unread': {
+                       '&::after': {
+                         content: '""',
+                         position: 'absolute',
+                         right: '20px',
+                         top: '20px',
+                         width: '8px',
+                         height: '8px',
+                         backgroundColor: '#6CAD61',
+                         borderRadius: '50%',
+                         boxShadow: '0 0 0 2px rgba(108, 173, 97, 0.2)'
+                       }
+                     }
+                  }}
+                  className={!notification.isRead ? 'unread' : ''}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+                    <Box sx={{ 
+                      marginRight: '16px',
+                      marginTop: '3px', // Align icon with first line of text
+                      color: '#6CAD61',
+                      minWidth: '24px', // Ensure consistent width
+                      '& svg': {
+                        color: '#6CAD61',
+                        fontSize: '20px'
+                      }
+                    }}>
+                      {notification.icon}
+                    </Box>
+                                         <Box sx={{ 
+                       flexGrow: 1, 
+                       overflow: 'hidden', 
+                       width: 'calc(100% - 60px)', // Reduced width to make space for green dot
+                       paddingRight: '20px' // Add padding to prevent text from going under the dot
+                     }}>
+                       <Box sx={{ 
+                         marginBottom: '4px',
+                         fontSize: '14px',
+                         color: '#333',
+                         fontWeight: notification.isRead ? 400 : 600,
+                         lineHeight: 1.4,
+                         wordWrap: 'break-word',
+                         overflowWrap: 'break-word',
+                         display: '-webkit-box',
+                         WebkitLineClamp: 2, // Limit to 2 lines to prevent overlap
+                         WebkitBoxOrient: 'vertical',
+                         overflow: 'hidden',
+                         textOverflow: 'ellipsis'
+                       }}>
+                         {notification.message}
+                       </Box>
+                       <Box sx={{ 
+                         fontSize: '12px',
+                         color: '#666',
+                         marginTop: '4px'
+                       }}>
+                         {notification.timeAgo}
+                       </Box>
+                     </Box>
+                  </Box>
+                </MenuItem>
+                {index < notifications.length - 1 && (
+                  <Divider sx={{ 
+                    margin: '0 20px',
+                    borderColor: 'rgba(0, 0, 0, 0.08)'
+                  }} />
+                )}
+              </React.Fragment>
+            ))}
+            
+            {/* View All Notifications Link */}
+            <Divider sx={{ 
+              margin: '0 20px',
+              borderColor: 'rgba(0, 0, 0, 0.08)'
+            }} />
+            <Box sx={{ 
+              padding: '16px 20px',
+              textAlign: 'center',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'rgba(108, 173, 97, 0.05)'
+              }
+            }}>
+              <Typography 
+                onClick={() => {
+                  handleClose();
+                  navigate('/notifications');
+                }}
+                sx={{ 
+                  color: '#6CAD61',
+                  fontSize: '14px',
+                  fontWeight: 500,
                   '&:hover': {
-                    backgroundColor: 'rgba(108, 173, 97, 0.05)',
-                    transform: 'translateX(4px)'
-                  },
-                  '&.unread': {
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      right: '20px',
-                      top: '16px',
-                      width: '8px',
-                      height: '8px',
-                      backgroundColor: '#6CAD61',
-                      borderRadius: '50%',
-                      boxShadow: '0 0 0 2px rgba(108, 173, 97, 0.2)'
-                    }
+                    textDecoration: 'underline'
                   }
                 }}
-                className={!notification.isRead ? 'unread' : ''}
               >
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
-                  <Box sx={{ 
-                    marginRight: '16px',
-                    marginTop: '3px', // Align icon with first line of text
-                    color: '#6CAD61',
-                    minWidth: '24px', // Ensure consistent width
-                    '& svg': {
-                      color: '#6CAD61',
-                      fontSize: '20px'
-                    }
-                  }}>
-                    {notification.icon}
-                  </Box>
-                  <Box sx={{ flexGrow: 1, overflow: 'hidden', width: 'calc(100% - 40px)' }}>
-                    <Box sx={{ 
-                      marginBottom: '4px',
-                      fontSize: '14px',
-                      color: '#333',
-                      fontWeight: notification.isRead ? 400 : 600,
-                      lineHeight: 1.5,
-                      wordWrap: 'break-word',
-                      overflowWrap: 'break-word',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3, // Limit to 3 lines
-                      WebkitBoxOrient: 'vertical',
-                    }}>
-                      {notification.message}
-                    </Box>
-                    <Box sx={{ 
-                      fontSize: '12px',
-                      color: '#666'
-                    }}>
-                      {notification.timeAgo}
-                    </Box>
-                  </Box>
-                </Box>
-              </MenuItem>
-              {index < notifications.slice(0, 5).length - 1 && (
-                <Divider sx={{ 
-                  margin: '0 20px',
-                  borderColor: 'rgba(0, 0, 0, 0.08)'
-                }} />
-              )}
-            </React.Fragment>
-          ))
+                View All Notifications
+              </Typography>
+            </Box>
+          </>
         )}
       </Menu>
 

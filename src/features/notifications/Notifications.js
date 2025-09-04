@@ -225,7 +225,7 @@ const Notifications = () => {
 
   // Analytics data
   const analytics = {
-    totalNotifications: notifications.length,
+    totalNotifications: totalNotificationsCount,
   };
 
   return (
