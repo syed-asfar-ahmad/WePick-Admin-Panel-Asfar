@@ -282,21 +282,20 @@ const ParcelsList = () => {
 
   const handleViewParcel = async (parcel) => {
     try {
-      setIsLoading(true);
       const response = await getParcelDetail(parcel.id);
       if (response?.data) {
         setSelectedParcel(response.data);
+      } else {
+        setSelectedParcel(parcel);
       }
     } catch (err) {
-      setError('Failed to load parcel details. Please try again later.');
-    } finally {
-      setIsLoading(false);
+      setSelectedParcel(parcel);
+      setError('Failed to load parcel details. Using basic information.');
     }
   };
 
   const handleEditParcel = async (parcel) => {
     try {
-      setIsLoading(true);
       const response = await getParcelDetail(parcel.id);
       if (response?.data) {
         setEditingParcel(response.data);
@@ -315,8 +314,6 @@ const ParcelsList = () => {
         type: "warning",
         message: "Failed to load detailed parcel data. Using basic data for editing."
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -625,6 +622,7 @@ const ParcelsList = () => {
         />
       )}
 
+      {/* Parcel Edit Modal */}
       {editingParcel && (
         <ParcelEditModal
           parcel={editingParcel}

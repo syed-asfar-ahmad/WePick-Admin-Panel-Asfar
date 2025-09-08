@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaStore, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaExclamationTriangle, FaRedo } from 'react-icons/fa';
+import { FaStore, FaSearch, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Dropdown, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
@@ -222,7 +222,6 @@ const RetailersList = () => {
 
   const handleEditRetailer = async (retailer) => {
     try {
-      setIsLoading(true);
       const response = await getRetailerById(retailer.id);
       const retailerData = response.data || retailer;
       setSelectedRetailer(retailerData);
@@ -232,8 +231,6 @@ const RetailersList = () => {
       setHasFormChanges(false);
     } catch (err) {
       setError('Failed to load retailer details for editing.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -423,12 +420,18 @@ const RetailersList = () => {
                 </div>
               </div>
               <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedRetailer(null);
-                  setOriginalRetailerData(null);
-                  setHasFormChanges(false);
-                }} disabled={isEditLoading}>
+                <button 
+                  type="button" 
+                  className="cancel-button" 
+                  onClick={() => {
+                    // Reset form to original values
+                    if (originalRetailerData) {
+                      setSelectedRetailer(originalRetailerData);
+                      setHasFormChanges(false);
+                    }
+                  }} 
+                  disabled={isEditLoading}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
@@ -493,7 +496,6 @@ const RetailersList = () => {
                 {filteredRetailers.map((retailer) => (
                   <tr key={retailer.id}>
                     <td className="store-cell">
-                      <FaStore className="store-icon" />
                       {retailer.storeName || retailer.name || 'N/A'}
                     </td>
                     <td>{retailer.owner}</td>
@@ -501,10 +503,7 @@ const RetailersList = () => {
                     <td>{retailer.businessAddress}</td>
                     <td>{retailer.businessRegistrationNumber}</td>
                     <td>
-                      <div className="metric">
-                        <FaChartBar />
-                        <span>{retailer.totalParcels || 0}</span>
-                      </div>
+                      {retailer.totalParcels || 0}
                     </td>
                     <td>
                       <div className="action-buttons">

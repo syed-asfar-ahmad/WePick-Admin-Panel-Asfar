@@ -367,12 +367,18 @@ const CustomersList = () => {
                     </div>
                   </div>
                   <div className="modal-actions">
-                    <button type="button" className="cancel-button" onClick={() => {
-                      setShowEditModal(false);
-                      setSelectedCustomer(null);
-                      setOriginalCustomerData(null);
-                      setHasFormChanges(false);
-                    }} disabled={isEditLoading}>
+                    <button 
+                      type="button" 
+                      className="cancel-button" 
+                      onClick={() => {
+                        // Reset form to original values
+                        if (originalCustomerData) {
+                          setSelectedCustomer(originalCustomerData);
+                          setHasFormChanges(false);
+                        }
+                      }} 
+                      disabled={isEditLoading}
+                    >
                       Cancel
                     </button>
                     <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>

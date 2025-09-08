@@ -785,39 +785,70 @@
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 0.75rem;
+      gap: 16px;
+      padding: 20px 24px;
       margin-top: auto;
-      padding-top: 1rem;
       border-top: 1px solid #eee;
       background: white;
       position: sticky;
       bottom: 0;
+      z-index: 10;
 
       button {
-        padding: 0.5rem 1.25rem;
-        border-radius: 6px;
-        font-size: 0.9rem;
+        width: 80px;
+        height: 50px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
 
         &.cancel-button {
-          background: white;
-          border: 1px solid #dc3545;
-          color: #dc3545;
+          background: white !important;
+          border: 2px solid #ddd !important;
+          color: #666 !important;
 
-          &:hover {
-            background: #dc3545;
-            color: white;
+          &:hover:not(:disabled) {
+            background: #f8f9fa !important;
+            border-color: #ccc !important;
+            color: #333 !important;
+            transform: translateY(-1px);
           }
         }
 
         &.save-button {
-          background: #4CAF50;
-          border: none;
-          color: white;
+          background: #6CAD61 !important;
+          border: none !important;
+          width: 140px !important;
+          color: white !important;
+          box-shadow: 0 2px 4px rgba(108, 173, 97, 0.2) !important;
+          margin-right: 0;
 
-          &:hover {
-            background: #45a049;
+          &:hover:not(:disabled) {
+            background: #5a9c4f !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(108, 173, 97, 0.3) !important;
+          }
+
+          &:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(108, 173, 97, 0.2) !important;
+          }
+
+          &:disabled {
+            background-color: #ccc !important;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none !important;
           }
         }
       }

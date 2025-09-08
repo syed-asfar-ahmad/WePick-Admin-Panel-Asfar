@@ -113,17 +113,28 @@ return process.env.NODE_ENV === 'production'
   };
 
   const handleCancel = (resetForm) => {
-    // Reset form fields to empty values
+    // Reset form fields to original user profile values
     resetForm({
       values: {
-        name: "",
-        phoneNumber: ""
+        name: userProfile?.name || user?.name || "",
+        phoneNumber: userProfile?.phoneNumber || user?.phoneNumber || ""
       }
     });
     
-    // Clear avatar preview and file input
+    // Reset avatar to original state
     setAvatar(null);
-    setAvatarPreview(null);
+    // Restore original avatar preview if it exists
+    if (user?.profileImage) {
+      const imagePath = user.profileImage;
+      setAvatarPreview(testImagePath(imagePath));
+    } else if (user?.profile_pic) {
+      const imagePath = user.profile_pic;
+      setAvatarPreview(testImagePath(imagePath));
+    } else {
+      setAvatarPreview(null);
+    }
+    
+    // Clear file input
     const fileInput = document.getElementById('avatar-input');
     if (fileInput) {
       fileInput.value = '';

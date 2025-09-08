@@ -12,7 +12,6 @@ const Notifications = () => {
   const [error, setError] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,10 +21,7 @@ const Notifications = () => {
 
   const handleViewNotification = async (notification) => {
     try {
-      setIsLoadingDetail(true);
-      setShowViewModal(true);
-      
-      // Fetch detailed notification data
+      // Fetch detailed notification data first
       const response = await getNotificationById(notification.id);
       
       if (response?.data) {
@@ -33,10 +29,12 @@ const Notifications = () => {
       } else {
         setSelectedNotification(notification);
       }
+      
+      // Open modal only after data is fetched
+      setShowViewModal(true);
     } catch (err) {
       setSelectedNotification(notification);
-    } finally {
-      setIsLoadingDetail(false);
+      setShowViewModal(true);
     }
   };
 
@@ -375,11 +373,7 @@ const Notifications = () => {
               </button>
             </div>
             
-            {isLoadingDetail ? (
-              <div className="loading-container">
-                <Loading />
-              </div>
-            ) : selectedNotification ? (
+            {selectedNotification ? (
               <div className="notification-detail-content">
                 <div className="detail-section">
                   <h3>Basic Information</h3>

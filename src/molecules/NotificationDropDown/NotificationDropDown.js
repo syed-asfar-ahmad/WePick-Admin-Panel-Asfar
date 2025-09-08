@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NotificationIcon from "../../assets/images/dashboard/NotificationIcon.svg";
 import { useNotifications } from '../../context/NotificationsContext';
@@ -33,6 +33,11 @@ const NotificationDropDown = () => {
   const [notificationDetailsLoading, setNotificationDetailsLoading] = useState(false);
   const [notificationDetailsError, setNotificationDetailsError] = useState(null);
   const [notificationDetails, setNotificationDetails] = useState(null);
+
+  // Fetch notifications on component mount
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   // Fetch notifications when dropdown is opened
   const handleClick = (event) => {

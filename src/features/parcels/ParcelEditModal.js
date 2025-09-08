@@ -261,10 +261,9 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
                   type="text"
                   name="senderInfo.businessName"
                   value={formData.senderInfo.businessName}
-                  onChange={handleChange}
                   className="form-control"
-                  placeholder="Enter business name"
-                  disabled={isEditLoading}
+                  readOnly
+                  disabled
                 />
               </div>
               <div className="form-group">
@@ -276,10 +275,9 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
                   type="tel"
                   name="senderInfo.phoneNumber"
                   value={formData.senderInfo.phoneNumber}
-                  onChange={handleChange}
                   className="form-control"
-                  placeholder="Enter phone number"
-                  disabled={isEditLoading}
+                  readOnly
+                  disabled
                 />
               </div>
             </div>
@@ -419,7 +417,18 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
           </div>
 
           <div className="form-actions">
-            <button type="button" className="cancel-button" onClick={onClose} disabled={isEditLoading}>
+            <button 
+              type="button" 
+              className="cancel-button" 
+              onClick={() => {
+                // Reset form to original values
+                if (originalFormData) {
+                  setFormData(originalFormData);
+                  setHasFormChanges(false);
+                }
+              }} 
+              disabled={isEditLoading}
+            >
               Cancel
             </button>
             <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>

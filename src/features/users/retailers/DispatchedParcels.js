@@ -292,25 +292,21 @@ const DispatchedParcels = () => {
 
   const handleEditParcel = async (parcel) => {
     try {
-      setIsLoading(true);
       const response = await getDispatchedParcelById(parcel.id);
       if (response?.success && response?.data) {
         setSelectedParcel(response.data);
         setOriginalParcelData(response.data);
-        setShowEditModal(true);
       } else {
         // Fallback to basic parcel data if API call fails
         setSelectedParcel(parcel);
         setOriginalParcelData(parcel);
-        setShowEditModal(true);
       }
+      setShowEditModal(true);
     } catch (err) {
       // Fallback to basic parcel data if API call fails
       setSelectedParcel(parcel);
       setOriginalParcelData(parcel);
       setShowEditModal(true);
-    } finally {
-      setIsLoading(false);
     }
     // Reset change tracking
     setHasFormChanges(false);
@@ -423,22 +419,18 @@ const DispatchedParcels = () => {
 
   const handleViewParcel = async (parcel) => {
     try {
-      setIsLoading(true);
       const response = await getDispatchedParcelById(parcel.id);
       if (response?.success && response?.data) {
         setSelectedParcel(response.data);
-        setShowViewModal(true);
       } else {
         // Fallback to basic parcel data if API call fails
         setSelectedParcel(parcel);
-        setShowViewModal(true);
       }
+      setShowViewModal(true);
     } catch (err) {
       // Fallback to basic parcel data if API call fails
       setSelectedParcel(parcel);
       setShowViewModal(true);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -779,12 +771,18 @@ const DispatchedParcels = () => {
                 </div>
               </div>
                              <div className="form-actions">
-                 <button type="button" className="cancel-button" onClick={() => {
-                   setShowEditModal(false);
-                   setSelectedParcel(null);
-                   setOriginalParcelData(null);
-                   setHasFormChanges(false);
-                 }} disabled={isEditLoading}>
+                 <button 
+                   type="button" 
+                   className="cancel-button" 
+                   onClick={() => {
+                     // Reset form to original values
+                     if (originalParcelData) {
+                       setSelectedParcel(originalParcelData);
+                       setHasFormChanges(false);
+                     }
+                   }} 
+                   disabled={isEditLoading}
+                 >
                    Cancel
                  </button>
                  <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
@@ -988,11 +986,6 @@ const DispatchedParcels = () => {
               </div>
             </div>
 
-            <div className="modal-actions">
-              <button className="close-button" onClick={() => setShowViewModal(false)}>
-                Close
-              </button>
-            </div>
           </div>
         </div>
       )}

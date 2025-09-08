@@ -207,5 +207,29 @@
   // Ensure table has minimum width for horizontal scroll
   .ant-table {
     min-width: 1200px;
+    
+    // Remove vertical lines, keep horizontal lines
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      border-right: none !important;
+      border-left: none !important;
+      font-size: 16px !important;
+      font-weight: 450 !important;
+    }
+    
+    // Make headers more prominent
+    .ant-table-thead > tr > th {
+      font-weight: 600 !important;
+      font-size: 16px !important;
+    }
+    
+    // Remove table container borders
+    .ant-table-container {
+      border: none !important;
+    }
+    
+    .ant-table-content {
+      border: none !important;
+    }
   }
 } 

@@ -142,7 +142,7 @@ const AdminPassword = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, setFieldValue }) => (
+          {({ isSubmitting, setFieldValue, resetForm }) => (
             <Form>
               <div className="form-section">
                 <h3>Current Password</h3>
@@ -259,7 +259,18 @@ const AdminPassword = () => {
                 <button
                   type="button"
                   className="cancel-button"
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => {
+                    // Reset form values without navigation
+                    resetForm();
+                    // Reset password requirements checks
+                    setPasswordChecks({
+                      length: null,
+                      uppercase: null,
+                      lowercase: null,
+                      number: null,
+                      specialChar: null
+                    });
+                  }}
                 >
                   Cancel
                 </button>
