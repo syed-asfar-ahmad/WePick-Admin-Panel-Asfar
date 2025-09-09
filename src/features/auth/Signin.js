@@ -165,14 +165,14 @@ if(resultAction?.payload && resultAction?.payload?.user?.userType==="admin"){
                             Forgot Password?
                           </Link>
                         </div>
-                        <div className="col-12 mt-2 mb-4 text-center">
+                        {/* <div className="col-12 mt-2 mb-4 text-center">
                           <p className="mb-0">
                             Don't have an account?{" "}
                             <Link to="/signup" className="wepick-link sign-text" style={{ color: "#1BC949", fontSize: "14px" }}>
                               Sign Up
                             </Link>
                           </p>
-                        </div>
+                        </div> */}
                       </Form>
                     )}
                   </Formik>

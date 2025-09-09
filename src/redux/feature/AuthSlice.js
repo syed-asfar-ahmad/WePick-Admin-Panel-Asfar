@@ -14,7 +14,7 @@ export const loginUser = createAsyncThunk(
 
       CustomToast({
         type: "success",
-        message: `${user?.role || "Admin"} is signed in`,
+        message: "Signed in successfully.",
       });
 
       // Store token locally (optional)
@@ -28,7 +28,6 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       const errMsg =
         error.response?.data?.message || "Invalid Email or Password";
-      CustomToast({ type: "error", message: errMsg });
       return rejectWithValue(errMsg);
     }
   }

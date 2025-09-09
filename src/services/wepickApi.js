@@ -1,7 +1,7 @@
 import { postRequest, getRequest, patchRequest, patchRequestForm, postRequestForm } from './api';
 
 // Auth endpoints
-export const SIGNUP = 'auth/signup';
+// export const SIGNUP = 'auth/signup';
 export const SIGNIN = 'auth/signin';
 export const SIGNOUT = 'auth/signout';
 export const FORGOT_PASSWORD = 'auth/forgot-password';
@@ -49,7 +49,7 @@ export const ADMIN_CHANGE_PASSWORD = 'auth/change-password';
 export const ADMIN_EDIT_PROFILE = 'auth/edit-profile';
 
 // Auth services
-export const signup = (data) => postRequest(SIGNUP, data);
+// export const signup = (data) => postRequest(SIGNUP, data);
 export const signin = (data) => postRequest(SIGNIN, data);
 export const signout = (data) => postRequest(SIGNOUT, data);
 export const forgotPassword = (data) => postRequest(FORGOT_PASSWORD, data);

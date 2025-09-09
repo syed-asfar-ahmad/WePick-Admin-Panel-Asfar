@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import AdminArea from "./customHook/AdminArea";
 import ForgotPassword from "./features/auth/ForgotPassword";
 import Signin from "./features/auth/Signin";
-import Signup from "./features/auth/Signup";
+// import Signup from "./features/auth/Signup";
 import Loading from "./components/common/Loading";
 import DashboardCom from "./features/dashboard/DashboardCom";
 import CustomersList from "./features/users/customers/CustomersList";
@@ -69,7 +69,7 @@ function App() {
           <Routes>
             <Route path="/signin" element={!isAuthenticated ? <Signin /> : <Navigate to="/" />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/signup" element={<Signup />} />
+            {/* <Route path="/signup" element={<Signup />} /> */}
             
             {isAuthenticated ? (
               <>
