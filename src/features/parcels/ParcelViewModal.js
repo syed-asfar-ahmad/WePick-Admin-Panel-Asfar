@@ -166,7 +166,7 @@ const ParcelViewModal = ({ parcel, onClose }) => {
                     <FaUser className="detail-icon" />
                     <span>Email</span>
                   </div>
-                  <div className="detail-value">{parcel.recipientEmail || 'N/A'}</div>
+                  <div className="detail-value" title={parcel.recipientEmail || 'N/A'}>{parcel.recipientEmail || 'N/A'}</div>
                 </div>
                 <div className="detail-row">
                   <div className="detail-label">

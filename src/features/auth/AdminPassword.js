@@ -109,11 +109,7 @@ const AdminPassword = () => {
 
   const getCheckIcon = (condition) => {
     if (condition === null) return null;
-    return condition ? (
-      <i className="fa fa-check-circle check-icon valid"></i>
-    ) : (
-      <i className="fa fa-times-circle check-icon invalid"></i>
-    );
+    return null; // No symbols, just text color
   };
 
   return (
@@ -145,7 +141,6 @@ const AdminPassword = () => {
           {({ isSubmitting, setFieldValue, resetForm }) => (
             <Form>
               <div className="form-section">
-                <h3>Current Password</h3>
                 <div className="form-group">
                   <label htmlFor="currentPassword">
                     <i className="fa fa-key"></i>
@@ -162,7 +157,9 @@ const AdminPassword = () => {
                       className="password-toggle"
                       onClick={() => togglePassword("currentPassword")}
                     >
-                      <i className={`fa fa-${passwordType.currentPassword === "password" ? "eye-slash" : "eye"}`}></i>
+                      <span className="show-hide-text">
+                        {passwordType.currentPassword === "password" ? "Show" : "Hide"}
+                      </span>
                     </button>
                   </div>
                   <ErrorMessage
@@ -174,7 +171,6 @@ const AdminPassword = () => {
               </div>
 
               <div className="form-section">
-                <h3>New Password</h3>
                 <div className="form-group">
                   <label htmlFor="newPassword">
                     <i className="fa fa-lock"></i>
@@ -192,7 +188,9 @@ const AdminPassword = () => {
                       className="password-toggle"
                       onClick={() => togglePassword("newPassword")}
                     >
-                      <i className={`fa fa-${passwordType.newPassword === "password" ? "eye-slash" : "eye"}`}></i>
+                      <span className="show-hide-text">
+                        {passwordType.newPassword === "password" ? "Show" : "Hide"}
+                      </span>
                     </button>
                   </div>
                   <ErrorMessage
@@ -205,24 +203,19 @@ const AdminPassword = () => {
                 <div className="password-requirements">
                   <h4>Password Requirements</h4>
                   <ul>
-                    <li>
-                      {getCheckIcon(passwordChecks.length)}
+                    <li className={passwordChecks.length !== null ? (passwordChecks.length ? "valid-text" : "invalid-text") : ""}>
                       At least 8 characters long
                     </li>
-                    <li>
-                      {getCheckIcon(passwordChecks.uppercase)}
+                    <li className={passwordChecks.uppercase !== null ? (passwordChecks.uppercase ? "valid-text" : "invalid-text") : ""}>
                       One uppercase letter
                     </li>
-                    <li>
-                      {getCheckIcon(passwordChecks.lowercase)}
+                    <li className={passwordChecks.lowercase !== null ? (passwordChecks.lowercase ? "valid-text" : "invalid-text") : ""}>
                       One lowercase letter
                     </li>
-                    <li>
-                      {getCheckIcon(passwordChecks.number)}
+                    <li className={passwordChecks.number !== null ? (passwordChecks.number ? "valid-text" : "invalid-text") : ""}>
                       One number
                     </li>
-                    <li>
-                      {getCheckIcon(passwordChecks.specialChar)}
+                    <li className={passwordChecks.specialChar !== null ? (passwordChecks.specialChar ? "valid-text" : "invalid-text") : ""}>
                       One special character
                     </li>
                   </ul>
@@ -244,7 +237,9 @@ const AdminPassword = () => {
                       className="password-toggle"
                       onClick={() => togglePassword("confirmPassword")}
                     >
-                      <i className={`fa fa-${passwordType.confirmPassword === "password" ? "eye-slash" : "eye"}`}></i>
+                      <span className="show-hide-text">
+                        {passwordType.confirmPassword === "password" ? "Show" : "Hide"}
+                      </span>
                     </button>
                   </div>
                   <ErrorMessage

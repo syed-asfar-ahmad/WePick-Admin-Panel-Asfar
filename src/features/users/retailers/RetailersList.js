@@ -499,8 +499,8 @@ const RetailersList = () => {
                       {retailer.storeName || retailer.name || 'N/A'}
                     </td>
                     <td>{retailer.owner}</td>
-                    <td>{retailer.businessEmail}</td>
-                    <td>{retailer.businessAddress}</td>
+                    <td title={retailer.businessEmail}>{retailer.businessEmail}</td>
+                    <td title={retailer.businessAddress}>{retailer.businessAddress}</td>
                     <td>{retailer.businessRegistrationNumber}</td>
                     <td>
                       {retailer.totalParcels || 0}

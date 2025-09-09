@@ -80,10 +80,10 @@ const DashboardCom = () => {
       ) : (
         <div className="row px-2 pt-4" style={{ overflowX: "hidden" }}>
           <div className="col-12 mt-1">
-            <div className="row">
+            <div className="row justify-content-center">
               {data1.map(({ text, total, icon }) => {
                 return (
-                  <div key={text} className="px-3 col-lg-3 col-6">
+                  <div key={text} className="px-3 col-lg-3 col-6 d-flex justify-content-center">
                     <div className="dashboard-right-side-top-card my-lg-3 w-100 box-shadow-hover d-flex pl-1 py-3">
                       <div className="px-3 w-100 ">
                         <div className="d-flex justify-content-between text-center align-items-center ">

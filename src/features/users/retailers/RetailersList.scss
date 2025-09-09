@@ -319,6 +319,22 @@
           border-bottom: 1px solid #eee;
         }
 
+        // Business Email column styling
+        td:nth-child(3) {
+          max-width: 200px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        // Business Address column styling
+        td:nth-child(4) {
+          max-width: 250px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
         th {
           background-color: #f8f9fa;
           font-weight: 600;

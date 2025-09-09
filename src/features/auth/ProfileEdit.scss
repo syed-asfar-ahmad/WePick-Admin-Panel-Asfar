@@ -14,13 +14,13 @@ body {
     margin-bottom: 2rem;
 
     .profile-avatar {
-      width: 120px;
-      height: 120px;
+      width: 80px;
+      height: 80px;
       margin: 0 auto 1.5rem;
       position: relative;
       border-radius: 50%;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(108, 173, 97, 0.2);
 
       .avatar-placeholder {
         width: 100%;
@@ -32,8 +32,8 @@ body {
         position: relative;
 
         i.fa-user {
-          font-size: 3.5rem;
-          color: rgba(255, 255, 255, 0.9);
+          font-size: 2rem;
+          color: white;
           position: absolute;
           top: 50%;
           left: 50%;
@@ -54,9 +54,9 @@ body {
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
-        width: 120px;
-        height: 24px;
-        background: rgba(0, 0, 0, 0.8);
+        width: 80px;
+        height: 20px;
+        background: transparent;
         color: white;
         border-radius: 4px 4px 0 0;
         display: flex;
