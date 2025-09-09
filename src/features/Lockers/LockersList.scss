@@ -156,12 +156,18 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
       &:hover {
-        background-color: #f8f9fa;
-        transform: translateY(-1px);
+        background-color: #fff;
+        border-color: #6CAD61;
+        color: #6CAD61;
+        transform: none;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
       svg {
+        color: #6CAD61;
+      }
+
+      &:hover svg {
         color: #6CAD61;
       }
     }

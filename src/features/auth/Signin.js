@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -85,59 +86,40 @@ if(resultAction?.payload && resultAction?.payload?.user?.userType==="admin"){
                           />
                         </div>
                         <div className="col-12 mt-4 mb-1 signup-input-label">
-                          <div
-                            className="d-flex border_custome"
-                            style={{ height: "54px", borderRadius: "8px" }}
-                          >
+                          <div className="password-input-wrapper">
                             <Field
                               type={passwordType}
                               name="password"
                               placeholder="Password"
-                              className="form-control pl-3"
-                              style={{
-                                border: "none",
-                                backgroundColor: "transparent",
-                              }}
+                              className="form-control"
                               disabled={isLoading}
                             />
-                            <div className="loginPasswordPositionBottom input-group-btn">
-                              <h1
-                                className="eyeBtn pr-4"
-                                onMouseUp={togglePassword}
-                                onMouseDown={togglePassword}
-                                onTouchStart={togglePassword}
-                                onTouchEnd={togglePassword}
-                                onClick={togglePassword}
-                                style={{
-                                  pointerEvents: isLoading ? "none" : "auto",
-                                  opacity: isLoading ? 0.6 : 1
-                                }}
-                              >
-                                <p
-                                  style={{
-                                    width: "10px",
-                                    height: "5px",
-                                    color: "Black",
-                                    border: "none",
-                                    marginTop: "-13px",
-                                  }}
-                                >
-                                  {passwordType === "password" ? (
-                                    <i
-                                      className="fa fa-eye-slash"
-                                      aria-hidden="true"
-                                      style={{ cursor: isLoading ? "default" : "pointer" }}
-                                    ></i>
-                                  ) : (
-                                    <i
-                                      className="fa fa-eye"
-                                      aria-hidden="true"
-                                      style={{ cursor: isLoading ? "default" : "pointer" }}
-                                    ></i>
-                                  )}
-                                </p>
-                              </h1>
-                            </div>
+                            <span
+                              className="eye-icon"
+                              onClick={togglePassword}
+                              style={{ 
+                                pointerEvents: isLoading ? "none" : "auto",
+                                opacity: isLoading ? 0.6 : 1,
+                                position: "absolute",
+                                right: "15px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                                color: "#666",
+                                zIndex: 10,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: "20px",
+                                height: "20px"
+                              }}
+                            >
+                              {passwordType === "password" ? (
+                                <FaEyeSlash size={18} color="#666" />
+                              ) : (
+                                <FaEye size={18} color="#666" />
+                              )}
+                            </span>
                           </div>
                           <ErrorMessage
                             name="password"

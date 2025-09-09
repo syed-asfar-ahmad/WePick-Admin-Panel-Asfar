@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle, FaRegCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -108,8 +109,14 @@ const AdminPassword = () => {
   }, []);
 
   const getCheckIcon = (condition) => {
-    if (condition === null) return null;
-    return null; // No symbols, just text color
+    if (condition === null) {
+      return <FaRegCircle size={14} color="#adb5bd" />;
+    }
+    return condition ? (
+      <FaCheckCircle size={14} color="#6CAD61" />
+    ) : (
+      <FaTimesCircle size={14} color="#dc3545" />
+    );
   };
 
   return (
@@ -156,10 +163,13 @@ const AdminPassword = () => {
                       type="button"
                       className="password-toggle"
                       onClick={() => togglePassword("currentPassword")}
+                      aria-label={passwordType.currentPassword === "password" ? "Show password" : "Hide password"}
                     >
-                      <span className="show-hide-text">
-                        {passwordType.currentPassword === "password" ? "Show" : "Hide"}
-                      </span>
+                      {passwordType.currentPassword === "password" ? (
+                        <FaEyeSlash size={18} color="#666" />
+                      ) : (
+                        <FaEye size={18} color="#666" />
+                      )}
                     </button>
                   </div>
                   <ErrorMessage
@@ -187,10 +197,13 @@ const AdminPassword = () => {
                       type="button"
                       className="password-toggle"
                       onClick={() => togglePassword("newPassword")}
+                      aria-label={passwordType.newPassword === "password" ? "Show password" : "Hide password"}
                     >
-                      <span className="show-hide-text">
-                        {passwordType.newPassword === "password" ? "Show" : "Hide"}
-                      </span>
+                      {passwordType.newPassword === "password" ? (
+                        <FaEyeSlash size={18} color="#666" />
+                      ) : (
+                        <FaEye size={18} color="#666" />
+                      )}
                     </button>
                   </div>
                   <ErrorMessage
@@ -204,19 +217,24 @@ const AdminPassword = () => {
                   <h4>Password Requirements</h4>
                   <ul>
                     <li className={passwordChecks.length !== null ? (passwordChecks.length ? "valid-text" : "invalid-text") : ""}>
-                      At least 8 characters long
+                      {getCheckIcon(passwordChecks.length)}
+                      <span style={{ marginLeft: "8px" }}>At least 8 characters long</span>
                     </li>
                     <li className={passwordChecks.uppercase !== null ? (passwordChecks.uppercase ? "valid-text" : "invalid-text") : ""}>
-                      One uppercase letter
+                      {getCheckIcon(passwordChecks.uppercase)}
+                      <span style={{ marginLeft: "8px" }}>One uppercase letter</span>
                     </li>
                     <li className={passwordChecks.lowercase !== null ? (passwordChecks.lowercase ? "valid-text" : "invalid-text") : ""}>
-                      One lowercase letter
+                      {getCheckIcon(passwordChecks.lowercase)}
+                      <span style={{ marginLeft: "8px" }}>One lowercase letter</span>
                     </li>
                     <li className={passwordChecks.number !== null ? (passwordChecks.number ? "valid-text" : "invalid-text") : ""}>
-                      One number
+                      {getCheckIcon(passwordChecks.number)}
+                      <span style={{ marginLeft: "8px" }}>One number</span>
                     </li>
                     <li className={passwordChecks.specialChar !== null ? (passwordChecks.specialChar ? "valid-text" : "invalid-text") : ""}>
-                      One special character
+                      {getCheckIcon(passwordChecks.specialChar)}
+                      <span style={{ marginLeft: "8px" }}>One special character</span>
                     </li>
                   </ul>
                 </div>
@@ -236,10 +254,13 @@ const AdminPassword = () => {
                       type="button"
                       className="password-toggle"
                       onClick={() => togglePassword("confirmPassword")}
+                      aria-label={passwordType.confirmPassword === "password" ? "Show password" : "Hide password"}
                     >
-                      <span className="show-hide-text">
-                        {passwordType.confirmPassword === "password" ? "Show" : "Hide"}
-                      </span>
+                      {passwordType.confirmPassword === "password" ? (
+                        <FaEyeSlash size={18} color="#666" />
+                      ) : (
+                        <FaEye size={18} color="#666" />
+                      )}
                     </button>
                   </div>
                   <ErrorMessage
