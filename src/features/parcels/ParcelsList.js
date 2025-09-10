@@ -398,10 +398,10 @@ const ParcelsList = () => {
                <label>Status</label>
                <select name="status" value={filters.status} onChange={handleFilterChange}>
                  <option value="">All Status</option>
-                 <option value="pending">Pending</option>
-                 <option value="dispatched">Dispatched</option>
                  <option value="delivered">Delivered</option>
-                 <option value="failed">Failed</option>
+                 <option value="pickup">Pickup</option>
+                 <option value="deposit">Deposit</option>
+                 <option value="pending">Pending</option>
                </select>
              </div>
              <div className="filter-group">

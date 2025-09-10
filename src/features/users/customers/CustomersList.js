@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaStore, FaChartBar, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaStore, FaChartBar, FaTimes, FaEdit, FaUser, FaEnvelope, FaPhone, FaIdCard, FaMapMarkerAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './CustomersList.scss';
 import Loading from '../../../components/common/Loading';
@@ -327,7 +327,12 @@ const CustomersList = () => {
             <div className="modal-overlay">
               <div className="edit-modal">
                 <div className="modal-header">
-                  <h2>Edit Customer</h2>
+                  <div className="header-content">
+                    <div className="header-icon-wrapper">
+                      <FaEdit className="header-icon" />
+                    </div>
+                    <h2>Edit Customer</h2>
+                  </div>
                   <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                     <FaTimes />
                   </button>
@@ -335,36 +340,59 @@ const CustomersList = () => {
                 <form onSubmit={handleSaveEdit}>
                   <div className="modal-content">
                     <div className="form-grid">
-                      <div className="form-group">
-                        <label>Name</label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={selectedCustomer.name}
-                          onChange={handleInputChange}
-                          disabled={isEditLoading}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Email</label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={selectedCustomer.email}
-                          onChange={handleInputChange}
-                          disabled={isEditLoading}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Phone Number</label>
-                        <input
-                          type="tel"
-                          name="phoneNumber"
-                          value={selectedCustomer.phoneNumber || ''}
-                          onChange={handleInputChange}
-                          placeholder="Enter phone number"
-                          disabled={isEditLoading}
-                        />
+                      {/* Personal Information Section */}
+                      <div className="form-section">
+                        <div className="section-header">
+                          <div className="section-icon-wrapper">
+                            <FaUser className="section-icon" />
+                          </div>
+                          <h3>Personal Information</h3>
+                        </div>
+                        <div className="form-group">
+                          <label>
+                            <FaIdCard className="input-icon" />
+                            Full Name
+                          </label>
+                          <input
+                            type="text"
+                            name="name"
+                            value={selectedCustomer.name}
+                            onChange={handleInputChange}
+                            disabled={isEditLoading}
+                            className="form-control"
+                            placeholder="Enter full name"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>
+                            <FaEnvelope className="input-icon" />
+                            Email Address
+                          </label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={selectedCustomer.email}
+                            onChange={handleInputChange}
+                            disabled={isEditLoading}
+                            className="form-control"
+                            placeholder="Enter email address"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>
+                            <FaPhone className="input-icon" />
+                            Phone Number
+                          </label>
+                          <input
+                            type="tel"
+                            name="phoneNumber"
+                            value={selectedCustomer.phoneNumber || ''}
+                            onChange={handleInputChange}
+                            placeholder="Enter phone number"
+                            disabled={isEditLoading}
+                            className="form-control"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

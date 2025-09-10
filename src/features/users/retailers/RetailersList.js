@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaStore, FaSearch, FaTimes } from 'react-icons/fa';
+import { FaStore, FaSearch, FaTimes, FaEdit, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaIdCard, FaBuilding } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Dropdown, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
@@ -351,7 +351,12 @@ const RetailersList = () => {
         <div className="modal-overlay">
           <div className="edit-modal">
             <div className="modal-header">
-              <h2>Edit Retailer</h2>
+              <div className="header-content">
+                <div className="header-icon-wrapper">
+                  <FaEdit className="header-icon" />
+                </div>
+                <h2>Edit Retailer</h2>
+              </div>
               <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
                 <FaTimes />
               </button>
@@ -359,65 +364,114 @@ const RetailersList = () => {
             <form onSubmit={handleSaveEdit}>
               <div className="modal-content">
                 <div className="form-grid">
-                  <div className="form-group">
-                    <label>Store Name</label>
-                    <input
-                      type="text"
-                      name="businessName"
-                      value={selectedRetailer.businessName || ''}
-                      onChange={handleInputChange}
-                      disabled={isEditLoading}
-                    />
+                  {/* Business Information Section */}
+                  <div className="form-section">
+                    <div className="section-header">
+                      <div className="section-icon-wrapper">
+                        <FaStore className="section-icon" />
+                      </div>
+                      <h3>Business Information</h3>
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <FaBuilding className="input-icon" />
+                        Store Name
+                      </label>
+                      <input
+                        type="text"
+                        name="businessName"
+                        value={selectedRetailer.businessName || ''}
+                        onChange={handleInputChange}
+                        disabled={isEditLoading}
+                        className="form-control"
+                        placeholder="Enter store name"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <FaMapMarkerAlt className="input-icon" />
+                        Business Address
+                      </label>
+                      <input
+                        type="text"
+                        name="businessAddress"
+                        value={selectedRetailer.businessAddress || ''}
+                        onChange={handleInputChange}
+                        disabled={isEditLoading}
+                        className="form-control"
+                        placeholder="Enter business address"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <FaIdCard className="input-icon" />
+                        Business Registration Number
+                      </label>
+                      <input
+                        type="text"
+                        name="businessRegistrationNumber"
+                        value={selectedRetailer.businessRegistrationNumber || ''}
+                        onChange={handleInputChange}
+                        disabled={isEditLoading}
+                        className="form-control"
+                        placeholder="Enter business registration number"
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Owner</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={selectedRetailer.name || ''}
-                      onChange={handleInputChange}
-                      disabled={isEditLoading}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Business Email</label>
-                    <input
-                      type="email"
-                      name="businessEmail"
-                      value={selectedRetailer.businessEmail || ''}
-                      onChange={handleInputChange}
-                      disabled={isEditLoading}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Phone</label>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      value={selectedRetailer.phoneNumber || ''}
-                      onChange={handleInputChange}
-                      disabled={isEditLoading}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Business Address</label>
-                    <input
-                      type="text"
-                      name="businessAddress"
-                      value={selectedRetailer.businessAddress || ''}
-                      onChange={handleInputChange}
-                      disabled={isEditLoading}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Business Registration Number</label>
-                    <input
-                      type="text"
-                      name="businessRegistrationNumber"
-                      value={selectedRetailer.businessRegistrationNumber || ''}
-                      onChange={handleInputChange}
-                      disabled={isEditLoading}
-                    />
+
+                  {/* Owner Information Section */}
+                  <div className="form-section">
+                    <div className="section-header">
+                      <div className="section-icon-wrapper">
+                        <FaUser className="section-icon" />
+                      </div>
+                      <h3>Owner Information</h3>
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <FaIdCard className="input-icon" />
+                        Owner Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={selectedRetailer.name || ''}
+                        onChange={handleInputChange}
+                        disabled={isEditLoading}
+                        className="form-control"
+                        placeholder="Enter owner name"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <FaEnvelope className="input-icon" />
+                        Business Email
+                      </label>
+                      <input
+                        type="email"
+                        name="businessEmail"
+                        value={selectedRetailer.businessEmail || ''}
+                        onChange={handleInputChange}
+                        disabled={isEditLoading}
+                        className="form-control"
+                        placeholder="Enter business email"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        <FaPhone className="input-icon" />
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={selectedRetailer.phoneNumber || ''}
+                        onChange={handleInputChange}
+                        disabled={isEditLoading}
+                        className="form-control"
+                        placeholder="Enter phone number"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

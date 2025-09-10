@@ -160,6 +160,9 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
       <div className="parcel-edit-modal">
         <div className="modal-header">
           <div className="header-content">
+            <div className="header-icon-wrapper">
+              <FaEdit className="header-icon" />
+            </div>
             <h2>Edit Parcel</h2>
           </div>
           <button className="close-button" onClick={onClose} disabled={isEditLoading}>

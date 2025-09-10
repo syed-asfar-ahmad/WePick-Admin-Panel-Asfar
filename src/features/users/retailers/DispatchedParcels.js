@@ -29,8 +29,7 @@ const DispatchedParcels = () => {
   const [pageSize] = useState(20);
   
   const [filters, setFilters] = useState({
-    dateRange: '',
-    status: ''
+    dateRange: ''
   });
 
   // Helper function to format date for HTML date input
@@ -158,8 +157,7 @@ const DispatchedParcels = () => {
 
   const handleResetFilters = () => {
     setFilters({
-      dateRange: '',
-      status: ''
+      dateRange: ''
     });
   };
 
@@ -184,14 +182,6 @@ const DispatchedParcels = () => {
           return false;
         }
 
-        // Status filter - exact match (case insensitive)
-        if (filters.status && filters.status.trim() !== '') {
-          const parcelStatus = (parcel.status || '').toLowerCase().trim();
-          const filterStatus = filters.status.toLowerCase().trim();
-          if (parcelStatus !== filterStatus) {
-            return false;
-          }
-        }
 
         // Date Range filter - filter parcels created on the selected date
         if (filters.dateRange && filters.dateRange.trim() !== '') {
@@ -458,16 +448,6 @@ const DispatchedParcels = () => {
                 onChange={handleFilterChange}
               />
             </div>
-            <div className="filter-group">
-              <label>Status</label>
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All Status</option>
-                <option value="delivered">Delivered</option>
-                <option value="in transit">In Transit</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-              </select>
-            </div>
           </div>
           <div className="filter-actions">
             <button className="reset-button" onClick={handleResetFilters}>
@@ -526,8 +506,8 @@ const DispatchedParcels = () => {
           <div className="edit-modal">
             <div className="modal-header">
               <div className="header-content">
-                <div className="header-icon">
-                  <FaEdit />
+                <div className="header-icon-wrapper">
+                  <FaEdit className="header-icon" />
                 </div>
                 <h2>Edit Parcel</h2>
               </div>

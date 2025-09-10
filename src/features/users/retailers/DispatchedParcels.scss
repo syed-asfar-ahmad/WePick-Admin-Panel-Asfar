@@ -555,34 +555,72 @@
 
     .edit-modal {
       background: white;
-      border-radius: 12px;
+      border-radius: 20px;
       width: 90%;
-      max-width: 800px;
+      max-width: 900px;
       height: 90vh;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      animation: slideIn 0.3s ease;
+
+      @keyframes slideIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
 
       .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1.25rem 1.25rem 0 1.25rem;
+        padding: 24px;
+        border-bottom: 1px solid #eee;
+        background: linear-gradient(to right, #f8f9fa, #ffffff);
+        border-radius: 20px 20px 0 0;
         flex-shrink: 0;
 
-        h2 {
-          margin: 0;
-          color: #333;
-          font-size: 1.5rem;
+        .header-content {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .header-icon-wrapper {
+            background: rgba(108, 173, 97, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+
+            .header-icon {
+              font-size: 20px;
+              color: #6CAD61;
+            }
+          }
+
+          h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5rem;
+          }
         }
 
         .close-button {
           background: none;
           border: none;
-          font-size: 1.25rem;
+          font-size: 20px;
           color: #666;
           cursor: pointer;
-          padding: 0.25rem;
-          transition: color 0.2s ease;
+          padding: 8px;
+          border-radius: 8px;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
 
           &:disabled {
             opacity: 0.6;
@@ -590,9 +628,11 @@
           }
 
           &:hover:not(:disabled) {
-            color: #dc3545;
+            color: #333;
+            background: transparent;
+            transform: rotate(90deg);
+          }
         }
-      }
     }
 
     form {
@@ -1349,9 +1389,9 @@
 // Beautiful Edit Modal Styles - Identical to Parcel Edit Modal
 .edit-modal {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   width: 90%;
-  max-width: 1000px;
+  max-width: 900px;
   height: 90vh;
   display: flex;
   flex-direction: column;
@@ -1370,7 +1410,7 @@
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(to right, #f8f9fa, #ffffff);
-    border-radius: 16px 16px 0 0;
+    border-radius: 20px 20px 0 0;
     flex-shrink: 0;
 
     .header-content {
@@ -1378,15 +1418,20 @@
       align-items: center;
       gap: 12px;
 
-      .header-icon {
-        font-size: 24px;
-        color: #6CAD61;
+      .header-icon-wrapper {
         background: rgba(108, 173, 97, 0.1);
         padding: 12px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 44px;
+        height: 44px;
+
+        .header-icon {
+          font-size: 20px;
+          color: #6CAD61;
+        }
       }
 
       h2 {
@@ -1453,14 +1498,14 @@
 
       .form-section {
         background: white;
-        border-radius: 12px;
+        border-radius: 16px;
         padding: 24px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         }
 
         .section-header {
@@ -1473,19 +1518,18 @@
 
           .section-icon-wrapper {
             background: rgba(108, 173, 97, 0.1);
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
-          }
+            width: 40px;
+            height: 40px;
 
-          .section-icon {
-            font-size: 20px;
-            color: #6CAD61;
-            display: block;
+            .section-icon {
+              font-size: 18px;
+              color: #6CAD61;
+            }
           }
 
           h3 {
@@ -1518,17 +1562,17 @@
           .form-control {
             width: 100%;
             padding: 12px 16px;
-            border: 1px solid #ddd !important;
+            border: 1px solid #e9ecef;
             border-radius: 8px;
             font-size: 14px;
             color: #333;
             transition: all 0.2s;
-            background: #fafafa;
+            background: #fff;
             height: 45px;
             line-height: 1.5;
 
             &:hover {
-              border-color: #ddd;
+              border-color: #6CAD61;
               background: #fff;
             }
 
@@ -1539,6 +1583,13 @@
               box-shadow: 0 0 0 2px rgba(108, 173, 97, 0.1);
             }
 
+            &:disabled {
+              background-color: #f8f9fa;
+              cursor: not-allowed;
+              opacity: 0.7;
+              border-color: #e9ecef;
+            }
+
             &::placeholder {
               color: #999;
             }
@@ -1546,7 +1597,7 @@
 
           select.form-control {
             appearance: none;
-            background-color: #fafafa;
+            background-color: #fff;
             padding-right: 48px;
             cursor: pointer;
             text-overflow: ellipsis;
@@ -1576,12 +1627,18 @@
             }
 
             &:hover {
-              border-color: #ddd;
+              border-color: #6CAD61;
               background-color: #fff;
             }
 
             &:focus {
               background-color: #fff;
+            }
+
+            &:disabled {
+              background-color: #f8f9fa;
+              cursor: not-allowed;
+              opacity: 0.7;
             }
           }
         }
