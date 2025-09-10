@@ -333,37 +333,39 @@ const CustomersList = () => {
                   </button>
                 </div>
                 <form onSubmit={handleSaveEdit}>
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label>Name</label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={selectedCustomer.name}
-                        onChange={handleInputChange}
-                        disabled={isEditLoading}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Email</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={selectedCustomer.email}
-                        onChange={handleInputChange}
-                        disabled={isEditLoading}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Phone Number</label>
-                      <input
-                        type="tel"
-                        name="phoneNumber"
-                        value={selectedCustomer.phoneNumber || ''}
-                        onChange={handleInputChange}
-                        placeholder="Enter phone number"
-                        disabled={isEditLoading}
-                      />
+                  <div className="modal-content">
+                    <div className="form-grid">
+                      <div className="form-group">
+                        <label>Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={selectedCustomer.name}
+                          onChange={handleInputChange}
+                          disabled={isEditLoading}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={selectedCustomer.email}
+                          onChange={handleInputChange}
+                          disabled={isEditLoading}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Phone Number</label>
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          value={selectedCustomer.phoneNumber || ''}
+                          onChange={handleInputChange}
+                          placeholder="Enter phone number"
+                          disabled={isEditLoading}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="modal-actions">

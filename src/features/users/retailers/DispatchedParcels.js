@@ -536,8 +536,9 @@ const DispatchedParcels = () => {
               </button>
             </div>
             <form onSubmit={handleSaveEdit}>
-              <div className="form-grid">
-                {/* Parcel Information Section */}
+              <div className="modal-content">
+                <div className="form-grid">
+                  {/* Parcel Information Section */}
                 <div className="form-section">
                   <div className="section-header">
                     <div className="section-icon-wrapper">
@@ -756,26 +757,27 @@ const DispatchedParcels = () => {
                     />
                   </div>
                 </div>
+                </div>
               </div>
-                             <div className="form-actions">
-                 <button 
-                   type="button" 
-                   className="cancel-button" 
-                   onClick={() => {
-                     // Reset form to original values
-                     if (originalParcelData) {
-                       setSelectedParcel(originalParcelData);
-                       setHasFormChanges(false);
-                     }
-                   }} 
-                   disabled={isEditLoading}
-                 >
-                   Cancel
-                 </button>
-                 <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
-                   Save Changes
-                 </button>
-               </div>
+              <div className="form-actions">
+                <button 
+                  type="button" 
+                  className="cancel-button" 
+                  onClick={() => {
+                    // Reset form to original values
+                    if (originalParcelData) {
+                      setSelectedParcel(originalParcelData);
+                      setHasFormChanges(false);
+                    }
+                  }} 
+                  disabled={isEditLoading}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="save-button" disabled={isEditLoading || !hasFormChanges}>
+                  Save Changes
+                </button>
+              </div>
             </form>
           </div>
         </div>

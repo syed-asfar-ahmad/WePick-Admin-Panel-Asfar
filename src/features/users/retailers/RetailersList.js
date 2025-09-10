@@ -357,66 +357,68 @@ const RetailersList = () => {
               </button>
             </div>
             <form onSubmit={handleSaveEdit}>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>Store Name</label>
-                  <input
-                    type="text"
-                    name="businessName"
-                    value={selectedRetailer.businessName || ''}
-                    onChange={handleInputChange}
-                    disabled={isEditLoading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Owner</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={selectedRetailer.name || ''}
-                    onChange={handleInputChange}
-                    disabled={isEditLoading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Business Email</label>
-                  <input
-                    type="email"
-                    name="businessEmail"
-                    value={selectedRetailer.businessEmail || ''}
-                    onChange={handleInputChange}
-                    disabled={isEditLoading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Phone</label>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={selectedRetailer.phoneNumber || ''}
-                    onChange={handleInputChange}
-                    disabled={isEditLoading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Business Address</label>
-                  <input
-                    type="text"
-                    name="businessAddress"
-                    value={selectedRetailer.businessAddress || ''}
-                    onChange={handleInputChange}
-                    disabled={isEditLoading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Business Registration Number</label>
-                  <input
-                    type="text"
-                    name="businessRegistrationNumber"
-                    value={selectedRetailer.businessRegistrationNumber || ''}
-                    onChange={handleInputChange}
-                    disabled={isEditLoading}
-                  />
+              <div className="modal-content">
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Store Name</label>
+                    <input
+                      type="text"
+                      name="businessName"
+                      value={selectedRetailer.businessName || ''}
+                      onChange={handleInputChange}
+                      disabled={isEditLoading}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Owner</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={selectedRetailer.name || ''}
+                      onChange={handleInputChange}
+                      disabled={isEditLoading}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Business Email</label>
+                    <input
+                      type="email"
+                      name="businessEmail"
+                      value={selectedRetailer.businessEmail || ''}
+                      onChange={handleInputChange}
+                      disabled={isEditLoading}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone</label>
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={selectedRetailer.phoneNumber || ''}
+                      onChange={handleInputChange}
+                      disabled={isEditLoading}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Business Address</label>
+                    <input
+                      type="text"
+                      name="businessAddress"
+                      value={selectedRetailer.businessAddress || ''}
+                      onChange={handleInputChange}
+                      disabled={isEditLoading}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Business Registration Number</label>
+                    <input
+                      type="text"
+                      name="businessRegistrationNumber"
+                      value={selectedRetailer.businessRegistrationNumber || ''}
+                      onChange={handleInputChange}
+                      disabled={isEditLoading}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="modal-actions">

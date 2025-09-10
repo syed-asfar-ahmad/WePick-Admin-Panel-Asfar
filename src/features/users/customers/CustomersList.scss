@@ -699,18 +699,16 @@
     background: white;
     border-radius: 12px;
     width: 90%;
-    max-width: 800px;
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    height: 500px;
-    min-height: 400px;
+    max-width: 500px;
+    height: auto;
+    max-height: 450px;
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      padding: 1rem 1rem 0.75rem 1rem;
+      flex-shrink: 0;
 
       h2 {
         margin: 0;
@@ -748,13 +746,16 @@
       }
     }
 
+    form {
+      border: none;
+    }
+
+    .modal-content {
+      padding: 0.75rem 1rem 1rem 1rem;
+    }
+
     .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin-bottom: 1rem;
-      flex: 1;
-      overflow-y: auto;
+      gap: 0.75rem;
 
       .form-group {
         display: flex;
@@ -783,29 +784,23 @@
     }
 
     .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 16px;
-      padding: 20px 24px;
-      margin-top: auto;
-      border-top: 1px solid #eee;
+      text-align: right;
+      padding: 1rem;
       background: white;
-      position: sticky;
-      bottom: 0;
-      z-index: 10;
+      border: none !important;
+      border-top: none !important;
+      border-bottom: none !important;
+      border-left: none !important;
+      border-right: none !important;
 
       button {
-        width: 80px;
-        height: 50px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
+        padding: 0.5rem 1.25rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
         cursor: pointer;
         transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        white-space: nowrap;
+        display: inline-block;
+        margin-left: 0.75rem;
 
         &:disabled {
           opacity: 0.6;
@@ -816,6 +811,7 @@
           background: white !important;
           border: 2px solid #ddd !important;
           color: #666 !important;
+          margin-left: 0;
 
           &:hover:not(:disabled) {
             background: #f8f9fa !important;
@@ -861,11 +857,18 @@
   .modal-overlay {
     .edit-modal {
       width: 95%;
-      padding: 1rem;
+      max-width: 400px;
 
-      .form-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
+      .modal-header {
+        padding: 1rem 1rem 0 1rem;
+      }
+
+      .modal-content {
+        padding: 1rem;
+      }
+
+      .modal-actions {
+        padding: 1rem;
       }
     }
   }

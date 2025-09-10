@@ -291,9 +291,7 @@
       margin-top: auto;
       border-top: 1px solid #eee;
       background: white;
-      position: sticky;
-      bottom: 0;
-      z-index: 10;
+      flex-shrink: 0;
 
       button {
         width: 80px;
