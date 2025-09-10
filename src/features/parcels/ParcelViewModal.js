@@ -30,17 +30,21 @@ const ParcelViewModal = ({ parcel, onClose }) => {
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
       case 'delivered':
-        return '#4CAF50';
+        return '#4cb050';
       case 'in transit':
-        return '#2196F3';
+        return '#2196f3';
       case 'pending':
-        return '#FFC107';
+        return '#ff9700';
       case 'failed':
         return '#F44336';
       case 'dispatched':
-        return '#4CAF50';
+        return '#4cb050';
       case 'ready for pickup':
-        return '#FF9800';
+        return '#8bc24a';
+      case 'deposit':
+        return '#2196f3';
+      case 'pickup':
+        return '#8bc24a';
       default:
         return '#757575';
     }

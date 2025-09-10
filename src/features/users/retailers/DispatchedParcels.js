@@ -19,6 +19,7 @@ const DispatchedParcels = () => {
   const [error, setError] = useState(null);
   const [parcels, setParcels] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [allDispatched, setAllDispatched] = useState([]);
   const [updatesSupported, setUpdatesSupported] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -62,29 +63,27 @@ const DispatchedParcels = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getDispatchedParcels(page);
-      
-      if (response?.success) {
-        // Extract parcels array from the correct nested structure
-        const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
-        
-        // Ensure parcelsData is an array
-        if (!Array.isArray(parcelsData)) {
-          setParcels([]);
-          setError('Invalid data format received from server.');
-          return;
+      // Load all pages once, filter to dispatched, then paginate on client (prevents duplicates)
+      let pageCursor = 1;
+      let apiTotalPages = 1;
+      const collected = [];
+      do {
+        const resp = await getDispatchedParcels(pageCursor);
+        if (!resp?.success) break;
+        const arr = resp?.data?.parcels || resp?.data?.data || resp?.data || [];
+        if (Array.isArray(arr)) {
+          const onlyDeposit = arr.filter(p => (p?.status || '').toLowerCase() === 'deposit');
+          collected.push(...onlyDeposit);
         }
-        
-        // Update pagination from API response
-        setCurrentPage(response.data?.currentPage || page);
-        setTotalPages(response.data?.totalPages || 1);
-        setTotalCount(response.data?.totalCount || parcelsData.length);
-        
-        setParcels(parcelsData);
-      } else {
-        setError('Failed to load dispatched parcels. Please try again.');
-        setParcels([]);
-      }
+        apiTotalPages = resp?.data?.totalPages || 1;
+        pageCursor = (resp?.data?.currentPage || pageCursor) + 1;
+      } while (pageCursor <= apiTotalPages);
+
+      setAllDispatched(collected);
+      setTotalCount(collected.length);
+      setTotalPages(Math.max(1, Math.ceil(collected.length / pageSize)));
+      setCurrentPage(1);
+      setParcels(collected.slice(0, pageSize));
     } catch (err) {
       setError('Failed to load dispatched parcels. Please try again.');
       setParcels([]);
@@ -98,20 +97,14 @@ const DispatchedParcels = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getDispatchedParcels(page);
-      
-      if (response?.success) {
-        const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
-        
-        // Update pagination from API response
-        setCurrentPage(response.data?.currentPage || page);
-        setTotalPages(response.data?.totalPages || 1);
-        setTotalCount(response.data?.totalCount || 0);
-        
-        setParcels(parcelsData);
-      } else {
-        setError('Failed to load dispatched parcels. Please try again.');
+      if (!Array.isArray(allDispatched) || allDispatched.length === 0) {
+        await fetchParcels(1);
+        return;
       }
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      setCurrentPage(page);
+      setParcels(allDispatched.slice(start, end));
     } catch (err) {
       setError('Failed to load dispatched parcels. Please try again.');
     } finally {
@@ -276,15 +269,17 @@ const DispatchedParcels = () => {
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
       case 'delivered':
-        return '#4CAF50';
+        return '#4cb050';
       case 'in transit':
-        return '#2196F3';
+        return '#2196f3';
       case 'pending':
-        return '#FFC107';
+        return '#ff9700';
       case 'failed':
         return '#F44336';
       case 'deposit':
-        return '#FF9800';
+        return '#2196f3';
+      case 'pickup':
+        return '#8bc24a';
       default:
         return '#757575';
     }
@@ -327,11 +322,7 @@ const DispatchedParcels = () => {
       
       // Sender Information
       if (selectedParcel.senderName) updateData.senderName = selectedParcel.senderName;
-      if (selectedParcel.senderInfo) {
-        updateData.senderInfo = {};
-        if (selectedParcel.senderInfo.businessName) updateData.senderInfo.businessName = selectedParcel.senderInfo.businessName;
-        if (selectedParcel.senderInfo.phoneNumber) updateData.senderInfo.phoneNumber = selectedParcel.senderInfo.phoneNumber;
-      }
+      // Note: businessName and phoneNumber are disabled/read-only fields, so they won't be updated
       
       // Recipient Information
       if (selectedParcel.recipientName) updateData.recipientName = selectedParcel.recipientName;
@@ -410,9 +401,7 @@ const DispatchedParcels = () => {
     if (originalParcelData.from !== selectedParcel.from) return true;
     if (originalParcelData.to !== selectedParcel.to) return true;
     
-    // Check nested senderInfo fields
-    if (originalParcelData.senderInfo?.businessName !== selectedParcel.senderInfo?.businessName) return true;
-    if (originalParcelData.senderInfo?.phoneNumber !== selectedParcel.senderInfo?.phoneNumber) return true;
+    // Note: businessName and phoneNumber are disabled/read-only fields, so they won't trigger change detection
     
     return false;
   };
@@ -652,27 +641,25 @@ const DispatchedParcels = () => {
                       type="text"
                       name="senderInfo.businessName"
                       value={selectedParcel.senderInfo?.businessName || ''}
-                      onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter business name"
-                      disabled={isEditLoading}
+                      disabled={true}
                     />
                   </div>
-                                     <div className="form-group">
-                     <label>
-                       <FaIdCard className="input-icon" />
-                       Phone Number
-                     </label>
-                                         <input
+                  <div className="form-group">
+                    <label>
+                      <FaIdCard className="input-icon" />
+                      Phone Number
+                    </label>
+                    <input
                       type="tel"
                       name="senderInfo.phoneNumber"
                       value={selectedParcel.senderInfo?.phoneNumber || ''}
-                      onChange={handleInputChange}
                       className="form-control"
                       placeholder="Enter phone number"
-                      disabled={isEditLoading}
+                      disabled={true}
                     />
-                   </div>
+                  </div>
                 </div>
 
                 {/* Recipient Information Section */}

@@ -30,12 +30,36 @@ const DispatchedParcelsChart = () => {
   const fetchDailyData = async () => {
     try {
       setIsLoading(true);
-      const response = await getAdminDashboard();
-      const reportDetails = response?.data?.reportDetails || [];
+      // Fetch ALL pages so the chart isn't limited by the first page (e.g., 20 items)
+      const fetchAllReportDetails = async () => {
+        let page = 1;
+        let totalPages = 1;
+        const all = [];
+
+        do {
+          const resp = await getAdminDashboard(page);
+          const data = resp?.data || {};
+          const details = data?.reportDetails || [];
+          all.push(...details);
+          totalPages = data?.totalPages || 1;
+          const currentPageFromApi = data?.currentPage || page;
+          page = currentPageFromApi + 1;
+        } while (page <= totalPages);
+
+        return all;
+      };
+
+      const reportDetails = await fetchAllReportDetails();
       // Process the data to get monthly counts for the selected year
       const monthlyCounts = Array(12).fill(0);
       reportDetails.forEach(parcel => {
+        // Only count dispatched parcels (status === 'deposit')
+        const status = (parcel?.status || '').toLowerCase();
+        if (status !== 'deposit') return;
+
         const date = new Date(parcel.dateTime);
+        if (Number.isNaN(date.getTime())) return;
+
         if (date.getFullYear() === selectedYear) {
           const month = date.getMonth();
           monthlyCounts[month]++;

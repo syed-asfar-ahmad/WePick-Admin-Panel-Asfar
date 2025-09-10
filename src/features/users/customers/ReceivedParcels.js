@@ -247,13 +247,17 @@ const ReceivedParcels = () => {
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
       case 'delivered':
-        return '#4CAF50';
+        return '#4cb050';
       case 'in transit':
-        return '#2196F3';
+        return '#2196f3';
       case 'pending':
-        return '#FFC107';
+        return '#ff9700';
       case 'failed':
         return '#F44336';
+      case 'deposit':
+        return '#2196f3';
+      case 'pickup':
+        return '#8bc24a';
       default:
         return '#757575';
     }
@@ -436,7 +440,7 @@ const ReceivedParcels = () => {
                     <td>{parcel.recipientName || 'N/A'}</td>
                     <td>{parcel.from || 'N/A'}</td>
                     <td>{parcel.to || 'N/A'}</td>
-                    <td>{parcel.weight || '-'}</td>
+                    <td>{parcel.weight ? `${parcel.weight}kg` : '-'}</td>
                     <td>{parcel.Date || new Date(parcel.createdAt).toLocaleDateString() || 'N/A'}</td>
                     <td>
                       <div className="action-buttons">

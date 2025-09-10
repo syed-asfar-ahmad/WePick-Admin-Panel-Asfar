@@ -213,7 +213,7 @@ const RetailersList = () => {
   };
 
   const getStatusColor = (status) => {
-    return status === 'Active' ? '#4CAF50' : '#F44336';
+    return status === 'Active' ? '#4cb050' : '#F44336';
   };
 
   const handleViewRetailer = (retailerId) => {

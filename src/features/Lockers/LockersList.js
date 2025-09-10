@@ -135,7 +135,7 @@ const LockersList = () => {
   
 
   const getStatusColor = (status) => {
-    return status === 'Available' ? '#4CAF50' : '#F44336';
+    return status === 'Available' ? '#4cb050' : '#F44336';
   };
 
   const getSizeDescription = (size) => {
