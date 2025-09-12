@@ -121,9 +121,99 @@ const ParcelsList = () => {
 
   // Apply filters automatically whenever filters or searchTerm change
   useEffect(() => {
-    const filtered = getFilteredParcels();
-    setFilteredParcels(filtered);
-  }, [filters, searchTerm, parcels]);
+    // Check if filters are applied
+    const hasActiveFilters = Object.values(filters).some(value => value !== '') || searchTerm;
+    
+    if (hasActiveFilters) {
+      // If filters are applied, fetch all parcels and filter them
+      fetchAllParcelsForFiltering();
+    } else {
+      // No filters, use normal pagination
+      const filtered = getFilteredParcels();
+      setFilteredParcels(filtered);
+    }
+  }, [filters, searchTerm]);
+
+  // Fetch all parcels for filtering (loop through all pages)
+  const fetchAllParcelsForFiltering = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Fetch all pages to get complete data for filtering
+      const allParcels = [];
+      let currentPage = 1;
+      let hasMorePages = true;
+      
+      while (hasMorePages && currentPage <= 10) { // Safety limit to avoid infinite loop
+        const response = await getParcels(currentPage);
+        
+        if (response?.success && response.data?.parcels) {
+          allParcels.push(...response.data.parcels);
+          
+          // Check if there are more pages
+          const totalPages = response.data?.totalPages || Math.ceil((response.data?.totalParcelCount || 0) / pageSize);
+          hasMorePages = currentPage < totalPages;
+          currentPage++;
+        } else {
+          hasMorePages = false;
+        }
+      }
+      
+      // Set all parcels and apply filtering
+      setParcels(allParcels);
+      
+      // Reset to page 1 and update pagination for filtered results
+      setCurrentPage(1);
+      setTotalParcelCount(allParcels.length);
+      
+      // Get filtered results (without pagination first)
+      const allFiltered = parcels.filter(parcel => {
+        // Apply same filtering logic here to get total count
+        if (!parcel || typeof parcel !== 'object') return false;
+        
+        // Status filter
+        if (filters.status && filters.status.trim() !== '') {
+          if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
+            return false;
+          }
+        }
+        
+        // Search filter
+        if (searchTerm && searchTerm.trim() !== '') {
+          const searchLower = searchTerm.toLowerCase().trim();
+          const searchableFields = [
+            parcel.parcelId, parcel.parcelName, parcel.senderName, 
+            parcel.recipientName, parcel.businessName, parcel.customerName, 
+            parcel.from, parcel.to
+          ];
+          const hasMatch = searchableFields.some(field => {
+            if (!field) return false;
+            return String(field).toLowerCase().includes(searchLower);
+          });
+          if (!hasMatch) return false;
+        }
+        
+        return true;
+      });
+      
+      // Show first 20 parcels
+      const paginatedFiltered = allFiltered.slice(0, pageSize);
+      setFilteredParcels(paginatedFiltered);
+      
+      // Update total pages based on filtered results
+      const calculatedTotalPages = Math.ceil(allFiltered.length / pageSize);
+      
+      setTotalPages(calculatedTotalPages);
+      
+    } catch (err) {
+      setError('Failed to load parcels for filtering. Please try again.');
+      setParcels([]);
+      setFilteredParcels([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Fetch parcels for specific page
   const fetchParcelsForPage = async (page) => {
@@ -171,7 +261,50 @@ const ParcelsList = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    fetchParcelsForPage(page);
+    
+    // Check if we have active filters
+    const hasActiveFilters = Object.values(filters).some(value => value !== '') || searchTerm;
+    
+    if (hasActiveFilters) {
+      // If filters are active, we already have all data, just update pagination
+      const allFiltered = parcels.filter(parcel => {
+        // Apply same filtering logic
+        if (!parcel || typeof parcel !== 'object') return false;
+        
+        // Status filter
+        if (filters.status && filters.status.trim() !== '') {
+          if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
+            return false;
+          }
+        }
+        
+        // Search filter
+        if (searchTerm && searchTerm.trim() !== '') {
+          const searchLower = searchTerm.toLowerCase().trim();
+          const searchableFields = [
+            parcel.parcelId, parcel.parcelName, parcel.senderName, 
+            parcel.recipientName, parcel.businessName, parcel.customerName, 
+            parcel.from, parcel.to
+          ];
+          const hasMatch = searchableFields.some(field => {
+            if (!field) return false;
+            return String(field).toLowerCase().includes(searchLower);
+          });
+          if (!hasMatch) return false;
+        }
+        
+        return true;
+      });
+      
+      // Get paginated results for current page
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedFiltered = allFiltered.slice(startIndex, endIndex);
+      setFilteredParcels(paginatedFiltered);
+    } else {
+      // No filters, fetch specific page
+      fetchParcelsForPage(page);
+    }
   };
 
   const getFilteredParcels = () => {
@@ -186,7 +319,7 @@ const ParcelsList = () => {
     }
 
     try {
-      return parcels.filter(parcel => {
+      const filtered = parcels.filter(parcel => {
         // Ensure parcel is a valid object
         if (!parcel || typeof parcel !== 'object') {
           return false;
@@ -254,6 +387,15 @@ const ParcelsList = () => {
 
         return true;
       });
+      
+      // If filters are active, return paginated results
+      if (hasActiveFilters) {
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        return filtered.slice(startIndex, endIndex);
+      }
+      
+      return filtered;
     } catch (error) {
       return [];
     }
@@ -548,10 +690,48 @@ const ParcelsList = () => {
       {parcels.length > 0 && (
         <div className="pagination-container">
           <div className="pagination-info">
-            {totalPages > 1 
-              ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
-              : `Showing ${totalParcelCount} of ${totalParcelCount} parcels`
-            }
+            {(() => {
+              const hasActiveFilters = Object.values(filters).some(value => value !== '') || searchTerm;
+              
+              if (hasActiveFilters) {
+                // Calculate total filtered parcels count
+                const allFiltered = parcels.filter(parcel => {
+                  if (!parcel || typeof parcel !== 'object') return false;
+                  
+                  // Status filter
+                  if (filters.status && filters.status.trim() !== '') {
+                    if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
+                      return false;
+                    }
+                  }
+                  
+                  // Search filter
+                  if (searchTerm && searchTerm.trim() !== '') {
+                    const searchLower = searchTerm.toLowerCase().trim();
+                    const searchableFields = [
+                      parcel.parcelId, parcel.parcelName, parcel.senderName, 
+                      parcel.recipientName, parcel.businessName, parcel.customerName, 
+                      parcel.from, parcel.to
+                    ];
+                    const hasMatch = searchableFields.some(field => {
+                      if (!field) return false;
+                      return String(field).toLowerCase().includes(searchLower);
+                    });
+                    if (!hasMatch) return false;
+                  }
+                  
+                  return true;
+                });
+                
+                const startIndex = (currentPage - 1) * pageSize + 1;
+                const endIndex = Math.min(currentPage * pageSize, allFiltered.length);
+                return `Showing ${startIndex} to ${endIndex} of ${allFiltered.length} filtered parcels`;
+              } else {
+                return totalPages > 1 
+                  ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
+                  : `Showing ${totalParcelCount} of ${totalParcelCount} parcels`;
+              }
+            })()}
           </div>
           {totalPages > 1 && (
           <div className="pagination-controls">
