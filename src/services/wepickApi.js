@@ -73,22 +73,56 @@ export const getParcelDetail = (parcelId) => getRequest(`${GET_PARCEL_DETAIL}/${
 export const getAdminDashboard = (page = 1) => getRequest(`${ADMIN_DASHBOARD}?page=${page}`);
 
 // Retailer services
-export const getRetailers = (page = 1) => getRequest(`${RETAILERS}?page=${page}`);
+export const getRetailers = (page = 1, search = '') => {
+  const params = new URLSearchParams();
+  params.append('page', page);
+  if (search && search.trim()) {
+    params.append('search', search.trim());
+  }
+  return getRequest(`${RETAILERS}?${params.toString()}`);
+};
 export const getRetailerById = (id) => getRequest(`/retailers/${id}`);
 export const updateRetailerById = (id, data) => patchRequest(`/retailers/${id}`, data);
 
 // Dispatched Parcels services
-export const getDispatchedParcels = (page = 1) => getRequest(`${DISPATCHED}?page=${page}`);
+export const getDispatchedParcels = (page = 1, search = '', date = '') => {
+  const params = new URLSearchParams();
+  params.append('page', page);
+  if (search && search.trim()) {
+    params.append('search', search.trim());
+  }
+  if (date && date.trim()) {
+    params.append('date', date.trim());
+  }
+  return getRequest(`${DISPATCHED}?${params.toString()}`);
+};
 export const getDispatchedParcelById = (id) => getRequest(`${DISPATCHED}/${id}`);
 export const updateDispatchedParcelById = (id, data) => patchRequest(`${DISPATCHED}/${id}`, data);
 
 // Received Parcels services
-export const getReceivedParcels = (page = 1) => getRequest(`${RECEIVED_PARCELS}?page=${page}`);
+export const getReceivedParcels = (page = 1, search = '', date = '') => {
+  const params = new URLSearchParams();
+  params.append('page', page);
+  if (search && search.trim()) {
+    params.append('search', search.trim());
+  }
+  if (date && date.trim()) {
+    params.append('date', date.trim());
+  }
+  return getRequest(`${RECEIVED_PARCELS}?${params.toString()}`);
+};
 export const getReceivedParcelById = (id) => getRequest(`${RECEIVED_PARCELS}/${id}`);
 export const updateReceivedParcelById = (id, data) => patchRequest(`${RECEIVED_PARCELS}/${id}`, data);
 
 // Customers services
-export const getCustomers = (page = 1) => getRequest(`${CUSTOMERS}?page=${page}`);
+export const getCustomers = (page = 1, search = '') => {
+  const params = new URLSearchParams();
+  params.append('page', page);
+  if (search && search.trim()) {
+    params.append('search', search.trim());
+  }
+  return getRequest(`${CUSTOMERS}?${params.toString()}`);
+};
 export const getCustomerById = (id) => getRequest(`${CUSTOMERS}/${id}`);
 export const updateCustomerById = (id, data) => patchRequest(`/customers/${id}`, data);
 
@@ -100,7 +134,14 @@ export const getNotificationById = (id) => getRequest(`${NOTIFICATIONS}/${id}`);
 export const getLockers = () => getRequest(LOCKERS);
 
 // Parcels services
-export const getParcels = (page = 1) => getRequest(`${PARCELS}?page=${page}`);
+export const getParcels = (page = 1, search = '') => {
+  const params = new URLSearchParams();
+  params.append('page', page);
+  if (search && search.trim()) {
+    params.append('search', search.trim());
+  }
+  return getRequest(`${PARCELS}?${params.toString()}`);
+};
 export const updateParcel = (id, data) => patchRequest(`${PARCELS}/${id}`, data);
 
 // Admin Auth services

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FaFilter, FaBox, FaCheckCircle, FaChartBar, FaTimes, FaSpinner, FaFileAlt, FaChartLine, FaSearch } from 'react-icons/fa';
 import ParcelViewModal from './ParcelViewModal';
 import ParcelEditModal from './ParcelEditModal';
@@ -27,7 +27,7 @@ const ParcelsList = () => {
   });
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Analytics data
+  // Analytics data (static - only set on initial load)
   const [analytics, setAnalytics] = useState({
     totalParcels: 0,
     activeParcels: 0,
@@ -35,6 +35,9 @@ const ParcelsList = () => {
     averageDeliveryTime: '0 hours',
     topPerformingLockers: []
   });
+  
+  // Track if analytics has been set initially
+  const [analyticsInitialized, setAnalyticsInitialized] = useState(false);
 
   // Parcels data
   const [parcels, setParcels] = useState([]);
@@ -45,6 +48,9 @@ const ParcelsList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalParcelCount, setTotalParcelCount] = useState(0);
   const [pageSize] = useState(20);
+  
+  // Ref to track ongoing requests
+  const ongoingRequestRef = useRef(null);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +68,64 @@ const ParcelsList = () => {
       dateRange: ''
     });
     setSearchTerm('');
+    fetchParcelsWithSearch(1, '');
+  };
+
+  // Reset search and pagination
+  const resetSearch = () => {
+    setSearchTerm('');
+    setCurrentPage(1);
+    fetchParcelsWithSearch(1, '');
+  };
+
+  // Fetch parcels with search functionality
+  const fetchParcelsWithSearch = async (page = 1, searchQuery = '') => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await getParcels(page, searchQuery);
+      
+      if (response?.success) {
+        const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
+        const totalParcelsFromAPI = response.data?.totalParcelCount || response.data?.totalParcels || response.data?.totalCount || parcelsData.length;
+        const totalPagesFromAPI = response.data?.totalPages || 1;
+        
+        // Update all states at once
+        setParcels(parcelsData);
+        setFilteredParcels(parcelsData);
+        setTotalParcelCount(totalParcelsFromAPI);
+        setTotalPages(totalPagesFromAPI);
+        setCurrentPage(response.data?.currentPage || page);
+        
+        // Update analytics only on initial load (when no search/filter)
+        if (!analyticsInitialized && !searchQuery) {
+          console.log('Setting initial analytics with totalParcelsFromAPI:', totalParcelsFromAPI);
+          setAnalytics({
+            totalParcels: totalParcelsFromAPI,
+            activeParcels: 0,
+            deliveredParcels: 0,
+            averageDeliveryTime: '2.5 hours',
+            topPerformingLockers: []
+          });
+          setAnalyticsInitialized(true);
+        }
+      } else {
+        setError('Failed to load parcels. Please try again.');
+        setParcels([]);
+        setFilteredParcels([]);
+        setTotalParcelCount(0);
+        setTotalPages(1);
+      }
+    } catch (err) {
+      setError('Failed to load parcels. Please try again.');
+      setParcels([]);
+      setFilteredParcels([]);
+      setTotalParcelCount(0);
+      setTotalPages(1);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const fetchParcelsData = async (page = 1) => {
@@ -116,7 +180,7 @@ const ParcelsList = () => {
   };
 
   useEffect(() => {
-    fetchParcelsData();
+    fetchParcelsWithSearch(1, '');
   }, []);
 
   // Apply filters automatically whenever filters or searchTerm change
@@ -217,46 +281,7 @@ const ParcelsList = () => {
 
   // Fetch parcels for specific page
   const fetchParcelsForPage = async (page) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await getParcels(page);
-      
-      if (response?.success) {
-        const parcelsData = response.data?.parcels || [];
-        
-        // Update pagination from API response
-        const totalParcelsFromAPI = response.data?.totalParcelCount || parcelsData.length;
-        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
-        
-        setCurrentPage(response.data?.currentPage || page);
-        setTotalPages(response.data?.totalPages || calculatedTotalPages);
-        setTotalParcelCount(totalParcelsFromAPI);
-        
-        setParcels(parcelsData);
-        setFilteredParcels(parcelsData);
-        
-        // Update analytics
-        setAnalytics({
-          totalParcels: totalParcelsFromAPI,
-          activeParcels: 0,
-          deliveredParcels: 0,
-          averageDeliveryTime: '2.5 hours',
-          topPerformingLockers: []
-        });
-      } else {
-        setError('Failed to load parcels. Please try again.');
-        setParcels([]);
-        setFilteredParcels([]);
-      }
-    } catch (err) {
-      setError('Failed to load parcels. Please try again.');
-      setParcels([]);
-      setFilteredParcels([]);
-    } finally {
-      setIsLoading(false);
-    }
+    fetchParcelsWithSearch(page, searchTerm);
   };
 
   const handlePageChange = (page) => {
@@ -573,33 +598,25 @@ const ParcelsList = () => {
             placeholder="Search parcels"
             value={searchTerm}
             onChange={(e) => {
-              const value = e.target.value;
-              setSearchTerm(value);
+              const searchValue = e.target.value;
+              setSearchTerm(searchValue);
+              setCurrentPage(1); // Reset to first page when searching
+              
+              // Debounce search to avoid multiple API calls
+              clearTimeout(window.searchTimeout);
+              window.searchTimeout = setTimeout(() => {
+                fetchParcelsWithSearch(1, searchValue);
+              }, 1800);
             }}
             className="search-input"
-            disabled={isLoading}
           />
-          {searchTerm && (
-            <button
-              className="clear-search-btn"
-              onClick={() => setSearchTerm('')}
-              title="Clear search"
-            >
-              <FaTimes />
-            </button>
-          )}
         </div>
         {searchTerm && (
           <div className="search-results-info">
-            <span>
-              {getFilteredParcels().length === 0 
-                ? `No parcels found for "${searchTerm}"` 
-                : `Showing ${getFilteredParcels().length} of ${parcels.length} parcels`
-              }
-            </span>
             <button
               className="reset-search-btn"
-              onClick={() => setSearchTerm('')}
+              onClick={resetSearch}
+              disabled={isLoading}
             >
               Reset Search
             </button>
@@ -690,48 +707,9 @@ const ParcelsList = () => {
       {parcels.length > 0 && (
         <div className="pagination-container">
           <div className="pagination-info">
-            {(() => {
-              const hasActiveFilters = Object.values(filters).some(value => value !== '') || searchTerm;
-              
-              if (hasActiveFilters) {
-                // Calculate total filtered parcels count
-                const allFiltered = parcels.filter(parcel => {
-                  if (!parcel || typeof parcel !== 'object') return false;
-                  
-                  // Status filter
-                  if (filters.status && filters.status.trim() !== '') {
-                    if (!parcel.status || parcel.status.toLowerCase() !== filters.status.toLowerCase()) {
-                      return false;
-                    }
-                  }
-                  
-                  // Search filter
-                  if (searchTerm && searchTerm.trim() !== '') {
-                    const searchLower = searchTerm.toLowerCase().trim();
-                    const searchableFields = [
-                      parcel.parcelId, parcel.parcelName, parcel.senderName, 
-                      parcel.recipientName, parcel.businessName, parcel.customerName, 
-                      parcel.from, parcel.to
-                    ];
-                    const hasMatch = searchableFields.some(field => {
-                      if (!field) return false;
-                      return String(field).toLowerCase().includes(searchLower);
-                    });
-                    if (!hasMatch) return false;
-                  }
-                  
-                  return true;
-                });
-                
-                const startIndex = (currentPage - 1) * pageSize + 1;
-                const endIndex = Math.min(currentPage * pageSize, allFiltered.length);
-                return `Showing ${startIndex} to ${endIndex} of ${allFiltered.length} filtered parcels`;
-              } else {
-                return totalPages > 1 
-                  ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
-                  : `Showing ${totalParcelCount} of ${totalParcelCount} parcels`;
-              }
-            })()}
+            {!searchTerm ? (
+              `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
+            ) : null}
           </div>
           {totalPages > 1 && (
           <div className="pagination-controls">

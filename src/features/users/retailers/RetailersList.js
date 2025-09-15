@@ -93,32 +93,44 @@ const RetailersList = () => {
     fetchRetailers();
   }, []);
 
-  // Fetch retailers for specific page
-  const fetchRetailersForPage = async (page) => {
+  // Fetch retailers with search functionality
+  const fetchRetailersWithSearch = async (page = 1, searchQuery = '') => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getRetailers(page);
+      
+      const response = await getRetailers(page, searchQuery);
       
       if (response?.success) {
         const retailersData = response.data?.data || [];
+        const totalRetailersFromAPI = response.data?.totalRetailers || 0;
+        const totalPagesFromAPI = response.data?.totalPages || 1;
+        
+        // Update all states at once
         setRetailers(retailersData);
-        
-        // Update pagination from API response
-        const totalRetailersCount = response.data?.totalRetailers || 0;
-        const totalPagesCount = response.data?.totalPages || 1;
-        
+        setTotalRetailers(totalRetailersFromAPI);
+        setTotalPages(totalPagesFromAPI);
         setCurrentPage(response.data?.currentPage || page);
-        setTotalPages(totalPagesCount);
-        setTotalRetailers(totalRetailersCount);
+        
       } else {
         setError('Failed to load retailers. Please try again.');
+        setRetailers([]);
+        setTotalRetailers(0);
+        setTotalPages(1);
       }
     } catch (err) {
       setError('Failed to load retailers. Please try again.');
+      setRetailers([]);
+      setTotalRetailers(0);
+      setTotalPages(1);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Fetch retailers for specific page
+  const fetchRetailersForPage = async (page) => {
+    fetchRetailersWithSearch(page, searchTerm);
   };
 
   // Handle page change
@@ -136,6 +148,13 @@ const RetailersList = () => {
       setSortField(field);
       setSortOrder(order);
     }
+  };
+
+  // Reset search and pagination
+  const resetSearch = () => {
+    setSearchTerm('');
+    setCurrentPage(1);
+    fetchRetailersWithSearch(1, ''); // Fetch all retailers without search
   };
 
   // Create dropdown items for store name sorting
@@ -165,27 +184,13 @@ const RetailersList = () => {
     return items;
   };
 
-  // Filter retailers based on search term and apply sorting
-  const getFilteredRetailers = () => {
-    let filteredRetailers = retailers;
-    
-    if (searchTerm.trim()) {
-      filteredRetailers = retailers.filter(retailer => {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-          (retailer.storeName && retailer.storeName.toLowerCase().includes(searchLower)) ||
-          (retailer.name && retailer.name.toLowerCase().includes(searchLower)) ||
-          (retailer.owner && retailer.owner.toLowerCase().includes(searchLower)) ||
-          (retailer.businessEmail && retailer.businessEmail.toLowerCase().includes(searchLower)) ||
-          (retailer.businessAddress && retailer.businessAddress.toLowerCase().includes(searchLower)) ||
-          (retailer.businessRegistrationNumber && retailer.businessRegistrationNumber.toLowerCase().includes(searchLower))
-        );
-      });
-    }
+  // Apply sorting to retailers
+  const getSortedRetailers = () => {
+    let sortedRetailers = [...retailers];
     
     // Apply sorting if sortField is set
     if (sortField === 'storeName') {
-      return filteredRetailers.sort((a, b) => {
+      return sortedRetailers.sort((a, b) => {
         const aValue = (a.storeName || a.name || '').toLowerCase();
         const bValue = (b.storeName || b.name || '').toLowerCase();
         
@@ -198,7 +203,7 @@ const RetailersList = () => {
     }
     
     // Default sort by createdAt field (newest first) if no custom sorting
-    return filteredRetailers.sort((a, b) => {
+    return sortedRetailers.sort((a, b) => {
       if (a.createdAt && b.createdAt) {
         const dateA = new Date(a.createdAt);
         const dateB = new Date(b.createdAt);
@@ -293,7 +298,20 @@ const RetailersList = () => {
     return false;
   };
 
-  const filteredRetailers = getFilteredRetailers();
+  const sortedRetailers = getSortedRetailers();
+  const paginatedRetailers = sortedRetailers;
+  
+  // Calculate pagination info
+  const getPaginationInfo = () => {
+    return {
+      totalPages,
+      totalRetailers,
+      startIndex: ((currentPage - 1) * pageSize) + 1,
+      endIndex: Math.min(currentPage * pageSize, totalRetailers)
+    };
+  };
+  
+  const paginationInfo = getPaginationInfo();
 
   return (
     <div className="retailers-list-container">
@@ -320,30 +338,35 @@ const RetailersList = () => {
             type="text"
             placeholder="Search Retailers"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            onChange={(e) => {
+              const searchValue = e.target.value;
+              setSearchTerm(searchValue);
+              setCurrentPage(1); // Reset to first page when searching
+              
+              // Don't search if already loading
+              if (isLoading) {
+                return;
+              }
+              
+              // Debounce search to avoid multiple API calls
+              clearTimeout(window.searchTimeout);
+              window.searchTimeout = setTimeout(() => {
+                fetchRetailersWithSearch(1, searchValue);
+              }, 1800);
+            }}
+            className={`search-input ${isLoading ? 'disabled' : ''}`}
+            disabled={isLoading}
           />
           {searchTerm && (
-            <button 
-              className="clear-search-btn"
-              onClick={() => setSearchTerm('')}
-              title="Clear search"
-            >
-              <FaTimes />
-            </button>
-          )}
-        </div>
-        {searchTerm && (
-          <div className="search-results-info">
-            <span>Showing {filteredRetailers.length} of {retailers.length} retailers</span>
-            <button 
+            <button
               className="reset-search-btn"
-              onClick={() => setSearchTerm('')}
+              onClick={resetSearch}
+              disabled={isLoading}
             >
               Reset Search
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Edit Modal */}
@@ -549,7 +572,7 @@ const RetailersList = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredRetailers.map((retailer) => (
+                {paginatedRetailers.map((retailer) => (
                   <tr key={retailer.id}>
                     <td className="store-cell">
                       {retailer.storeName || retailer.name || 'N/A'}
@@ -576,10 +599,12 @@ const RetailersList = () => {
       </div>
       
       {/* Server-side Pagination */}
-      {retailers.length > 0 && totalPages > 1 && (
+      {retailers.length > 0 && paginationInfo.totalPages > 1 && (
         <div className="pagination-container">
           <div className="pagination-info">
-            Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalRetailers)} of {totalRetailers} retailers
+            {!searchTerm ? (
+              `Showing ${paginationInfo.startIndex} to ${paginationInfo.endIndex} of ${paginationInfo.totalRetailers} retailers`
+            ) : null}
           </div>
           <div className="pagination-controls">
             <button 
@@ -613,7 +638,7 @@ const RetailersList = () => {
               >
                 {currentPage}
               </button>
-              {currentPage < totalPages && (
+              {currentPage < paginationInfo.totalPages && (
                 <button 
                   className="pagination-btn page-btn"
                   onClick={() => handlePageChange(currentPage + 1)}
@@ -621,20 +646,20 @@ const RetailersList = () => {
                   {currentPage + 1}
                 </button>
               )}
-              {currentPage < totalPages - 2 && <span className="page-dots">...</span>}
-              {currentPage < totalPages - 1 && (
+              {currentPage < paginationInfo.totalPages - 2 && <span className="page-dots">...</span>}
+              {currentPage < paginationInfo.totalPages - 1 && (
                 <button 
                   className="pagination-btn page-btn"
-                  onClick={() => handlePageChange(totalPages)}
+                  onClick={() => handlePageChange(paginationInfo.totalPages)}
                 >
-                  {totalPages}
+                  {paginationInfo.totalPages}
                 </button>
               )}
             </div>
             <button 
               className="pagination-btn next-btn"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              disabled={currentPage === paginationInfo.totalPages}
             >
               Next <span>→</span>
             </button>

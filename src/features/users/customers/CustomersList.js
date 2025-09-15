@@ -24,57 +24,67 @@ const CustomersList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize] = useState(20);
 
-  // Fetch customers from API
-  const fetchCustomers = async (page = 1) => {
+  // Fetch customers with search functionality
+  const fetchCustomersWithSearch = async (page = 1, searchQuery = '') => {
     try {
       setIsLoading(true);
-      const response = await getCustomers(page);
+      setError(null);
       
-      let customersData = [];
+      const response = await getCustomers(page, searchQuery);
       
-      // Handle different response structures
-      if (response?.data?.data?.list) {
-        customersData = response.data.data.list;
-      } else if (response?.data?.list) {
-        customersData = response.data.list;
-      } else if (response?.data?.data && Array.isArray(response.data.data)) {
-        customersData = response.data.data;
-      } else if (response?.data && Array.isArray(response.data)) {
-        customersData = response.data;
-      } else if (response?.data?.customers) {
-        customersData = response.data.customers;
+      if (response?.success) {
+        let customersData = [];
+        
+        // Handle different response structures
+        if (response?.data?.data?.list) {
+          customersData = response.data.data.list;
+        } else if (response?.data?.list) {
+          customersData = response.data.list;
+        } else if (response?.data?.data && Array.isArray(response.data.data)) {
+          customersData = response.data.data;
+        } else if (response?.data && Array.isArray(response.data)) {
+          customersData = response.data;
+        } else if (response?.data?.customers) {
+          customersData = response.data.customers;
+        } else {
+          customersData = [];
+        }
+        
+        // Fetch phone numbers and totalParcels for each customer
+        const customersWithDetails = await Promise.all(
+          customersData.map(async (customer) => {
+            try {
+              const customerDetail = await getCustomerById(customer.id);
+              return {
+                ...customer,
+                phoneNumber: customerDetail?.data?.phoneNumber || 'N/A',
+                totalParcels: customerDetail?.data?.totalParcels || 0
+              };
+            } catch (err) {
+              return {
+                ...customer,
+                phoneNumber: 'N/A',
+                totalParcels: 0
+              };
+            }
+          })
+        );
+        
+        setCustomers(customersWithDetails);
+        setTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
+        setTotalPages(response.data?.totalPages || 1);
+        setCurrentPage(response.data?.currentPage || page);
       } else {
-        customersData = [];
+        setError('Failed to load customers. Please try again.');
+        setCustomers([]);
+        setTotalCustomers(0);
+        setTotalPages(1);
       }
-      
-      // Fetch phone numbers and totalParcels for each customer
-      const customersWithDetails = await Promise.all(
-        customersData.map(async (customer) => {
-          try {
-            const customerDetail = await getCustomerById(customer.id);
-            return {
-              ...customer,
-              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A',
-              totalParcels: customerDetail?.data?.totalParcels || 0
-            };
-          } catch (err) {
-            return {
-              ...customer,
-              phoneNumber: 'N/A',
-              totalParcels: 0
-            };
-          }
-        })
-      );
-      
-      // Update pagination from API response
-      setCurrentPage(response.data?.currentPage || page);
-      setTotalPages(response.data?.totalPages || 1);
-      setTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
-      
-      setCustomers(customersWithDetails);
     } catch (err) {
-      // Handle error silently
+      setError('Failed to load customers. Please try again.');
+      setCustomers([]);
+      setTotalCustomers(0);
+      setTotalPages(1);
     } finally {
       setIsLoading(false);
     }
@@ -82,58 +92,7 @@ const CustomersList = () => {
 
   // Fetch customers for specific page
   const fetchCustomersForPage = async (page) => {
-    try {
-      setIsLoading(true);
-      const response = await getCustomers(page);
-      
-      let customersData = [];
-      
-      // Handle different response structures
-      if (response?.data?.data?.list) {
-        customersData = response.data.data.list;
-      } else if (response?.data?.list) {
-        customersData = response.data.list;
-      } else if (response?.data?.data && Array.isArray(response.data.data)) {
-        customersData = response.data.data;
-      } else if (response?.data && Array.isArray(response.data)) {
-        customersData = response.data;
-      } else if (response?.data?.customers) {
-        customersData = response.data.customers;
-      } else {
-        customersData = [];
-      }
-      
-      // Fetch phone numbers and totalParcels for each customer
-      const customersWithDetails = await Promise.all(
-        customersData.map(async (customer) => {
-          try {
-            const customerDetail = await getCustomerById(customer.id);
-            return {
-              ...customer,
-              phoneNumber: customerDetail?.data?.phoneNumber || 'N/A',
-              totalParcels: customerDetail?.data?.totalParcels || 0
-            };
-          } catch (err) {
-            return {
-              ...customer,
-              phoneNumber: 'N/A',
-              totalParcels: 0
-            };
-          }
-        })
-      );
-      
-      // Update pagination from API response
-      setCurrentPage(response.data?.currentPage || page);
-      setTotalPages(response.data?.totalPages || 1);
-      setTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
-      
-      setCustomers(customersWithDetails);
-    } catch (err) {
-      // Handle error silently
-    } finally {
-      setIsLoading(false);
-    }
+    fetchCustomersWithSearch(page, searchTerm);
   };
 
   const handlePageChange = (page) => {
@@ -142,43 +101,20 @@ const CustomersList = () => {
   };
 
   useEffect(() => {
-    fetchCustomers();
+    fetchCustomersWithSearch(1, '');
   }, []);
 
-
-
-  const getFilteredCustomers = () => {
-    if (!customers || customers.length === 0) {
-      return [];
-    }
-
-    let filteredCustomers = customers;
-
-    if (searchTerm.trim()) {
-      filteredCustomers = customers.filter(customer => {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-          (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
-          (customer.email && customer.email.toLowerCase().includes(searchLower)) ||
-          (customer.phoneNumber && customer.phoneNumber.toLowerCase().includes(searchLower))
-        );
-      });
-    }
-
-    // Sort by createdAt field (newest first)
-    return filteredCustomers.sort((a, b) => {
-      if (a.createdAt && b.createdAt) {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
-        return dateB - dateA; // Descending order (newest first)
-      }
-      // Fallback to ObjectId if createdAt is not available
-      if (a.id && b.id) {
-        return b.id.localeCompare(a.id);
-      }
-      return 0;
-    });
+  // Reset search and pagination
+  const resetSearch = () => {
+    setSearchTerm('');
+    setCurrentPage(1);
+    fetchCustomersWithSearch(1, ''); // Fetch all customers without search
   };
+
+
+
+  // Use customers directly since API handles search and pagination
+  const paginatedCustomers = customers;
 
   const handleViewCustomer = (customerId) => {
     navigate(`/customers/${customerId}`);
@@ -229,7 +165,7 @@ const CustomersList = () => {
         setSelectedCustomer(null);
         setOriginalCustomerData(null);
         setHasFormChanges(false);
-        fetchCustomers();
+        fetchCustomersWithSearch(1, searchTerm);
       } else {
         throw new Error('Failed to update customer');
       }
@@ -293,30 +229,35 @@ const CustomersList = () => {
             type="text"
             placeholder="Search Customers"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            onChange={(e) => {
+              const searchValue = e.target.value;
+              setSearchTerm(searchValue);
+              setCurrentPage(1); // Reset to first page when searching
+              
+              // Don't search if already loading
+              if (isLoading) {
+                return;
+              }
+              
+              // Debounce search to avoid multiple API calls
+              clearTimeout(window.searchTimeout);
+              window.searchTimeout = setTimeout(() => {
+                fetchCustomersWithSearch(1, searchValue);
+              }, 1800);
+            }}
+            className={`search-input ${isLoading ? 'disabled' : ''}`}
+            disabled={isLoading}
           />
           {searchTerm && (
-            <button 
-              className="clear-search-btn"
-              onClick={() => setSearchTerm('')}
-              title="Clear search"
-            >
-              <FaTimes />
-            </button>
-          )}
-        </div>
-        {searchTerm && (
-          <div className="search-results-info">
-            <span>Showing {getFilteredCustomers().length} of {customers.length} customers</span>
-            <button 
+            <button
               className="reset-search-btn"
-              onClick={() => setSearchTerm('')}
+              onClick={resetSearch}
+              disabled={isLoading}
             >
               Reset Search
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       {isLoading ? (
         <Loading />
@@ -434,7 +375,7 @@ const CustomersList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {(getFilteredCustomers() || []).map((customer) => (
+                  {(paginatedCustomers || []).map((customer) => (
                     <tr key={customer.id}>
                       <td>{customer.name}</td>
                       <td>{customer.email}</td>
@@ -459,7 +400,9 @@ const CustomersList = () => {
         {customers.length > 0 && totalPages > 1 && (
           <div className="pagination-container">
             <div className="pagination-info">
-              Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalCustomers)} of {totalCustomers} customers
+              {!searchTerm ? (
+                `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalCustomers)} of ${totalCustomers} customers`
+              ) : null}
             </div>
             <div className="pagination-controls">
               <button 

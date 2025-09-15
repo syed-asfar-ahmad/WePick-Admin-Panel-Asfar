@@ -12,7 +12,6 @@ const ReceivedParcels = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [parcels, setParcels] = useState([]);
-  const [filteredParcels, setFilteredParcels] = useState([]);
   const [error, setError] = useState(null);
   const [totalParcelCount, setTotalParcelCount] = useState(0);
   
@@ -21,13 +20,7 @@ const ReceivedParcels = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize] = useState(20);
   const [filters, setFilters] = useState({
-    dateRange: '',
-    parcelId: '',
-    senderName: '',
-    recipientName: '',
-    from: '',
-    to: '',
-    weight: ''
+    dateRange: ''
   });
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -36,47 +29,39 @@ const ReceivedParcels = () => {
     totalParcels: 0
   });
 
-  // Fetch received parcels from API
-  const fetchReceivedParcels = async (page = 1) => {
+  // Fetch received parcels with search functionality
+  const fetchReceivedParcelsWithSearch = async (page = 1, searchQuery = '', dateFilter = '') => {
     try {
       setIsLoading(true);
       setError(null);
       
-      const response = await getReceivedParcels(page);
+      const response = await getReceivedParcels(page, searchQuery, dateFilter);
       
-      const { success, message, data } = response;
-      
-      if (success) {
-        const parcelsData = data.parcels || data.data || data || [];
-        
-        // Update pagination from API response
-        const totalParcelsFromAPI = data.totalParcelCount || data.totalCount || parcelsData.length;
-        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
-        
-        setCurrentPage(data.currentPage || page);
-        setTotalPages(data.totalPages || calculatedTotalPages);
-        setTotalParcelCount(totalParcelsFromAPI);
+      if (response?.success) {
+        const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
+        const totalParcelsFromAPI = response.data?.totalParcels || response.data?.totalCount || 0;
+        const totalPagesFromAPI = response.data?.totalPages || 1;
         
         setParcels(parcelsData);
-        setFilteredParcels(parcelsData);
+        setTotalParcelCount(totalParcelsFromAPI);
+        setTotalPages(totalPagesFromAPI);
+        setCurrentPage(response.data?.currentPage || page);
         
         // Update analytics with total parcels count
         setAnalytics({
           totalParcels: totalParcelsFromAPI
         });
       } else {
-        setError(message || 'Failed to fetch received parcels');
-        CustomToast({
-          type: "error",
-          message: message || 'Failed to fetch received parcels'
-        });
+        setError('Failed to load received parcels. Please try again.');
+        setParcels([]);
+        setTotalParcelCount(0);
+        setTotalPages(1);
       }
-    } catch (error) {
-      setError(error.response?.data?.message || error.message || 'Failed to fetch received parcels');
-      CustomToast({
-        type: "error",
-        message: error.response?.data?.message || error.message || 'Failed to fetch received parcels'
-      });
+    } catch (err) {
+      setError('Failed to load received parcels. Please try again.');
+      setParcels([]);
+      setTotalParcelCount(0);
+      setTotalPages(1);
     } finally {
       setIsLoading(false);
     }
@@ -84,48 +69,7 @@ const ReceivedParcels = () => {
 
   // Fetch parcels for specific page
   const fetchParcelsForPage = async (page) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await getReceivedParcels(page);
-      
-      const { success, message, data } = response;
-      
-      if (success) {
-        const parcelsData = data.parcels || data.data || data || [];
-        
-        // Update pagination from API response
-        const totalParcelsFromAPI = data.totalParcelCount || data.totalCount || parcelsData.length;
-        const calculatedTotalPages = Math.ceil(totalParcelsFromAPI / pageSize);
-        
-        setCurrentPage(data.currentPage || page);
-        setTotalPages(data.totalPages || calculatedTotalPages);
-        setTotalParcelCount(totalParcelsFromAPI);
-        
-        setParcels(parcelsData);
-        setFilteredParcels(parcelsData);
-        
-        // Update analytics with total parcels count
-        setAnalytics({
-          totalParcels: totalParcelsFromAPI
-        });
-      } else {
-        setError(message || 'Failed to fetch received parcels');
-        CustomToast({
-          type: "error",
-          message: message || 'Failed to fetch received parcels'
-        });
-      }
-    } catch (error) {
-      setError(error.response?.data?.message || error.message || 'Failed to fetch received parcels');
-      CustomToast({
-        type: "error",
-        message: error.response?.data?.message || error.message || 'Failed to fetch received parcels'
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    fetchReceivedParcelsWithSearch(page, searchTerm, filters.dateRange);
   };
 
   const handlePageChange = (page) => {
@@ -135,13 +79,16 @@ const ReceivedParcels = () => {
 
   // Fetch data when component mounts
   useEffect(() => {
-    fetchReceivedParcels();
+    fetchReceivedParcelsWithSearch(1, '', '');
   }, []);
 
-  // Apply filters whenever filters state, searchTerm, or parcels change
-  useEffect(() => {
-    applyFilters();
-  }, [filters, searchTerm, parcels]);
+  // Reset search and pagination
+  const resetSearch = () => {
+    setSearchTerm('');
+    setCurrentPage(1);
+    fetchReceivedParcelsWithSearch(1, '', filters.dateRange);
+  };
+
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -149,100 +96,30 @@ const ReceivedParcels = () => {
       ...prev,
       [name]: value
     }));
+    setCurrentPage(1);
+    
+    // Don't search if already loading
+    if (isLoading) {
+      return;
+    }
+    
+    // Debounce search to avoid multiple API calls
+    clearTimeout(window.dateTimeout);
+    window.dateTimeout = setTimeout(() => {
+      fetchReceivedParcelsWithSearch(1, searchTerm, value);
+    }, 500);
   };
 
   const handleResetFilters = () => {
     setFilters({
-      dateRange: '',
-      parcelId: '',
-      senderName: '',
-      recipientName: '',
-      from: '',
-      to: '',
-      weight: ''
+      dateRange: ''
     });
     setSearchTerm('');
-    setFilteredParcels(parcels);
+    fetchReceivedParcelsWithSearch(1, '', '');
   };
 
-  const applyFilters = () => {
-    if (!parcels || parcels.length === 0) {
-      setFilteredParcels([]);
-      return;
-    }
-    
-    let result = [...parcels];
-    
-    // Apply search term filter - search across multiple fields
-    if (searchTerm.trim()) {
-      const searchLower = searchTerm.toLowerCase();
-      result = result.filter(parcel => {
-        return (
-          (parcel.parcelId && String(parcel.parcelId).toLowerCase().includes(searchLower)) ||
-          (parcel.parcelName && parcel.parcelName.toLowerCase().includes(searchLower)) ||
-          (parcel.senderName && parcel.senderName.toLowerCase().includes(searchLower)) ||
-          (parcel.recipientName && parcel.recipientName.toLowerCase().includes(searchLower)) ||
-          (parcel.from && parcel.from.toLowerCase().includes(searchLower)) ||
-          (parcel.to && parcel.to.toLowerCase().includes(searchLower))
-        );
-      });
-    }
-    
-    // Apply parcel ID filter
-    if (filters.parcelId) {
-      result = result.filter(parcel => 
-        parcel.parcelId && String(parcel.parcelId).toLowerCase().includes(filters.parcelId.toLowerCase())
-      );
-    }
-    
-    // Apply sender name filter
-    if (filters.senderName) {
-      result = result.filter(parcel => 
-        parcel.senderName && parcel.senderName.toLowerCase().includes(filters.senderName.toLowerCase())
-      );
-    }
-    
-    // Apply recipient name filter
-    if (filters.recipientName) {
-      result = result.filter(parcel => 
-        parcel.recipientName && parcel.recipientName.toLowerCase().includes(filters.recipientName.toLowerCase())
-      );
-    }
-    
-    // Apply from location filter
-    if (filters.from) {
-      result = result.filter(parcel => 
-        parcel.from && parcel.from.toLowerCase().includes(filters.from.toLowerCase())
-      );
-    }
-    
-    // Apply to location filter
-    if (filters.to) {
-      result = result.filter(parcel => 
-        parcel.to && parcel.to.toLowerCase().includes(filters.to.toLowerCase())
-      );
-    }
-    
-    // Apply weight filter
-    if (filters.weight) {
-      const weightValue = parseFloat(filters.weight);
-      if (!isNaN(weightValue)) {
-        result = result.filter(parcel => 
-          parcel.weight === weightValue
-        );
-      }
-    }
-    
-    // Apply date range filter
-    if (filters.dateRange) {
-      result = result.filter(parcel => 
-        parcel.Date === filters.dateRange || 
-        (parcel.createdAt && new Date(parcel.createdAt).toISOString().split('T')[0] === filters.dateRange)
-      );
-    }
-    
-    setFilteredParcels(result);
-  };
+  // Use parcels directly since API handles search and pagination
+  const paginatedParcels = parcels;
 
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
@@ -302,67 +179,6 @@ const ReceivedParcels = () => {
                 onChange={handleFilterChange}
               />
             </div>
-            <div className="filter-group">
-              <label>Parcel ID</label>
-              <input
-                type="text"
-                name="parcelId"
-                value={filters.parcelId}
-                onChange={handleFilterChange}
-                placeholder="Enter Parcel ID"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Sender Name</label>
-              <input
-                type="text"
-                name="senderName"
-                value={filters.senderName}
-                onChange={handleFilterChange}
-                placeholder="Enter Sender Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Recipient Name</label>
-              <input
-                type="text"
-                name="recipientName"
-                value={filters.recipientName}
-                onChange={handleFilterChange}
-                placeholder="Enter Recipient Name"
-              />
-            </div>
-            <div className="filter-group">
-              <label>From</label>
-              <input
-                type="text"
-                name="from"
-                value={filters.from}
-                onChange={handleFilterChange}
-                placeholder="From Location"
-              />
-            </div>
-            <div className="filter-group">
-              <label>To</label>
-              <input
-                type="text"
-                name="to"
-                value={filters.to}
-                onChange={handleFilterChange}
-                placeholder="To Location"
-              />
-            </div>
-            <div className="filter-group">
-              <label>Weight</label>
-              <input
-                type="number"
-                step="0.1"
-                name="weight"
-                value={filters.weight}
-                onChange={handleFilterChange}
-                placeholder="Enter Weight"
-              />
-            </div>
           </div>
           <div className="filter-actions">
             <button className="reset-button" onClick={handleResetFilters}>
@@ -380,30 +196,35 @@ const ReceivedParcels = () => {
             type="text"
             placeholder="Search Parcels"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            onChange={(e) => {
+              const searchValue = e.target.value;
+              setSearchTerm(searchValue);
+              setCurrentPage(1); // Reset to first page when searching
+              
+              // Don't search if already loading
+              if (isLoading) {
+                return;
+              }
+              
+              // Debounce search to avoid multiple API calls
+              clearTimeout(window.searchTimeout);
+              window.searchTimeout = setTimeout(() => {
+                fetchReceivedParcelsWithSearch(1, searchValue, filters.dateRange);
+              }, 1800);
+            }}
+            className={`search-input ${isLoading ? 'disabled' : ''}`}
+            disabled={isLoading}
           />
           {searchTerm && (
             <button
-              className="clear-search-btn"
-              onClick={() => setSearchTerm('')}
-              title="Clear search"
-            >
-              <FaTimes />
-            </button>
-          )}
-        </div>
-        {searchTerm && (
-          <div className="search-results-info">
-            <span>Showing {filteredParcels.length} of {parcels.length} parcels</span>
-            <button
               className="reset-search-btn"
-              onClick={() => setSearchTerm('')}
+              onClick={resetSearch}
+              disabled={isLoading}
             >
               Reset Search
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {isLoading ? (
@@ -431,8 +252,8 @@ const ReceivedParcels = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredParcels.length > 0 ? (
-                filteredParcels.map((parcel) => (
+              {paginatedParcels.length > 0 ? (
+                paginatedParcels.map((parcel) => (
                   <tr key={parcel.id} className="clickable-row">
                     <td>{parcel.parcelId || parcel.id}</td>
                     <td>{parcel.parcelName || 'N/A'}</td>
@@ -462,13 +283,14 @@ const ReceivedParcels = () => {
       </div>
       
       {/* Server-side Pagination */}
-      {parcels.length > 0 && (
+      {paginatedParcels.length > 0 && (
         <div className="pagination-container">
           <div className="pagination-info">
-            {totalPages > 1 
-              ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
-              : `Showing ${totalParcelCount} of ${totalParcelCount} parcels`
-            }
+            {!searchTerm && !filters.dateRange ? (
+              totalPages > 1 
+                ? `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
+                : `Showing ${paginatedParcels.length} of ${totalParcelCount} parcels`
+            ) : null}
           </div>
           {totalPages > 1 && (
           <div className="pagination-controls">
