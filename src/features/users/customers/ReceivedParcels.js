@@ -39,8 +39,9 @@ const ReceivedParcels = () => {
       
       if (response?.success) {
         const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
-        const totalParcelsFromAPI = response.data?.totalParcels || response.data?.totalCount || 0;
+        const totalParcelsFromAPI = response.data?.totalParcelCount || response.data?.totalParcels || response.data?.totalCount || 0;
         const totalPagesFromAPI = response.data?.totalPages || 1;
+        
         
         setParcels(parcelsData);
         setTotalParcelCount(totalParcelsFromAPI);
@@ -215,7 +216,9 @@ const ReceivedParcels = () => {
             className={`search-input ${isLoading ? 'disabled' : ''}`}
             disabled={isLoading}
           />
-          {searchTerm && (
+        </div>
+        {searchTerm && (
+          <div className="search-results-info">
             <button
               className="reset-search-btn"
               onClick={resetSearch}
@@ -223,8 +226,8 @@ const ReceivedParcels = () => {
             >
               Reset Search
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {isLoading ? (

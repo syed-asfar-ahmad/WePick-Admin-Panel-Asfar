@@ -62,22 +62,13 @@ const DispatchedParcels = () => {
       setIsLoading(true);
       setError(null);
       
-      console.log('fetchParcelsWithSearch called:', { page, searchQuery, dateFilter });
       const response = await getDispatchedParcels(page, searchQuery, dateFilter);
-      console.log('API Response:', response);
       
       if (response?.success) {
         const parcelsData = response.data?.parcels || response.data?.data || response.data || [];
         const totalParcelsFromAPI = response.data?.totalCount || response.data?.totalParcels || 0;
         const totalPagesFromAPI = response.data?.totalPages || 1;
         
-        console.log('Setting parcels data:', {
-          parcelsDataLength: parcelsData.length,
-          totalParcelsFromAPI,
-          totalPagesFromAPI,
-          searchQuery,
-          sampleParcelIds: parcelsData.slice(0, 3).map(p => p.parcelId || p.id)
-        });
         
         setParcels(parcelsData);
         setTotalCount(totalParcelsFromAPI);
@@ -428,16 +419,18 @@ const DispatchedParcels = () => {
               <FaTimes />
             </button>
           )}
-          {searchTerm && (
-            <button
+        </div>
+        {searchTerm && (
+          <div className="search-results-info">
+            <button 
               className="reset-search-btn"
               onClick={resetSearch}
               disabled={isLoading}
             >
               Reset Search
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}
@@ -982,7 +975,7 @@ const DispatchedParcels = () => {
             ) : null}
           </div>
           {totalPages > 1 && (
-            <div className="pagination-controls">
+          <div className="pagination-controls">
             <button 
               className="pagination-btn prev-btn"
               onClick={() => handlePageChange(currentPage - 1)}
@@ -1039,7 +1032,7 @@ const DispatchedParcels = () => {
             >
               Next <span>→</span>
             </button>
-            </div>
+          </div>
           )}
         </div>
       )}

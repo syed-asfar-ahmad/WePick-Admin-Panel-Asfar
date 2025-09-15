@@ -248,7 +248,9 @@ const CustomersList = () => {
             className={`search-input ${isLoading ? 'disabled' : ''}`}
             disabled={isLoading}
           />
-          {searchTerm && (
+        </div>
+        {searchTerm && (
+          <div className="search-results-info">
             <button
               className="reset-search-btn"
               onClick={resetSearch}
@@ -256,8 +258,8 @@ const CustomersList = () => {
             >
               Reset Search
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
       {isLoading ? (
         <Loading />

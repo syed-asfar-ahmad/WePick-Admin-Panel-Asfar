@@ -100,7 +100,6 @@ const ParcelsList = () => {
         
         // Update analytics only on initial load (when no search/filter)
         if (!analyticsInitialized && !searchQuery) {
-          console.log('Setting initial analytics with totalParcelsFromAPI:', totalParcelsFromAPI);
           setAnalytics({
             totalParcels: totalParcelsFromAPI,
             activeParcels: 0,
@@ -707,7 +706,7 @@ const ParcelsList = () => {
       {parcels.length > 0 && (
         <div className="pagination-container">
           <div className="pagination-info">
-            {!searchTerm ? (
+            {!searchTerm && !Object.values(filters).some(value => value !== '') ? (
               `Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, totalParcelCount)} of ${totalParcelCount} parcels`
             ) : null}
           </div>
