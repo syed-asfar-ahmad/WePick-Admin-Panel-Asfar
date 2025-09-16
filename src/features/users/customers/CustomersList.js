@@ -204,10 +204,9 @@ const CustomersList = () => {
   const checkForChanges = () => {
     if (!originalCustomerData || !selectedCustomer) return false;
     
-    // Check all fields
+    // Check all fields (excluding phoneNumber as it's read-only)
     if (originalCustomerData.name !== selectedCustomer.name) return true;
     if (originalCustomerData.email !== selectedCustomer.email) return true;
-    if (originalCustomerData.phoneNumber !== selectedCustomer.phoneNumber) return true;
     
     return false;
   };
@@ -337,9 +336,8 @@ const CustomersList = () => {
                             type="tel"
                             name="phoneNumber"
                             value={selectedCustomer.phoneNumber || ''}
-                            onChange={handleInputChange}
+                            readOnly
                             placeholder="Enter phone number"
-                            disabled={isEditLoading}
                             className="form-control"
                           />
                         </div>

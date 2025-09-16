@@ -17,9 +17,9 @@ const ForgotPassword = () => {
 
   useEffect(() => {
     if (!empty.email) {
-      setEmail(0);
-    } else {
       setEmail(1);
+    } else {
+      setEmail(0);
     }
   }, [empty.email]);
 

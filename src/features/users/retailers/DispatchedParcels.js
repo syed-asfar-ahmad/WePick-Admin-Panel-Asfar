@@ -287,18 +287,17 @@ const DispatchedParcels = () => {
   const checkForChanges = () => {
     if (!originalParcelData || !selectedParcel) return false;
     
-    // Check main fields
+    // Check main fields (excluding read-only fields)
     if (originalParcelData.parcelName !== selectedParcel.parcelName) return true;
     if (originalParcelData.weight !== selectedParcel.weight) return true;
     if (originalParcelData.status !== selectedParcel.status) return true;
     if (originalParcelData.senderName !== selectedParcel.senderName) return true;
     if (originalParcelData.recipientName !== selectedParcel.recipientName) return true;
     if (originalParcelData.recipientEmail !== selectedParcel.recipientEmail) return true;
-    if (originalParcelData.recipientPhone !== selectedParcel.recipientPhone) return true;
     if (originalParcelData.from !== selectedParcel.from) return true;
     if (originalParcelData.to !== selectedParcel.to) return true;
     
-    // Note: businessName and phoneNumber are disabled/read-only fields, so they won't trigger change detection
+    // Note: businessName, phoneNumber, and recipientPhone are disabled/read-only fields, so they won't trigger change detection
     
     return false;
   };
@@ -598,9 +597,8 @@ const DispatchedParcels = () => {
                       type="tel"
                       name="recipientPhone"
                       value={selectedParcel.recipientPhone || ''}
-                      onChange={handleInputChange}
+                      readOnly
                       className="form-control"
-                      disabled={isEditLoading}
                       placeholder="Enter recipient phone"
                     />
                   </div>

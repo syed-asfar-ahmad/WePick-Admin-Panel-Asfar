@@ -229,6 +229,19 @@
               border-color: #e9ecef;
             }
 
+            &[readonly] {
+              background-color: #f8f9fa;
+              cursor: not-allowed;
+              opacity: 0.8;
+              border-color: #e9ecef;
+              
+              &:hover {
+                cursor: not-allowed;
+                border-color: #e9ecef;
+                background-color: #f8f9fa;
+              }
+            }
+
             &::placeholder {
               color: #999;
             }

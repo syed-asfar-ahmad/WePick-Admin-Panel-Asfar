@@ -223,11 +223,10 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
                   className="form-control"
                   disabled={isEditLoading}
                 >
-                  <option value="pending">Pending</option>
-                  <option value="dispatched">Dispatched</option>
-                  <option value="in transit">In Transit</option>
                   <option value="delivered">Delivered</option>
-                  <option value="failed">Failed</option>
+                  <option value="deposit">Deposit</option>
+                  <option value="pickup">Pickup</option>
+                  <option value="pending">Pending</option>
                 </select>
               </div>
             </div>
@@ -332,10 +331,9 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
                   type="tel"
                   name="recipientPhone"
                   value={formData.recipientPhone}
-                  onChange={handleChange}
+                  readOnly
                   className="form-control"
                   placeholder="Enter recipient phone"
-                  disabled={isEditLoading}
                 />
               </div>
             </div>
