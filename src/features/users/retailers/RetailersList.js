@@ -287,11 +287,10 @@ const RetailersList = () => {
   const checkForChanges = () => {
     if (!originalRetailerData || !selectedRetailer) return false;
     
-    // Check all fields
+    // Check all fields (excluding phoneNumber as it's read-only)
     if (originalRetailerData.businessName !== selectedRetailer.businessName) return true;
     if (originalRetailerData.name !== selectedRetailer.name) return true;
     if (originalRetailerData.businessEmail !== selectedRetailer.businessEmail) return true;
-    if (originalRetailerData.phoneNumber !== selectedRetailer.phoneNumber) return true;
     if (originalRetailerData.businessAddress !== selectedRetailer.businessAddress) return true;
     if (originalRetailerData.businessRegistrationNumber !== selectedRetailer.businessRegistrationNumber) return true;
     
@@ -491,8 +490,7 @@ const RetailersList = () => {
                         type="tel"
                         name="phoneNumber"
                         value={selectedRetailer.phoneNumber || ''}
-                        onChange={handleInputChange}
-                        disabled={isEditLoading}
+                        readOnly
                         className="form-control"
                         placeholder="Enter phone number"
                       />
