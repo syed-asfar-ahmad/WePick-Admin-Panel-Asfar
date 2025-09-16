@@ -28,6 +28,7 @@ const ReceivedParcels = () => {
   const [analytics, setAnalytics] = useState({
     totalParcels: 0
   });
+  const [actualTotalParcels, setActualTotalParcels] = useState(0);
 
   // Fetch received parcels with search functionality
   const fetchReceivedParcelsWithSearch = async (page = 1, searchQuery = '', dateFilter = '') => {
@@ -47,6 +48,11 @@ const ReceivedParcels = () => {
         setTotalParcelCount(totalParcelsFromAPI);
         setTotalPages(totalPagesFromAPI);
         setCurrentPage(response.data?.currentPage || page);
+        
+        // Only update actual total count on initial load (no search term and no date filter)
+        if (!searchQuery && !dateFilter) {
+          setActualTotalParcels(totalParcelsFromAPI);
+        }
         
         // Update analytics with total parcels count
         setAnalytics({
@@ -153,7 +159,7 @@ const ReceivedParcels = () => {
            <FaBox />
            <div className="analytics-info">
              <h3>Total Parcels</h3>
-             <p>{isLoading ? "..." : analytics.totalParcels}</p>
+             <p>{isLoading ? "..." : actualTotalParcels}</p>
            </div>
          </div>
        </div>

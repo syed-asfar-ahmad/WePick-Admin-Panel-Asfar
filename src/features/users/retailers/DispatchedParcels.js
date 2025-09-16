@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaTimes, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner, FaExclamationTriangle, FaBarcode, FaClipboardCheck, FaWeightHanging, FaUserFriends, FaUserCircle, FaIdCard, FaWarehouse, FaLocationArrow, FaCalendarAlt, FaEdit } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner, FaExclamationTriangle, FaBarcode, FaClipboardCheck, FaWeightHanging, FaUserFriends, FaUserCircle, FaIdCard, FaWarehouse, FaLocationArrow, FaCalendarAlt, FaEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
 import Loading from '../../../components/common/Loading';
@@ -409,16 +409,6 @@ const DispatchedParcels = () => {
             className={`search-input ${isLoading ? 'disabled' : ''}`}
             disabled={isLoading}
           />
-          {searchTerm && (
-            <button 
-              className="clear-search-btn"
-              onClick={() => setSearchTerm('')}
-              title="Clear search"
-              disabled={isLoading}
-            >
-              <FaTimes />
-            </button>
-          )}
         </div>
         {searchTerm && (
           <div className="search-results-info">
@@ -445,7 +435,7 @@ const DispatchedParcels = () => {
                 <h2>Edit Parcel</h2>
               </div>
               <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
-                <FaTimes />
+                <FaTimesCircle />
               </button>
             </div>
             <form onSubmit={handleSaveEdit}>
@@ -708,7 +698,7 @@ const DispatchedParcels = () => {
                 <h2>Parcel Details</h2>
               </div>
               <button className="close-button" onClick={() => setShowViewModal(false)}>
-                <FaTimes />
+                <FaTimesCircle />
               </button>
             </div>
 

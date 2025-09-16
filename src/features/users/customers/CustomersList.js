@@ -18,6 +18,7 @@ const CustomersList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [customers, setCustomers] = useState([]);
   const [totalCustomers, setTotalCustomers] = useState(0);
+  const [actualTotalCustomers, setActualTotalCustomers] = useState(0);
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,6 +73,12 @@ const CustomersList = () => {
         
         setCustomers(customersWithDetails);
         setTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
+        
+        // Only update actual total count on initial load (no search term)
+        if (!searchQuery) {
+          setActualTotalCustomers(response.data?.totalCustomers || customersWithDetails.length);
+        }
+        
         setTotalPages(response.data?.totalPages || 1);
         setCurrentPage(response.data?.currentPage || page);
       } else {
@@ -213,7 +220,7 @@ const CustomersList = () => {
           <FaStore />
           <div className="analytics-info">
             <h3>Total Customers</h3>
-            <p>{isLoading ? "..." : totalCustomers}</p>
+            <p>{isLoading ? "..." : actualTotalCustomers}</p>
           </div>
         </div>
       </div>
