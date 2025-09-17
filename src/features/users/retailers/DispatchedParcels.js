@@ -262,40 +262,87 @@ const DispatchedParcels = () => {
     // Handle nested senderInfo fields
     if (name.startsWith('senderInfo.')) {
       const field = name.split('.')[1];
-      setSelectedParcel(prev => ({
-        ...prev,
-        senderInfo: {
-          ...prev.senderInfo,
-          [field]: value
-        }
-      }));
+      setSelectedParcel(prev => {
+        const newParcel = {
+          ...prev,
+          senderInfo: {
+            ...prev.senderInfo,
+            [field]: value
+          }
+        };
+        
+        // Check for changes with the new parcel data
+        setTimeout(() => {
+          const hasChanges = checkForChangesWithNewData(newParcel);
+          setHasFormChanges(hasChanges);
+        }, 0);
+        
+        return newParcel;
+      });
     } else {
-      setSelectedParcel(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setSelectedParcel(prev => {
+        const newParcel = {
+          ...prev,
+          [name]: value
+        };
+        
+        // Check for changes with the new parcel data
+        setTimeout(() => {
+          const hasChanges = checkForChangesWithNewData(newParcel);
+          setHasFormChanges(hasChanges);
+        }, 0);
+        
+        return newParcel;
+      });
     }
-    
-    // Check if there are any changes compared to original data
-    setTimeout(() => {
-      const hasChanges = checkForChanges();
-      setHasFormChanges(hasChanges);
-    }, 0);
   };
 
   // Function to check if form has any changes
   const checkForChanges = () => {
     if (!originalParcelData || !selectedParcel) return false;
     
+    // Helper function to safely compare values
+    const isDifferent = (original, current) => {
+      const orig = original || '';
+      const curr = current || '';
+      return orig !== curr;
+    };
+    
     // Check main fields (excluding read-only fields)
-    if (originalParcelData.parcelName !== selectedParcel.parcelName) return true;
-    if (originalParcelData.weight !== selectedParcel.weight) return true;
-    if (originalParcelData.status !== selectedParcel.status) return true;
-    if (originalParcelData.senderName !== selectedParcel.senderName) return true;
-    if (originalParcelData.recipientName !== selectedParcel.recipientName) return true;
-    if (originalParcelData.recipientEmail !== selectedParcel.recipientEmail) return true;
-    if (originalParcelData.from !== selectedParcel.from) return true;
-    if (originalParcelData.to !== selectedParcel.to) return true;
+    if (isDifferent(originalParcelData.parcelName, selectedParcel.parcelName)) return true;
+    if (isDifferent(originalParcelData.weight, selectedParcel.weight)) return true;
+    if (isDifferent(originalParcelData.status, selectedParcel.status)) return true;
+    if (isDifferent(originalParcelData.senderName, selectedParcel.senderName)) return true;
+    if (isDifferent(originalParcelData.recipientName, selectedParcel.recipientName)) return true;
+    if (isDifferent(originalParcelData.recipientEmail, selectedParcel.recipientEmail)) return true;
+    if (isDifferent(originalParcelData.from, selectedParcel.from)) return true;
+    if (isDifferent(originalParcelData.to, selectedParcel.to)) return true;
+    
+    // Note: businessName, phoneNumber, and recipientPhone are disabled/read-only fields, so they won't trigger change detection
+    
+    return false;
+  };
+
+  // Function to check changes with new parcel data (used during input changes)
+  const checkForChangesWithNewData = (newParcelData) => {
+    if (!originalParcelData || !newParcelData) return false;
+    
+    // Helper function to safely compare values
+    const isDifferent = (original, current) => {
+      const orig = original || '';
+      const curr = current || '';
+      return orig !== curr;
+    };
+    
+    // Check main fields (excluding read-only fields)
+    if (isDifferent(originalParcelData.parcelName, newParcelData.parcelName)) return true;
+    if (isDifferent(originalParcelData.weight, newParcelData.weight)) return true;
+    if (isDifferent(originalParcelData.status, newParcelData.status)) return true;
+    if (isDifferent(originalParcelData.senderName, newParcelData.senderName)) return true;
+    if (isDifferent(originalParcelData.recipientName, newParcelData.recipientName)) return true;
+    if (isDifferent(originalParcelData.recipientEmail, newParcelData.recipientEmail)) return true;
+    if (isDifferent(originalParcelData.from, newParcelData.from)) return true;
+    if (isDifferent(originalParcelData.to, newParcelData.to)) return true;
     
     // Note: businessName, phoneNumber, and recipientPhone are disabled/read-only fields, so they won't trigger change detection
     
@@ -504,10 +551,10 @@ const DispatchedParcels = () => {
                       className="form-control"
                       disabled={isEditLoading}
                     >
-                      <option value="pending">Pending</option>
-                      <option value="in transit">In Transit</option>
+                      <option value="deposit">Deposit</option>
                       <option value="delivered">Delivered</option>
-                      <option value="failed">Failed</option>
+                      <option value="pickup">Pickup</option>
+                      <option value="pending">Pending</option>
                     </select>
                   </div>
                 </div>
