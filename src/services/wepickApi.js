@@ -4,7 +4,6 @@ import { postRequest, getRequest, patchRequest, patchRequestForm, postRequestFor
 // export const SIGNUP = 'auth/signup';
 export const SIGNIN = 'auth/signin';
 export const SIGNOUT = 'auth/signout';
-export const FORGOT_PASSWORD = 'auth/forgot-password';
 export const VERIFY_OTP = 'auth/verify-otp';
 export const RESET_PASSWORD = 'auth/reset-password';
 
@@ -52,7 +51,6 @@ export const ADMIN_EDIT_PROFILE = 'auth/edit-profile';
 // export const signup = (data) => postRequest(SIGNUP, data);
 export const signin = (data) => postRequest(SIGNIN, data);
 export const signout = (data) => postRequest(SIGNOUT, data);
-export const forgotPassword = (data) => postRequest(FORGOT_PASSWORD, data);
 export const verifyOtp = (data) => postRequest(VERIFY_OTP, data);
 export const resetPassword = (data) => postRequest(RESET_PASSWORD, data);
 

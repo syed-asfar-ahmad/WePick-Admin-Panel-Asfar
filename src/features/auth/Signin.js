@@ -142,11 +142,6 @@ if(resultAction?.payload && resultAction?.payload?.user?.userType==="admin"){
                             )}
                           </button>
                         </div>
-                        <div className="col-12 mt-3 mb-2 text-center">
-                          <Link to="/forgotpassword" className="wepick-link sign-text" style={{ color: "#1BC949", fontSize: "14px" }}>
-                            Forgot Password?
-                          </Link>
-                        </div>
                         {/* <div className="col-12 mt-2 mb-4 text-center">
                           <p className="mb-0">
                             Don't have an account?{" "}

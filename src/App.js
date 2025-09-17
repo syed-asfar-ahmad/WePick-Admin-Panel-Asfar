@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 
 // Components
 import AdminArea from "./customHook/AdminArea";
-import ForgotPassword from "./features/auth/ForgotPassword";
 import Signin from "./features/auth/Signin";
 // import Signup from "./features/auth/Signup";
 import Loading from "./components/common/Loading";
@@ -68,7 +67,6 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/signin" element={!isAuthenticated ? <Signin /> : <Navigate to="/" />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
             {/* <Route path="/signup" element={<Signup />} /> */}
             
             {isAuthenticated ? (
