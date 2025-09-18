@@ -406,17 +406,22 @@
     .close-button {
       background: none;
       border: none;
-      font-size: 1.25rem;
+      font-size: 20px;
       color: #666;
       cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 50%;
-      transition: all 0.3s ease;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
 
       &:hover {
-        background: #f8f9fa;
         color: #333;
-        transform: translateY(-1px);
+        background: transparent;
+        transform: rotate(90deg);
       }
     }
   }

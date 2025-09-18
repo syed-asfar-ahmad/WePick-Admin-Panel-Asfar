@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaClock, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner, FaExclamationTriangle, FaBarcode, FaClipboardCheck, FaWeightHanging, FaUserFriends, FaUserCircle, FaIdCard, FaWarehouse, FaLocationArrow, FaCalendarAlt, FaEdit } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaBox, FaTruck, FaCheckCircle, FaTimesCircle, FaTimes, FaClock, FaMapMarkerAlt, FaUser, FaStore, FaHistory, FaSpinner, FaExclamationTriangle, FaBarcode, FaClipboardCheck, FaWeightHanging, FaUserFriends, FaUserCircle, FaIdCard, FaWarehouse, FaLocationArrow, FaCalendarAlt, FaEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './DispatchedParcels.scss';
 import Loading from '../../../components/common/Loading';
@@ -481,7 +481,7 @@ const DispatchedParcels = () => {
                 <h2>Edit Parcel</h2>
               </div>
               <button className="close-button" onClick={() => setShowEditModal(false)} disabled={isEditLoading}>
-                <FaTimesCircle />
+                <FaTimes />
               </button>
             </div>
             <form onSubmit={handleSaveEdit}>
@@ -743,7 +743,7 @@ const DispatchedParcels = () => {
                 <h2>Parcel Details</h2>
               </div>
               <button className="close-button" onClick={() => setShowViewModal(false)}>
-                <FaTimesCircle />
+                <FaTimes />
               </button>
             </div>
 
