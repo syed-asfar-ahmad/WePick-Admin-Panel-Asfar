@@ -20,6 +20,7 @@ const ProfileEdit = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [hasFormChanges, setHasFormChanges] = useState(false);
   const [originalFormData, setOriginalFormData] = useState(null);
+  const [nameError, setNameError] = useState('');
   const { user } = useSelector((state) => state.auth || {});
 
   // Use Redux user data for profile
@@ -87,6 +88,17 @@ return process.env.NODE_ENV === 'production'
       .max(11, "Phone number cannot exceed 11 digits")
       .optional(),
   });
+
+  // Real-time validation for name field
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+    if (value && !alphabetOnlyRegex.test(value)) {
+      setNameError('Only alphabets allowed');
+    } else {
+      setNameError('');
+    }
+  };
 
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
@@ -234,6 +246,27 @@ return process.env.NODE_ENV === 'production'
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    // Validate name field on form submission - same as other pages
+    const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+    if (values.name && !alphabetOnlyRegex.test(values.name)) {
+      CustomToast({
+        type: "error",
+        message: "Please fix the name field before saving"
+      });
+      setSubmitting(false);
+      return;
+    }
+    
+    // Additional check for any remaining validation errors
+    if (nameError) {
+      CustomToast({
+        type: "error",
+        message: "Please fix the name field before saving"
+      });
+      setSubmitting(false);
+      return;
+    }
+    
     setIsLoading(true);
     try {
       // Clean and validate phone number
@@ -459,17 +492,28 @@ return process.env.NODE_ENV === 'production'
                         Name
                       </label>
                       <div className="input-group">
-                        <Field
-                          type="text"
-                          name="name"
-                          placeholder="Enter your name"
-                        />
+                        <Field name="name">
+                          {({ field, form }) => (
+                            <input
+                              type="text"
+                              {...field}
+                              placeholder="Enter your name"
+                              onChange={(e) => {
+                                // Update Formik field value
+                                form.setFieldValue('name', e.target.value);
+                                // Call our custom validation
+                                handleNameChange(e);
+                              }}
+                              className={nameError ? 'error' : ''}
+                            />
+                          )}
+                        </Field>
                       </div>
-                      <ErrorMessage
-                        name="name"
-                        component="div"
-                        className="error-message"
-                      />
+                      {nameError && (
+                        <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                          {nameError}
+                        </div>
+                      )}
                     </div>
 
                                          <div className="form-group">
