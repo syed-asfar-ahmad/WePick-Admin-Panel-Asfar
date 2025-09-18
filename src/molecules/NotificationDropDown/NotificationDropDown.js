@@ -220,11 +220,11 @@ const NotificationDropDown = () => {
                   <div className="detail-grid">
                     <div className="detail-item">
                       <label><FaCalendar /> Created At</label>
-                      <span>{notificationDetails.createdAt || selectedNotification.createdAt || 'N/A'}</span>
+                      <span>{(notificationDetails.createdAt || selectedNotification.createdAt) ? new Date(notificationDetails.createdAt || selectedNotification.createdAt).toISOString().split('T')[0] : 'N/A'}</span>
                     </div>
                     <div className="detail-item">
                       <label><FaCalendar /> Updated At</label>
-                      <span>{notificationDetails.updatedAt || selectedNotification.updatedAt || 'N/A'}</span>
+                      <span>{(notificationDetails.updatedAt || selectedNotification.updatedAt) ? new Date(notificationDetails.updatedAt || selectedNotification.updatedAt).toISOString().split('T')[0] : 'N/A'}</span>
                     </div>
                   </div>
                 </div>
