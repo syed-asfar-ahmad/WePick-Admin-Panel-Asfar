@@ -56,6 +56,8 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
 
   const [originalFormData, setOriginalFormData] = useState(null);
   const [hasFormChanges, setHasFormChanges] = useState(false);
+  const [senderNameError, setSenderNameError] = useState('');
+  const [recipientNameError, setRecipientNameError] = useState('');
 
   // Initialize original form data when parcel changes
   useEffect(() => {
@@ -85,6 +87,23 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validate sender and recipient name fields
+    if (name === 'senderName') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setSenderNameError('Only alphabets allowed');
+      } else {
+        setSenderNameError('');
+      }
+    } else if (name === 'recipientName') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setRecipientNameError('Only alphabets allowed');
+      } else {
+        setRecipientNameError('');
+      }
+    }
     
     // Handle nested senderInfo fields
     if (name.startsWith('senderInfo.')) {
@@ -132,6 +151,15 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Check if there are any name validation errors
+    if (senderNameError || recipientNameError) {
+      CustomToast({
+        type: "error",
+        message: "Please fix the name fields before saving"
+      });
+      return;
+    }
     
     if (!hasFormChanges) {
       CustomToast({
@@ -249,10 +277,15 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
                   name="senderName"
                   value={formData.senderName}
                   onChange={handleChange}
-                  className="form-control"
+                  className={`form-control ${senderNameError ? 'error' : ''}`}
                   placeholder="Enter sender name"
                   disabled={isEditLoading}
                 />
+                {senderNameError && (
+                  <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                    {senderNameError}
+                  </div>
+                )}
               </div>
               <div className="form-group">
                 <label>
@@ -302,10 +335,15 @@ const ParcelEditModal = ({ parcel, onClose, onSave, isEditLoading = false }) => 
                   name="recipientName"
                   value={formData.recipientName}
                   onChange={handleChange}
-                  className="form-control"
+                  className={`form-control ${recipientNameError ? 'error' : ''}`}
                   placeholder="Enter recipient name"
                   disabled={isEditLoading}
                 />
+                {recipientNameError && (
+                  <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                    {recipientNameError}
+                  </div>
+                )}
               </div>
               <div className="form-group">
                 <label>

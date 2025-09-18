@@ -19,6 +19,7 @@ const RetailersList = () => {
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [ownerNameError, setOwnerNameError] = useState('');
 
   // Analytics data (from API)
   const [analytics, setAnalytics] = useState({
@@ -241,6 +242,16 @@ const RetailersList = () => {
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
+    
+    // Check if there's an owner name error
+    if (ownerNameError) {
+      CustomToast({
+        type: "error",
+        message: "Please fix the owner name field before saving"
+      });
+      return;
+    }
+    
     try {
       setIsEditLoading(true);
       const response = await updateRetailerById(selectedRetailer.id, selectedRetailer);
@@ -271,6 +282,17 @@ const RetailersList = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validate owner name field
+    if (name === 'name') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setOwnerNameError('Only alphabets allowed');
+      } else {
+        setOwnerNameError('');
+      }
+    }
+    
     setSelectedRetailer(prev => ({
       ...prev,
       [name]: value
@@ -462,9 +484,14 @@ const RetailersList = () => {
                         value={selectedRetailer.name || ''}
                         onChange={handleInputChange}
                         disabled={isEditLoading}
-                        className="form-control"
+                        className={`form-control ${ownerNameError ? 'error' : ''}`}
                         placeholder="Enter owner name"
                       />
+                      {ownerNameError && (
+                        <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                          {ownerNameError}
+                        </div>
+                      )}
                     </div>
                     <div className="form-group">
                       <label>

@@ -21,6 +21,8 @@ const DispatchedParcels = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [updatesSupported, setUpdatesSupported] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [senderNameError, setSenderNameError] = useState('');
+  const [recipientNameError, setRecipientNameError] = useState('');
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -206,6 +208,16 @@ const DispatchedParcels = () => {
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
+    
+    // Check if there are any name validation errors
+    if (senderNameError || recipientNameError) {
+      CustomToast({
+        type: "error",
+        message: "Please fix the name fields before saving"
+      });
+      return;
+    }
+    
     try {
       setIsEditLoading(true);
       
@@ -258,6 +270,23 @@ const DispatchedParcels = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validate sender and recipient name fields
+    if (name === 'senderName') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setSenderNameError('Only alphabets allowed');
+      } else {
+        setSenderNameError('');
+      }
+    } else if (name === 'recipientName') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setRecipientNameError('Only alphabets allowed');
+      } else {
+        setRecipientNameError('');
+      }
+    }
     
     // Handle nested senderInfo fields
     if (name.startsWith('senderInfo.')) {
@@ -577,10 +606,15 @@ const DispatchedParcels = () => {
                       name="senderName"
                       value={selectedParcel.senderName || ''}
                       onChange={handleInputChange}
-                      className="form-control"
+                      className={`form-control ${senderNameError ? 'error' : ''}`}
                       placeholder="Enter sender name"
                       disabled={isEditLoading}
                     />
+                    {senderNameError && (
+                      <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                        {senderNameError}
+                      </div>
+                    )}
                   </div>
                   <div className="form-group">
                     <label>
@@ -630,10 +664,15 @@ const DispatchedParcels = () => {
                       name="recipientName"
                       value={selectedParcel.recipientName || ''}
                       onChange={handleInputChange}
-                      className="form-control"
+                      className={`form-control ${recipientNameError ? 'error' : ''}`}
                       placeholder="Enter recipient name"
                       disabled={isEditLoading}
                     />
+                    {recipientNameError && (
+                      <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                        {recipientNameError}
+                      </div>
+                    )}
                   </div>
                   <div className="form-group">
                     <label>

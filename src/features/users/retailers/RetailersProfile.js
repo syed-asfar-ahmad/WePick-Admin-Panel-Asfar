@@ -19,6 +19,7 @@ const RetailersProfile = () => {
   const [loading, setLoading] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [error, setError] = useState(null);
+  const [ownerNameError, setOwnerNameError] = useState('');
 
   useEffect(() => {
     const fetchRetailerData = async () => {
@@ -51,6 +52,17 @@ const RetailersProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validate owner name field
+    if (name === 'owner') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setOwnerNameError('Only alphabets allowed');
+      } else {
+        setOwnerNameError('');
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -72,6 +84,12 @@ const RetailersProfile = () => {
   };
 
   const handleSave = async () => {
+    // Check if there's an owner name error
+    if (ownerNameError) {
+      setError('Please fix the owner name field before saving');
+      return;
+    }
+    
     try {
       setIsEditing(false);
       // Make API call to update retailer data
@@ -201,7 +219,13 @@ const RetailersProfile = () => {
                     name="owner"
                     value={formData.owner}
                     onChange={handleInputChange}
+                    className={ownerNameError ? 'error' : ''}
                   />
+                  {ownerNameError && (
+                    <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                      {ownerNameError}
+                    </div>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>Email</label>

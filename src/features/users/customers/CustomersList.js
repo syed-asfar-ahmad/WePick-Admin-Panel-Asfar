@@ -19,6 +19,7 @@ const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
   const [totalCustomers, setTotalCustomers] = useState(0);
   const [actualTotalCustomers, setActualTotalCustomers] = useState(0);
+  const [customerNameError, setCustomerNameError] = useState('');
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -151,6 +152,16 @@ const CustomersList = () => {
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
+    
+    // Check if there's a customer name error
+    if (customerNameError) {
+      CustomToast({
+        type: "error",
+        message: "Please fix the name field before saving"
+      });
+      return;
+    }
+    
     try {
       setIsEditLoading(true);
       
@@ -188,6 +199,17 @@ const CustomersList = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validate customer name field
+    if (name === 'name') {
+      const alphabetOnlyRegex = /^[a-zA-Z\s'-]*$/;
+      if (value && !alphabetOnlyRegex.test(value)) {
+        setCustomerNameError('Only alphabets allowed');
+      } else {
+        setCustomerNameError('');
+      }
+    }
+    
     setSelectedCustomer(prev => ({
       ...prev,
       [name]: value
@@ -308,9 +330,14 @@ const CustomersList = () => {
                             value={selectedCustomer.name}
                             onChange={handleInputChange}
                             disabled={isEditLoading}
-                            className="form-control"
+                            className={`form-control ${customerNameError ? 'error' : ''}`}
                             placeholder="Enter full name"
                           />
+                          {customerNameError && (
+                            <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>
+                              {customerNameError}
+                            </div>
+                          )}
                         </div>
                         <div className="form-group">
                           <label>
