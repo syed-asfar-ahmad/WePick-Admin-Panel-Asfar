@@ -272,7 +272,7 @@ const Notifications = () => {
                     <div className="notification-meta">
                       <span className="notification-type">{n.type}</span>
                       <span className="notification-user">{n.user?.name || 'Unknown'}</span>
-                      <span className="notification-date">{n.createdAt}</span>
+                      <span className="notification-date">{n.createdAt ? new Date(n.createdAt).toISOString().split('T')[0] : 'N/A'}</span>
                     </div>
                   </div>
                   <div className="notification-actions">
@@ -428,11 +428,11 @@ const Notifications = () => {
                   <div className="detail-grid">
                     <div className="detail-item">
                       <label><FaCalendar /> Created At</label>
-                      <span>{selectedNotification.createdAt || 'N/A'}</span>
+                      <span>{selectedNotification.createdAt ? new Date(selectedNotification.createdAt).toISOString().split('T')[0] : 'N/A'}</span>
                     </div>
                     <div className="detail-item">
                       <label><FaCalendar /> Updated At</label>
-                      <span>{selectedNotification.updatedAt || 'N/A'}</span>
+                      <span>{selectedNotification.updatedAt ? new Date(selectedNotification.updatedAt).toISOString().split('T')[0] : 'N/A'}</span>
                     </div>
                   </div>
                 </div>
