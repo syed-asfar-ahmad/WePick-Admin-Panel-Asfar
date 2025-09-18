@@ -18,6 +18,8 @@ const ProfileEdit = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [hasFormChanges, setHasFormChanges] = useState(false);
+  const [originalFormData, setOriginalFormData] = useState(null);
   const { user } = useSelector((state) => state.auth || {});
 
   // Use Redux user data for profile
@@ -54,6 +56,13 @@ return process.env.NODE_ENV === 'production'
   useEffect(() => {
     if (user) {
       setUserProfile(user);
+      // Set original form data for comparison
+      const originalData = {
+        name: user.name || '',
+        phoneNumber: user.phoneNumber || '',
+        profileImage: user.profileImage || ''
+      };
+      setOriginalFormData(originalData);
       setIsLoading(false);
     }
   }, [user]);
@@ -134,6 +143,9 @@ return process.env.NODE_ENV === 'production'
       setAvatarPreview(null);
     }
     
+    // Reset form changes tracking
+    setHasFormChanges(false);
+    
     // Clear file input
     const fileInput = document.getElementById('avatar-input');
     if (fileInput) {
@@ -201,6 +213,25 @@ return process.env.NODE_ENV === 'production'
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Function to check if form has changes
+  const checkFormChanges = (values) => {
+    if (!originalFormData) return false;
+    
+    const currentData = {
+      name: values.name || '',
+      phoneNumber: values.phoneNumber || '',
+      profileImage: avatar ? 'changed' : (user?.profileImage || '')
+    };
+    
+    const hasChanges = 
+      currentData.name !== originalFormData.name ||
+      currentData.phoneNumber !== originalFormData.phoneNumber ||
+      currentData.profileImage !== originalFormData.profileImage;
+    
+    setHasFormChanges(hasChanges);
+    return hasChanges;
+  };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setIsLoading(true);
@@ -291,6 +322,14 @@ return process.env.NODE_ENV === 'production'
         if (fileInput) {
           fileInput.value = '';
         }
+        
+        // Reset form changes tracking
+        setHasFormChanges(false);
+        setOriginalFormData({
+          name: values.name,
+          phoneNumber: values.phoneNumber,
+          profileImage: response?.data?.profileImage || response?.profileImage || user?.profileImage || ''
+        });
       } else {
         throw new Error(response?.message || response?.data?.message || "Failed to update profile");
       }
@@ -405,7 +444,11 @@ return process.env.NODE_ENV === 'production'
             onSubmit={handleSubmit}
             enableReinitialize
           >
-            {({ isSubmitting, resetForm }) => (
+            {({ isSubmitting, resetForm, values }) => {
+              // Check for form changes whenever values change
+              checkFormChanges(values);
+              
+              return (
               <Form>
                 <div className="form-section">
                   <h3>Personal Information</h3>
@@ -462,13 +505,14 @@ return process.env.NODE_ENV === 'production'
                   <button
                     type="submit"
                     className="save-button"
-                    disabled={isSubmitting || isLoading}
+                    disabled={isSubmitting || isLoading || !hasFormChanges}
                   >
                     {isLoading ? <ButtonLoader /> : "Save Changes"}
                   </button>
                 </div>
               </Form>
-            )}
+              );
+            }}
           </Formik>
         </div>
       )}
